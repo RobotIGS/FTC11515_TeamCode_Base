@@ -1,48 +1,49 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
-import android.annotation.SuppressLint;
-
+import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
-import java.util.Locale;
-
 public class FieldNavigation {
     private boolean driving;
+    private boolean keeprotation;
+
     private Position2D position;
-    private double rotation;
+    private Rotation rotation;
     private Position2D target_position;
-    private double target_rotation;
+    private Rotation target_rotation;
     private double driving_accuracy;
     private Velocity velocity;
 
-    private PIDcontroller rotationPIDcontroller;
-    private boolean keeprotation;
+    public PIDcontroller rotationPIDcontroller;
+    private double rotation_accuracy;
     public Position2D distance;
 
     /**
-     * create new FieldNavigation object with given position and rotation
+     * create new FieldNavigation object with given position
      * @param position position of the robot in CM
-     * @param rotation rotation of the robot in Degrees
+     * @param pidController PID Controller used for rotation
      */
-
-    // TODO remove rotation as it is part of chassis in the constructor
-    public FieldNavigation(Position2D position, double rotation) {
+    public FieldNavigation(Position2D position, PIDcontroller pidController) {
         this.driving = false;
         this.position = position;
-        this.rotation = rotation;
+        this.rotation = new Rotation(0.0);
+        this.target_rotation = new Rotation(0.0);
+        this.rotation_accuracy = 2.0;
         this.target_position = position;
-        this.driving_accuracy = 1;
+        this.distance = new Position2D();
+        this.driving_accuracy = 3.0;
         this.velocity = new Velocity();
-        this.rotationPIDcontroller = new PIDcontroller(0.01,0.0,0.0);
+        this.rotationPIDcontroller = pidController;
         keeprotation = false;
     }
 
     /**
-     * create new FieldNavigation object with (0|0) as position and 0 as rotation
+     * create new FieldNavigation object with given position and pid controller for rotation
+     * @param position position of the robot in CM
      */
-    public FieldNavigation() {
-        this(new Position2D(), 0.0);
+    public FieldNavigation(Position2D position) {
+        this(position, new PIDcontroller(6e-3,2e-5,0.0));
     }
 
     /**
@@ -62,6 +63,14 @@ public class FieldNavigation {
     }
 
     /**
+     * set rotating accuracy
+     * @param accu accuracy in degrees
+     */
+    public void setRotation_accuracy(double accu) {
+        rotation_accuracy = accu;
+    }
+
+    /**
      * drive to position
      * @param p target position
      */
@@ -75,7 +84,7 @@ public class FieldNavigation {
      * @param d relative target position
      */
     public void drive_rel(Position2D d) {
-        d.rotate(-this.rotation);
+        d.rotate(this.rotation.get());
         d.add(this.position);
         drive_pos(d);
     }
@@ -101,17 +110,32 @@ public class FieldNavigation {
      * @param rot current rotation
      */
     public void setRotation(double rot) {
-        rotation = rot;
+        rotation.set(rot);
     }
 
     /**
      * set target rotation
-     * @param rot current rotation
+     * @param rotation new target rotation or delta rotation
+     * @param rel specifies if rotation is relative
      */
-    public void setTargetRotation(double rot) {
-        target_rotation = rot;
+    public void setTargetRotation(double rotation, boolean rel) {
+        if (rel)
+            target_rotation.add(rotation);
+        else
+            target_rotation.set(rotation);
     }
 
+    /**
+     * set target rotation relative
+     * @param rotation delta rotation
+     */
+    public void setTargetRotation(double rotation) {
+        setTargetRotation(rotation, true);
+    }
+
+    public double getTargetRotation() {
+        return target_rotation.get();
+    }
     /**
      * set current position
      * @param p position
@@ -122,16 +146,24 @@ public class FieldNavigation {
 
     /**
      * set if the robot should keep the target rotation
-     * @param keep
+     * @param keep whether the rotation has to be kept
      */
     public void setKeepRotation(boolean keep) {keeprotation = keep;}
+
+    /**
+     * get keep rotation
+     * @return true = keep rotation
+     */
+    public boolean getKeepRotation() {
+        return keeprotation;
+    }
 
     /**
      * calculate current position utilising the driven distance since the last refresh
      * @param d the driven distance
      */
     public void addDrivenDistance(Position2D d) {
-        d.rotate(rotation);
+        d.rotate(rotation.get());
         position.add(d);
     }
 
@@ -155,13 +187,17 @@ public class FieldNavigation {
 
     public String debug() {
         String ret = "--- FieldNavigation Debug ---\n";
-        ret += String.format("driving :: %s\ntarget position :: x=%+3.1f y=%+3.1f\n",
-                (this.driving?"True":"False"), target_position.getX(), target_position.getY());
+        ret += String.format("driving :: %s\ntarget position :: x=%+3.1f y=%+3.1f rot=%+3.1f\n",
+                (this.driving?"True":"False"), target_position.getX(), target_position.getY(), target_rotation.get());
         ret += String.format("distance :: x=%+3.1f %+3.1f\n", this.distance.getX(), this.distance.getY());
-        ret += String.format("position :: x=%+3.1f y=%+3.1f\n",
-                position.getX(), position.getY());
+        ret += String.format("position :: x=%+3.1f y=%+3.1f rot=%+3.1f\n",
+                position.getX(), position.getY(), rotation.get());
         ret += String.format("velocity :: x=%+1.2f y=%+1.2f wz=%+1.2f\n",
                 velocity.getVX(), velocity.getVY(), velocity.getWZ());
+
+        Rotation rotation_error = new Rotation(target_rotation.get());
+        rotation_error.add(-rotation.get());
+        ret += String.format("\n\nerror : %f\n", rotation_error.get());
         return ret;
     }
 
@@ -172,24 +208,29 @@ public class FieldNavigation {
         if (driving) {
             // calculate the distance to the target position
             this.distance = target_position.copy();
-            this.distance.subract(position);
+            this.distance.subtract(position);
+
+            // calculate the error in the rotation
+            Rotation rotation_error = new Rotation(target_rotation.get());
+            rotation_error.add(-rotation.get());
 
             // test if in range of the target position (reached)
-            if (Math.abs(distance.getAbsolute()) <= this.driving_accuracy)
-                stop();
+            if ((Math.abs(distance.getAbsolute()) <= this.driving_accuracy && !keeprotation) ||
+                (Math.abs(distance.getAbsolute()) <= this.driving_accuracy && keeprotation && Math.abs(rotation_error.get()) <= rotation_accuracy))
+                    stop();
 
+            // update speeds
             else {
                 // calculate velocity for the chassis
                 Position2D distance = this.distance.getNormalization();
-                distance.rotate(-this.rotation);
+                distance.rotate(-this.rotation.get());
 
                 // setting the velocity for the chassis
-                velocity.set(distance.getX() * 0.3, distance.getY() * 0.3, 0.0);
+                velocity.set(
+                        distance.getX() * 0.3,
+                        distance.getY() * 0.3,
+                        keeprotation ? rotationPIDcontroller.step(rotation_error.get()) : 0.0);
             }
-        }
-
-        if (keeprotation) {
-            velocity.setWZ(rotationPIDcontroller.step(target_rotation-rotation));
         }
     }
 }

@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
@@ -21,32 +22,32 @@ vx
 //TODO add l_x, l_y
 public abstract class ChassisBase implements Chassis {
     protected BNO055IMU imu;
-    protected BNO055IMU.Parameters imu_prameters;
+    protected BNO055IMU.Parameters imu_parameters;
 
     protected  Velocity velocity;
     protected Position2D drivenDistance;
     protected double[] wheelSpeeds;
     protected double[] wheelSpeedsFactors;
-    private DcMotor[] wheelMotors;
-    private int[] wheelMotorSteps;
+    private final DcMotor[] wheelMotors;
+    private final int[] wheelMotorSteps;
     protected int[] deltaWheelMotorSteps;
-    private float rotation_offset;
-    private float rotation;
+    private double rotation_offset;
+    private final Rotation rotation;
     private int rotation_axis;
 
     /**
      * create chassis
      */
     public ChassisBase(int numWheels) {
-        imu_prameters = new BNO055IMU.Parameters();
-        imu_prameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        imu_prameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        imu_prameters.calibrationDataFile = "BNO055IMUCalibration.jason";
-        imu_prameters.loggingEnabled = true;
-        imu_prameters.loggingTag = "IMU";
-        imu_prameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu_parameters = new BNO055IMU.Parameters();
+        imu_parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        imu_parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        imu_parameters.calibrationDataFile = "BNO055IMUCalibration.jason";
+        imu_parameters.loggingEnabled = true;
+        imu_parameters.loggingTag = "IMU";
+        imu_parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         rotation_offset = 0;
-        rotation = 0;
+        rotation = new Rotation(0.0);
         rotation_axis = 1;
 
         drivenDistance = new Position2D();
@@ -70,7 +71,7 @@ public abstract class ChassisBase implements Chassis {
         }
 
         imu = hw_map.get(BNO055IMU.class,"imu");
-        imu.initialize(imu_prameters);
+        imu.initialize(imu_parameters);
         setRotation(0.0f);
     }
 
@@ -124,7 +125,7 @@ public abstract class ChassisBase implements Chassis {
         }
     }
 
-    public void setRotation(float rotation) {
+    public void setRotation(double rotation) {
         rotation_offset = -getRawRotation() + rotation;
     }
 
@@ -132,8 +133,8 @@ public abstract class ChassisBase implements Chassis {
         rotation_axis = axis;
     }
 
-    public float getRotation() {
-        return rotation;
+    public double getRotation() {
+        return rotation.get();
     }
 
     /**
@@ -141,12 +142,12 @@ public abstract class ChassisBase implements Chassis {
      */
     public String debug() {
         String ret = String.format(
-                "--- Chassis Debug ---\nvelocity :: vx=%+1.2f vy=%+1.2f wz=%+1.2f\ndrivenDistance :: x=%+2.2f y=%+2.2f\nrotation :: %+3.2f\nrawation :: %+3.2f + %+3.2f\n",
-                velocity.getVX(), velocity.getVY(), velocity.getWZ(), drivenDistance.getX(), drivenDistance.getY(), getRotation(), getRawRotation(), rotation_offset);
+                "--- Chassis Debug ---\nvelocity :: vx=%+1.2f vy=%+1.2f wz=%+1.2f\ndrivenDistance :: x=%+2.2f y=%+2.2f\nrotation :: %+3.2f\n",
+                velocity.getVX(), velocity.getVY(), velocity.getWZ(), drivenDistance.getX(), drivenDistance.getY(), getRotation());
 
         // add wheel debug
         for (int i=0; i<wheelMotors.length; i++) {
-            ret += String.format("Wheel %d :: v=%+1.2f  steps=%+5d  dstep=%+3d\n", i, wheelSpeeds[i], wheelMotors[i].getCurrentPosition(), deltaWheelMotorSteps[i]);
+            ret += String.format("Wheel %d :: v=%+1.2f  steps=%+5d  delta steps=%+3d\n", i, wheelSpeeds[i], wheelMotors[i].getCurrentPosition(), deltaWheelMotorSteps[i]);
         }
 
         return ret;
@@ -161,12 +162,11 @@ public abstract class ChassisBase implements Chassis {
         }
     }
 
+    /**
+     * calculate the actual rotation
+     */
     private void calculateRotation() {
-        rotation = getRawRotation();
-        rotation += 180; // make positive
-        rotation += rotation_offset; // add offset
-        rotation %= 360;
-        rotation -= 180;
+        rotation.set(getRawRotation() + rotation_offset);
     }
 
     /**

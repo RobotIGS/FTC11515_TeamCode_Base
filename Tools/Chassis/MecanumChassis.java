@@ -14,12 +14,13 @@ import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
  */
 
 public class MecanumChassis extends ChassisBase {
-    private final double WHEELDIAMETER = 10;
-    private final double ONE_OVER_R = 1/(WHEELDIAMETER/2); //TODO check + add variable(r) + const
+    private final double WHEELDIAMETER = 10; // wheel diameter in centimeters
+    private final double ONE_OVER_R = 1/(WHEELDIAMETER/2);
     private final double R_OVER_4 = (WHEELDIAMETER/2)/4;
-    private final int lx = 1; // (a+b); // TODO a + b
-    private final int ly = 1; // (a+b); // TODO a + b
+    private int lx = 1;
+    private int ly = 1;
 
+    // based on https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
     private final double[][] forwardMatrix = {
             {+1, -1, -(lx+ly)},
             {+1, +1, +(lx+ly)},
@@ -32,17 +33,31 @@ public class MecanumChassis extends ChassisBase {
             {-1/(lx+ly), 1/(lx+ly), -1/(lx+ly), 1/(lx+ly)}
     };
 
-    public MecanumChassis() {
+    /**
+     * get mecanum chassis
+     * @param lx the sideways distance between wheel center and robot center
+     * @param ly the forwards distance between wheel center and robot center
+      */
+    public MecanumChassis(int lx, int ly) {
         super(4);
+
+        // save lx and ly
+        this.lx = lx;
+        this.ly = ly;
+    }
+
+    /**
+     * get squared mecanum chassis
+     */
+    public MecanumChassis() {
+        this(1,1);
     }
 
     @Override
     public void setVelocity(Velocity velocity) {
-        double vm;
         super.setVelocity(velocity);
-        // TODO: add source (vy inverted + right side inverted)
-        // source : https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
 
+        // performe the calculation based on the matrix above
         for (int i=0; i<4; i++) {
             wheelSpeeds[i] = ONE_OVER_R * (
                     forwardMatrix[i][0] *  velocity.getVX() +
@@ -51,14 +66,8 @@ public class MecanumChassis extends ChassisBase {
             );
         }
 
-        /*
-        wheelSpeeds[0] =  (velocity.getVX() + velocity.getVY() - l * velocity.getWZ()) * ONE_OVER_R;
-        wheelSpeeds[1] = -(velocity.getVX() - velocity.getVY() + l * velocity.getWZ()) * ONE_OVER_R; // negate because right
-        wheelSpeeds[3] =  (velocity.getVX() - velocity.getVY() - l * velocity.getWZ()) * ONE_OVER_R;
-        wheelSpeeds[2] = -(velocity.getVX() + velocity.getVY() + l * velocity.getWZ()) * ONE_OVER_R; // negate because right
-    */
-        // normalize the values
-        vm = Math.max(Math.max(Math.abs(wheelSpeeds[0]), Math.abs(wheelSpeeds[1])),
+        // normalize the values ( in [-1.0;1.0])
+        double vm = Math.max(Math.max(Math.abs(wheelSpeeds[0]), Math.abs(wheelSpeeds[1])),
                 Math.max(Math.abs(wheelSpeeds[2]), Math.abs(wheelSpeeds[3])));
         wheelSpeeds[0] *= velocity.getAbsolute() / vm;
         wheelSpeeds[1] *= velocity.getAbsolute() / vm;

@@ -3,14 +3,16 @@ package org.firstinspires.ftc.teamcode.Tools;
 import org.firstinspires.ftc.teamcode.Tools.Chassis.Chassis;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
-// TODO isb for driving etc
-
 public class Robot {
     public FieldNavigation navi;
     public Chassis chassis;
     protected Profile profile;
 
-    // TODO: javadoc
+    /**
+     * create Robot object
+     * @param navi the field-navigator used for this robot
+     * @param chassis the chassis of the robot
+     */
     public Robot(FieldNavigation navi, Chassis chassis) {
         this.navi = navi;
         this.chassis = chassis;
@@ -64,6 +66,7 @@ public class Robot {
             navi.drive_rel(d);
         else
             navi.drive_pos(d);
+        navi.rotationPIDcontroller.reset();
     }
 
     /**
@@ -75,6 +78,23 @@ public class Robot {
     }
 
     /**
+     * rotate the robot
+     * @param rotation target rotation (relative if rel)
+     * @param rel specify if rotation is relative
+     */
+    public void rotate(float rotation, boolean rel) {
+        navi.rotationPIDcontroller.reset(); // reset pid controller before usage
+        navi.setTargetRotation(rotation, rel);
+        drive(new Position2D(0.0, 0.0), true);
+    }
+
+    /**
+     * rotate the robot relative
+     * @param rotation target rotation (relative if rel)
+     */
+    public void rotate(float rotation) { rotate(rotation, true); }
+
+    /**
      * stop all
      */
     public void stop() {
@@ -83,7 +103,7 @@ public class Robot {
     }
 
     /**
-     * refresh
+     * refresh everything
      */
     public void step() {
         navi.setRotation(chassis.getRotation());
