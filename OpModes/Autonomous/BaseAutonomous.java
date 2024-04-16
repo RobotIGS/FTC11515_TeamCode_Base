@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HwMap;
+import org.firstinspires.ftc.teamcode.Tools.Profile;
 
 public abstract class BaseAutonomous extends LinearOpMode {
     protected HwMap hwMap; // hardware map
+    protected Profile accelerationProfile;
 
     /**
      * get the alliance color
@@ -23,7 +25,12 @@ public abstract class BaseAutonomous extends LinearOpMode {
         hwMap = new HwMap();
         hwMap.initialize(hardwareMap);
 
+        // create an acceleration profile for better location resolution
+        this.accelerationProfile = new Profile(100);
+
         /* OVERWRITE VALUES SET BY hwMap.initialize() DOWN BELOW */
+        hwMap.navi.setProfile(accelerationProfile);
+        hwMap.navi.setAutoVelFactor(0.3);
         hwMap.navi.setRotation_accuracy(3.0f);
         hwMap.navi.setDriving_accuracy(1.5);
         hwMap.navi.setKeepRotation(true);

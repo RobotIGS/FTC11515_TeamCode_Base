@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
+import android.annotation.SuppressLint;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
@@ -16,6 +17,8 @@ public class FieldNavigation {
     private Velocity velocity;
 
     public PIDcontroller rotationPIDcontroller;
+    private double autoVelFactor;
+    private Profile accProfile;
     private double rotation_accuracy;
     public Position2D distance;
 
@@ -35,6 +38,8 @@ public class FieldNavigation {
         this.driving_accuracy = 3.0;
         this.velocity = new Velocity();
         this.rotationPIDcontroller = pidController;
+        this.accProfile = null;
+        this.autoVelFactor = 1.0;
         keeprotation = false;
     }
 
@@ -71,12 +76,23 @@ public class FieldNavigation {
     }
 
     /**
+     * set the acceleration profile
+     * @param accProfile the acceleration profile or null to deactivate
+     */
+    public void setProfile(Profile accProfile) {
+        this.accProfile = accProfile;
+    }
+
+    /**
      * drive to position
      * @param p target position
      */
     public void drive_pos(Position2D p) {
-        driving = true;
-        target_position = p;
+        this.driving = true;
+        this.target_position = p;
+
+        // start the acceleration profile
+        this.accProfile.start(this.position, this.target_position);
     }
 
     /**
@@ -123,6 +139,14 @@ public class FieldNavigation {
             target_rotation.add(rotation);
         else
             target_rotation.set(rotation);
+    }
+
+    /**
+     * set the velocity factor used in the autonomous driving
+     * @param velFactor the factor [0-1] (domain gets forced)
+     */
+    public void setAutoVelFactor(double velFactor) {
+        this.autoVelFactor = Math.min(1, Math.abs(velFactor));
     }
 
     /**
@@ -185,6 +209,7 @@ public class FieldNavigation {
     }
 
 
+    @SuppressLint("DefaultLocale")
     public String debug() {
         String ret = "--- FieldNavigation Debug ---\n";
         ret += String.format("driving :: %s\ntarget position :: x=%+3.1f y=%+3.1f rot=%+3.1f\n",
@@ -226,9 +251,11 @@ public class FieldNavigation {
                 distance.rotate(-this.rotation.get());
 
                 // setting the velocity for the chassis
+                double velFactor = this.accProfile != null ? this.accProfile.step(this.position) * this.autoVelFactor :
+                        this.autoVelFactor;
                 velocity.set(
-                        distance.getX() * 0.3,
-                        distance.getY() * 0.3,
+                        distance.getX() * velFactor,
+                        distance.getY() * velFactor,
                         keeprotation ? rotationPIDcontroller.step(rotation_error.get()) : 0.0);
             }
         }

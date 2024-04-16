@@ -4,13 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "FullControl", group = "FTC")
 public class FullControl extends BaseTeleOp {
-    // driving speeds
-    protected final double speed_full = 0.55;
-    protected final double speed_sneak = 0.3;
-    protected boolean drive_sneak = false;
-
     /* ADD VARIABLES ONLY USED IN FULL CONTROL */
-
+    protected boolean drive_sneak = false; // flag for storing the current speed mode
     /* END SECTION */
 
     @Override
@@ -41,9 +36,10 @@ public class FullControl extends BaseTeleOp {
             }
         }
         hwMap.robot.setSpeed(
-                -gamepad1.left_stick_y * (drive_sneak ? speed_sneak : speed_full),
-                -gamepad1.right_stick_x * (drive_sneak ? speed_sneak : speed_full),
-                (gamepad1.left_trigger - gamepad1.right_trigger) * (drive_sneak ? speed_sneak : speed_full));
+                -gamepad1.left_stick_y * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
+                -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
+                (gamepad1.left_trigger - gamepad1.right_trigger) *
+                        (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full));
 
 
         /* UPDATE THE ROBOT */

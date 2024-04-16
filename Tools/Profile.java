@@ -1,67 +1,59 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
-import org.firstinspires.ftc.teamcode.Tools.Functions.FunctionBase;
-
-// TODO: check if "System.currentTimeMillis" works
+import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
 public class Profile {
-    private boolean acceleration;
-    private FunctionBase accelerationFunction;
-    private FunctionBase decelerationFunction;
-    private long start_time;
+    protected Position2D endPosition;
+    protected Position2D startPosition;
+
+    protected double accelerationDistance;
 
     /**
-     * Profile used to accelerate and decelerate based on a function
-     * @param acceFunc function used for acceleration
-     * @param decelFunc function used for deceleration
+     * create the acceleration profile
+     * @param accelerationDistance the distance after which the acceleration profile has reached 100%
      */
-    public Profile(FunctionBase acceFunc, FunctionBase decelFunc) {
-        acceleration = true;
-        accelerationFunction = acceFunc;
-        decelerationFunction = decelFunc;
-        start_time = System.currentTimeMillis();
+    public Profile(double accelerationDistance) {
+        this.accelerationDistance = Math.abs(accelerationDistance);
     }
 
     /**
-     * set if acceleration or deceleration is used and reset start time
-     * @param acce if acceleration is used
+     * start the acceleration profile for a distance
+     * @param start the start position
+     * @param end the end position
      */
-    public void setDirection(boolean acce) {
-        acceleration = acce;
-        resetStarTime();
+    public void start(Position2D start, Position2D end) {
+        this.startPosition = start;
+        this.endPosition = end;
     }
 
     /**
-     * set acceleration function
-     * @param acceFunction acceleration function
+     * get the velocity factor of the acceleration profile
+     * @param position The current position
+     * @return the velocity factor in the range [0-1]
      */
-    public void setAccelerationFunction(FunctionBase acceFunction) {
-        this.accelerationFunction = acceFunction;
-    }
+    public double step(Position2D position) {
+        Position2D target;
+        double distanceToEnd, distanceToStart, distance;
 
-    /**
-     * set deceleration function
-     * @param decelFunction deceleration function
-     */
-    public void setDecelerationFunction(FunctionBase decelFunction) {
-        this.decelerationFunction = decelFunction;
-    }
+        // calculate distance between end position and current position
+        target = this.endPosition.copy();
+        target.subtract(position);
+        distanceToEnd = Math.abs(target.getAbsolute());
 
-    /**
-     * reset start time
-     */
-    public void resetStarTime() {
-        start_time = System.currentTimeMillis();
-    }
+        // calculate distance between start position and current position
+        target = position.copy();
+        target.subtract(position);
+        distanceToStart = Math.abs(target.getAbsolute());
 
-    /**
-     * apply functions on lap time in mills and return their values
-     * @return some factor
-     */
-    public double step() {
-        long t = System.currentTimeMillis() - start_time;
-        if (t >= 0)
-            return accelerationFunction.apply(t);
-        return decelerationFunction.apply(t);
+        // get the minimum of both distances
+        distance = Math.min(distanceToStart, distanceToEnd);
+
+        // if the minimum distance is above the acceleration distance
+        if (distance > accelerationDistance) {
+            return 1.0;
+        }
+
+        // else return the function value
+        return Math.max(1,(distance/accelerationDistance)+0.001);
     }
 }
