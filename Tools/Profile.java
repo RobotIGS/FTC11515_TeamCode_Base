@@ -53,11 +53,14 @@ public class Profile {
         target.subtract(this.startPosition);
         distanceToStart = Math.abs(target.getAbsolute());
 
-        // test for acceleration or deceleration
+        // deceleration
         if (distanceToStart > distanceToEnd) {
             accelerationFactor = distanceToEnd/accelerationDistance;
-        } else {
-            accelerationFactor = (System.currentTimeMillis()-startTime)/accelerationTime;
+        }
+        // acceleration
+        else {
+            double x = (System.currentTimeMillis()-startTime)/accelerationTime;
+            accelerationFactor = (x<=1)? -x * (x-2) : 1.0; // calculate the parabola only for x smaller 1
         }
 
         // keep factor in domain

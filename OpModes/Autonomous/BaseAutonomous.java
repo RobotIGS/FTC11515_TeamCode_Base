@@ -26,11 +26,11 @@ public abstract class BaseAutonomous extends LinearOpMode {
         hwMap.initialize(hardwareMap);
 
         // create an acceleration profile for better location resolution
-        this.accelerationProfile = new Profile(100, 1.5);
+        this.accelerationProfile = new Profile(50, 1.5);
 
         /* OVERWRITE VALUES SET BY hwMap.initialize() DOWN BELOW */
         hwMap.navi.setProfile(accelerationProfile);
-        hwMap.navi.setAutoVelFactor(0.3);
+        hwMap.navi.setAutoVelFactor(0.5);
         hwMap.navi.setRotation_accuracy(3.0f);
         hwMap.navi.setDriving_accuracy(1.5);
         hwMap.navi.setKeepRotation(true);
