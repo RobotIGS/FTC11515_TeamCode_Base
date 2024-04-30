@@ -41,6 +41,9 @@ public class MecanumChassis extends ChassisBase {
     public MecanumChassis(int lx, int ly) {
         super(4);
 
+        // allow sideways motion
+        capabilities.setDriveSideways(true);
+
         // save lx and ly
         this.lx = lx;
         this.ly = ly;
@@ -57,7 +60,7 @@ public class MecanumChassis extends ChassisBase {
     public void setVelocity(Velocity velocity) {
         super.setVelocity(velocity);
 
-        // performe the calculation based on the matrix above
+        // perform the calculation based on the matrix above
         for (int i=0; i<4; i++) {
             wheelSpeeds[i] = ONE_OVER_R * (
                     forwardMatrix[i][0] *  velocity.getVX() +

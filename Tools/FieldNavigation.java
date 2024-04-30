@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
 import android.annotation.SuppressLint;
+import org.firstinspires.ftc.teamcode.Tools.Chassis.ChassisCapabilities;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
@@ -21,6 +22,8 @@ public class FieldNavigation {
     private Profile accProfile;
     private double rotation_accuracy;
     public Position2D distance;
+
+    private ChassisCapabilities chassisCapabilities;
 
     /**
      * create new FieldNavigation object with given position
@@ -81,6 +84,14 @@ public class FieldNavigation {
      */
     public void setProfile(Profile accProfile) {
         this.accProfile = accProfile;
+    }
+
+    /**
+     * give the filed navigator the capabilities of the used chassis
+     * @param capabilities the capabilities of the chassis
+     */
+    public void setChassisCapabilities(ChassisCapabilities capabilities) {
+        this.chassisCapabilities = capabilities;
     }
 
     /**
@@ -239,24 +250,41 @@ public class FieldNavigation {
             Rotation rotation_error = new Rotation(target_rotation.get());
             rotation_error.add(-rotation.get());
 
+            // setting the velocity for the chassis
+            double velFactor = this.accProfile != null ? this.accProfile.step(this.position) * this.autoVelFactor :
+                    this.autoVelFactor;
+
+            // calculate velocity for the chassis
+            Position2D distance = this.distance.getNormalization();
+            distance.rotate(-this.rotation.get());
+
             // test if in range of the target position (reached)
             if ((Math.abs(distance.getAbsolute()) <= this.driving_accuracy && !keeprotation) ||
-                (Math.abs(distance.getAbsolute()) <= this.driving_accuracy && keeprotation && Math.abs(rotation_error.get()) <= rotation_accuracy))
-                    stop();
+                    (Math.abs(distance.getAbsolute()) <= this.driving_accuracy && keeprotation
+                    && Math.abs(rotation_error.get()) <= rotation_accuracy))
+                stop();
 
-            // update speeds
-            else {
-                // calculate velocity for the chassis
-                Position2D distance = this.distance.getNormalization();
-                distance.rotate(-this.rotation.get());
-
-                // setting the velocity for the chassis
-                double velFactor = this.accProfile != null ? this.accProfile.step(this.position) * this.autoVelFactor :
-                        this.autoVelFactor;
+            // if sideways is allowed : just drive in the direction and rotate
+            else if (chassisCapabilities.getDriveSideways()) {
                 velocity.set(
                         distance.getX() * velFactor,
                         distance.getY() * velFactor,
                         keeprotation ? rotationPIDcontroller.step(rotation_error.get()) : 0.0);
+            }
+
+            // just drive forward in the direction and rotate to the target
+            else if (chassisCapabilities.getRotate()) {
+                rotation_error.set(Math.toDegrees(Math.asin(distance.getY())));
+                if (distance.getX() < 0) {
+                    rotation_error.set(180-rotation_error.get());
+                }
+
+                // TODO rotate to target rotation if target position was reached
+                velocity.set(
+                        distance.getX() * velFactor,
+                        0.0,
+                        keeprotation ? rotationPIDcontroller.step(rotation_error.get()) : 0.0
+                );
             }
         }
     }

@@ -38,10 +38,17 @@ public abstract class ChassisBase implements Chassis {
     private final Rotation rotation;
     private int rotation_axis;
 
+    // set default capabilities for any chassis
+    protected ChassisCapabilities capabilities;
+
     /**
      * create chassis
      */
     public ChassisBase(int numWheels) {
+        // rotation stuff
+        capabilities.setGetRotation(true);
+        capabilities.setRotate(true);
+
         imu_parameters = new BNO055IMU.Parameters();
         imu_parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         imu_parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -53,6 +60,10 @@ public abstract class ChassisBase implements Chassis {
         rotation = new Rotation(0.0);
         rotation_axis = 1;
 
+        // drive stuff
+        capabilities.setGetDrivenDistance(true);
+        capabilities.setDriveForward(true);
+
         drivenDistance = new Position2D();
         wheelMotors = new DcMotor[numWheels];
         wheelSpeeds = new double[numWheels];
@@ -61,7 +72,6 @@ public abstract class ChassisBase implements Chassis {
         deltaWheelMotorSteps = new int[numWheels];
     }
 
-    // TODO: javadoc
     public void populateMotorArray(HardwareMap hw_map) {
         for (int i = 0; i < this.wheelMotors.length; i++) {
             wheelMotors[i] = hw_map.get(DcMotor.class, String.format("wheelMotor_%d", i));
@@ -78,47 +88,30 @@ public abstract class ChassisBase implements Chassis {
         setRotation(0.0f);
     }
 
-    public void setFactor(int wheelIndex, double factor) {
+    public void setWheelVelocityFactor(int wheelIndex, double factor) {
         if (wheelIndex > 0 && wheelIndex < wheelSpeedsFactors.length)
             wheelSpeedsFactors[wheelIndex] = factor;
     }
 
-    /**
-     * set Motor powers
-     */
     private void setMotorSpeeds() {
         for (int i = 0; i < wheelMotors.length; i++) {
             wheelMotors[i].setPower(wheelSpeeds[i] * wheelSpeedsFactors[i]);
         }
     }
 
-    /**
-     * set wheel speeds based on velocity
-     * @param velocity robot velocity
-     */
     public void setVelocity(Velocity velocity) {
         this.velocity = velocity;
     }
 
-    /**
-     * get driven distance since last step
-     * @return driven distance
-     */
     public Position2D getDrivenDistance() {
         return drivenDistance;
     }
 
-    /**
-     * stop chassis movement
-     */
     public void stopMotors() {
         setVelocity(new Velocity());
         setMotorSpeeds();
     }
 
-    /**
-     * update info about delta steps of motors
-     */
     private void updateMotorSteps() {
         int steps;
         for (int i=0; i<deltaWheelMotorSteps.length; i++) {
@@ -140,9 +133,10 @@ public abstract class ChassisBase implements Chassis {
         return rotation.get();
     }
 
-    /**
-     * debug info
-     */
+    public ChassisCapabilities getCapabilities() {
+        return capabilities;
+    }
+
     public String debug() {
         String ret = String.format(
                 "--- Chassis Debug ---\nvelocity :: vx=%+1.2f vy=%+1.2f wz=%+1.2f\ndrivenDistance :: x=%+2.2f y=%+2.2f\nrotation :: %+3.2f\n",
@@ -165,16 +159,10 @@ public abstract class ChassisBase implements Chassis {
         }
     }
 
-    /**
-     * calculate the actual rotation
-     */
     private void calculateRotation() {
         rotation.set(getRawRotation() + rotation_offset);
     }
 
-    /**
-     * update
-     */
     public void step() {
         calculateRotation();
         setMotorSpeeds();
