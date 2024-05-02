@@ -259,9 +259,9 @@ public class FieldNavigation {
             distance.rotate(-this.rotation.get());
 
             // test if in range of the target position (reached)
-            if ((Math.abs(distance.getAbsolute()) <= this.driving_accuracy && !keeprotation) ||
-                    (Math.abs(distance.getAbsolute()) <= this.driving_accuracy && keeprotation
-                    && Math.abs(rotation_error.get()) <= rotation_accuracy))
+            if ((Math.abs(this.distance.getAbsolute()) <= this.driving_accuracy && !keeprotation) ||
+                    (Math.abs(this.distance.getAbsolute()) <= this.driving_accuracy && keeprotation
+                            && Math.abs(rotation_error.get()) <= rotation_accuracy))
                 stop();
 
             // if sideways is allowed : just drive in the direction and rotate

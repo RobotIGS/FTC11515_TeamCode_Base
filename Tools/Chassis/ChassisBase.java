@@ -45,6 +45,8 @@ public abstract class ChassisBase implements Chassis {
      * create chassis
      */
     public ChassisBase(int numWheels) {
+        capabilities = new ChassisCapabilities();
+
         // rotation stuff
         capabilities.setGetRotation(true);
         capabilities.setRotate(true);
@@ -138,9 +140,13 @@ public abstract class ChassisBase implements Chassis {
     }
 
     public String debug() {
-        String ret = String.format(
-                "--- Chassis Debug ---\nvelocity :: vx=%+1.2f vy=%+1.2f wz=%+1.2f\ndrivenDistance :: x=%+2.2f y=%+2.2f\nrotation :: %+3.2f\n",
-                velocity.getVX(), velocity.getVY(), velocity.getWZ(), drivenDistance.getX(), drivenDistance.getY(), getRotation());
+        String ret = "--- Chassis Debug ---\n";
+        if (velocity != null)
+            ret += String.format("velocity :: vx=%+1.2f vy=%+1.2f wz=%+1.2f", velocity.getVX(), velocity.getVY(), velocity.getWZ());
+        if (drivenDistance != null)
+            ret += String.format(
+                "drivenDistance :: x=%+2.2f y=%+2.2f", drivenDistance.getX(), drivenDistance.getY());
+        ret += String.format("\nrotation :: %+3.2f\n", getRotation());
 
         // add wheel debug
         for (int i=0; i<wheelMotors.length; i++) {
