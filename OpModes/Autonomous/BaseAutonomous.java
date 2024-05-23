@@ -33,7 +33,7 @@ public abstract class BaseAutonomous extends LinearOpMode {
         hwMap.navi.setAutoVelFactor(0.5);
         hwMap.navi.setRotation_accuracy(3.0f);
         hwMap.navi.setDriving_accuracy(1.5);
-        hwMap.navi.setKeepRotation(true);
+        hwMap.navi.setKeepRotation(false);
         /* END SECTION */
     };
 

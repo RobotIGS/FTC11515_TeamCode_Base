@@ -274,16 +274,17 @@ public class FieldNavigation {
 
             // just drive forward in the direction and rotate to the target
             else if (chassisCapabilities.getRotate()) {
-                rotation_error.set(Math.toDegrees(Math.asin(distance.getY())));
-                if (distance.getX() < 0) {
-                    rotation_error.set(180-rotation_error.get());
+                if (this.distance.getAbsolute() > this.driving_accuracy) {
+                    rotation_error.set(Math.toDegrees(Math.asin(distance.getY())));
+                    if (distance.getX() < 0) {
+                        rotation_error.set(180 - rotation_error.get());
+                    }
                 }
 
-                // TODO rotate to target rotation if target position was reached
                 velocity.set(
                         distance.getX() * velFactor,
                         0.0,
-                        keeprotation ? rotationPIDcontroller.step(rotation_error.get()) : 0.0
+                        rotationPIDcontroller.step(rotation_error.get())
                 );
             }
         }
