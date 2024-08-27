@@ -20,7 +20,7 @@ public class MecanumChassis extends ChassisBase {
     private int lx = 1;
     private int ly = 1;
 
-    // based on https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
+    // TODO: based on https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
     private final double[][] forwardMatrix = {
             {+1, -1, -(lx+ly)},
             {+1, +1, +(lx+ly)},

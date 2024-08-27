@@ -38,25 +38,13 @@ public class Robot {
     }
 
     /**
-     * set robot speed
-     * @param vx forward speed (+ => forward)
-     * @param vy sideways speed (+ => left)
-     * @param wz rotation speed (+ => turn left)
-     * @param p use of acceleration profile
-     */
-    public void setSpeed(double vx, double vy, double wz, boolean p) {
-        navi.drive_speed(vx,vy,wz);
-        // TODO: handle profile parameter p
-    }
-
-    /**
      * set robot speed not utilising the acceleration profile
      * @param vx forward speed (+ => forward)
      * @param vy sideways speed (+ => left)
      * @param wz rotation speed (+ => turn left)
      */
     public void setSpeed(double vx, double vy, double wz) {
-        setSpeed(vx, vy, wz, false);
+        navi.drive_speed(vx,vy,wz);
     }
 
     /**

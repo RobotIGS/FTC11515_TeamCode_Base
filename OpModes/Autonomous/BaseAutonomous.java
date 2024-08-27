@@ -30,9 +30,9 @@ public abstract class BaseAutonomous extends LinearOpMode {
 
         /* OVERWRITE VALUES SET BY hwMap.initialize() DOWN BELOW */
         hwMap.navi.setProfile(accelerationProfile);
-        hwMap.navi.setAutoVelFactor(0.5);
-        hwMap.navi.setRotation_accuracy(3.0f);
-        hwMap.navi.setDriving_accuracy(1.5);
+        hwMap.navi.setAutoVelFactor(hwMap.speed_normal);
+        hwMap.navi.setRotationAccuracy(hwMap.rotation_accuracy);
+        hwMap.navi.setDrivingAccuracy(hwMap.driving_accuracy);
         hwMap.navi.setKeepRotation(false);
         /* END SECTION */
     };
@@ -49,7 +49,9 @@ public abstract class BaseAutonomous extends LinearOpMode {
         hwMap.robot.stop();
     }
 
-    /* this internal methode is used to run initialize and run */
+    /**
+     * this internal methode is used to run initialize and run
+     */
     public void runOpMode() {
         initialize();
         waitForStart();

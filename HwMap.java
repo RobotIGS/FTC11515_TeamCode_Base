@@ -20,8 +20,13 @@ public class HwMap {
 
     /* PLACE YOUR CONSTANT VALUES DOWN BELOW*/
     // driving speeds
-    public final double speed_full = 0.55;
-    public final double speed_sneak = 0.3;
+    public final double speed_full = 1.0;
+    public final double speed_sneak = 0.5;
+
+    // autonomous values
+    public final double speed_normal = 0.8;
+    public final double driving_accuracy = 1.5;
+    public final float rotation_accuracy = 3.0f;
     /* END SECTION */
 
     /**

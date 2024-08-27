@@ -66,7 +66,7 @@ public class FieldNavigation {
      * set driving accuracy
      * @param accu accuracy in CM
      */
-    public void setDriving_accuracy(double accu) {
+    public void setDrivingAccuracy(double accu) {
         driving_accuracy = accu;
     }
 
@@ -74,7 +74,7 @@ public class FieldNavigation {
      * set rotating accuracy
      * @param accu accuracy in degrees
      */
-    public void setRotation_accuracy(double accu) {
+    public void setRotationAccuracy(double accu) {
         rotation_accuracy = accu;
     }
 
