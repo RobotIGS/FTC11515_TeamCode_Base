@@ -269,7 +269,7 @@ public class FieldNavigation {
                 velocity.set(
                         distance.getX() * velFactor,
                         distance.getY() * velFactor,
-                        keeprotation ? rotationPIDcontroller.step(rotation_error.get()) : 0.0);
+                        keeprotation ? -rotationPIDcontroller.step(rotation_error.get()) : 0.0);
             }
 
             // just drive forward in the direction and rotate to the target
