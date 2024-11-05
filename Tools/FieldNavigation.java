@@ -233,7 +233,8 @@ public class FieldNavigation {
 
         Rotation rotation_error = new Rotation(target_rotation.get());
         rotation_error.add(-rotation.get());
-        ret += String.format("\n\nerror : %f\n", rotation_error.get());
+        ret += String.format("rotation error : %f\n", rotation_error.get());
+        ret += String.format("pid value : %f\n", rotationPIDcontroller.pid_value);
         return ret;
     }
 
@@ -251,8 +252,7 @@ public class FieldNavigation {
             rotation_error.add(-rotation.get());
 
             // setting the velocity for the chassis
-            double velFactor = this.accProfile != null ? this.accProfile.step(this.position) * this.autoVelFactor :
-                    this.autoVelFactor;
+            double velFactor = this.accProfile != null ? this.accProfile.step(this.position) * this.autoVelFactor : this.autoVelFactor;
 
             // calculate velocity for the chassis
             Position2D distance = this.distance.getNormalization();
@@ -269,7 +269,7 @@ public class FieldNavigation {
                 velocity.set(
                         distance.getX() * velFactor,
                         distance.getY() * velFactor,
-                        keeprotation ? -rotationPIDcontroller.step(rotation_error.get()) : 0.0);
+                        keeprotation ? rotationPIDcontroller.step(rotation_error.get()): 0.0);
             }
 
             // just drive forward in the direction and rotate to the target

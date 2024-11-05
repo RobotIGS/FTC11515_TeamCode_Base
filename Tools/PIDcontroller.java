@@ -6,7 +6,7 @@ public class PIDcontroller {
     private final double k_d;
     private double integral;
     private double last_error;
-    private double pid_value;
+    double pid_value;
 
     /**
      * creat a PID controller (see WIKIPEDIA PID controller)
@@ -68,6 +68,10 @@ public class PIDcontroller {
     public double step(double error) {
         pid_value = P(error) + I(error) + D(error); // sum up the three parts
         last_error = error; // remember the last error for later use
+        /*if (Math.abs(pid_value) > 1) {
+            pid_value = Math.max(Math.min(pid_value, 1), -1);
+            integral = 1;
+        }*/
         return pid_value;
     }
 }
