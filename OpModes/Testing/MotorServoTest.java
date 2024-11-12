@@ -12,6 +12,7 @@ public class MotorServoTest extends BaseTeleOp {
     /**
      * HW-Map: testing
      * Servo: Port 1
+     * Servo 2: Port 3
      * CR-Servo (dreht sich unendlich): Port 2
      * Motor: Port 1
      * Motor 2: Port 2
@@ -20,6 +21,7 @@ public class MotorServoTest extends BaseTeleOp {
     public DcMotor motor;
     public DcMotor motor2;
     public Servo servo;
+    public Servo servo2;
     public CRServo crservo;
 
     boolean zwei_motoren = false;
@@ -29,6 +31,7 @@ public class MotorServoTest extends BaseTeleOp {
         motor = hardwareMap.get(DcMotor.class,"motor");
         motor2 = hardwareMap.get(DcMotor.class,"motor2");
         servo = hardwareMap.get(Servo.class,"servo");
+        servo2 = hardwareMap.get(Servo.class,"servo2");
         crservo = hardwareMap.get(CRServo.class,"crservo");
     }
 
@@ -53,9 +56,11 @@ public class MotorServoTest extends BaseTeleOp {
 
         if (gamepad1.dpad_down) {
             servo.setPosition(servo.getPosition() - 0.001);
+            servo2.setPosition(servo.getPosition() - 0.001);
         }
         else if (gamepad1.dpad_up) {
             servo.setPosition(servo.getPosition() + 0.001);
+            servo2.setPosition(servo.getPosition() + 0.001);
         }
 
 
