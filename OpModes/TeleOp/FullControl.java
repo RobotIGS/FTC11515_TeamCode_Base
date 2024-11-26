@@ -38,13 +38,13 @@ public class FullControl extends BaseTeleOp {
         if (gamepad1.a) { // rückwarts
             hwMap.robot.setSpeed(
                     -1 * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                    0 * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
+                    -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
                     (gamepad1.left_trigger - gamepad1.right_trigger) *
                             (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full));
         } else if (gamepad1.b) { // vorwärts
             hwMap.robot.setSpeed(
                     1 * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                    0 * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
+                    -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
                     (gamepad1.left_trigger - gamepad1.right_trigger) *
                             (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full));
         } else {
