@@ -80,4 +80,7 @@ public class MotorServoTest extends BaseTeleOp {
         // update screen
         telemetry.update();
     }
+
+    @Override
+    public void end() {}
 }

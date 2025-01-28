@@ -39,4 +39,7 @@ public class GyroTest extends BaseTeleOp {
         telemetry.addData("Position", imu.getPosition());
         telemetry.update();
     }
+
+    @Override
+    public void end() {}
 }
