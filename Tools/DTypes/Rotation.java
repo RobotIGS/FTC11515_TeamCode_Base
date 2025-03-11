@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.Tools.DTypes;
 public class Rotation {
     private double rotation;
 
+    // POSITIVE ROTATION: nach links
+    // NEGATIVE ROTATION: nach rechts
+
     public Rotation(double rotation) {
         this.rotation = rotation;
     }

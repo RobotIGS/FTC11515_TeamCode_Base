@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
@@ -38,8 +40,8 @@ public class MecanumChassis extends ChassisBase {
      * @param lx the sideways distance between wheel center and robot center
      * @param ly the forwards distance between wheel center and robot center
       */
-    public MecanumChassis(int lx, int ly) {
-        super(4);
+    public MecanumChassis(int lx, int ly, RevHubOrientationOnRobot hubOrientation) {
+        super(4, hubOrientation);
 
         // allow sideways motion
         capabilities.setDriveSideways(true);
@@ -52,8 +54,8 @@ public class MecanumChassis extends ChassisBase {
     /**
      * get squared mecanum chassis
      */
-    public MecanumChassis() {
-        this(1,1);
+    public MecanumChassis(RevHubOrientationOnRobot hubOrientation) {
+        this(1,1, hubOrientation);
     }
 
     @Override

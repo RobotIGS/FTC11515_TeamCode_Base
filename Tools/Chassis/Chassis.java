@@ -35,12 +35,6 @@ public interface Chassis {
 	void setRotation(double rotation);
 
 	/**
-	 * set the rotation axis used of the gyroscope (depend on the rotation of the hub/phone on the chassis)
-	 * @param axis the index obtained by OpModes.Testing.GyroTest
-	 */
-	void setRotationAxis(int axis);
-
-	/**
 	 * get the driven distance when supported by the chassis
 	 * @return delta in position since last step or (0|0)
 	 */

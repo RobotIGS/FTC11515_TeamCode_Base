@@ -2,12 +2,15 @@ package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
@@ -24,8 +27,8 @@ vx
 
 //TODO add l_x, l_y
 public abstract class ChassisBase implements Chassis {
-    protected BNO055IMU imu;
-    protected BNO055IMU.Parameters imu_parameters;
+    protected IMU imu;
+    protected RevHubOrientationOnRobot hubOrientationOnRobot;
 
     protected  Velocity velocity;
     protected Position2D drivenDistance;
@@ -44,20 +47,14 @@ public abstract class ChassisBase implements Chassis {
     /**
      * create chassis
      */
-    public ChassisBase(int numWheels) {
+    public ChassisBase(int numWheels, RevHubOrientationOnRobot huborientation) {
         capabilities = new ChassisCapabilities();
 
         // rotation stuff
         capabilities.setGetRotation(true);
         capabilities.setRotate(true);
 
-        imu_parameters = new BNO055IMU.Parameters();
-        imu_parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        imu_parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        imu_parameters.calibrationDataFile = "BNO055IMUCalibration.jason";
-        imu_parameters.loggingEnabled = true;
-        imu_parameters.loggingTag = "IMU";
-        imu_parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        this.hubOrientationOnRobot = huborientation;
         rotation_offset = 0;
         rotation = new Rotation(0.0);
         rotation_axis = 1;
@@ -85,8 +82,8 @@ public abstract class ChassisBase implements Chassis {
             deltaWheelMotorSteps[i] = wheelMotorSteps[i];
         }
 
-        imu = hw_map.get(BNO055IMU.class,"imu");
-        imu.initialize(imu_parameters);
+        imu = hw_map.get(IMU.class,"imu");
+        imu.initialize(new IMU.Parameters(this.hubOrientationOnRobot));
         setRotation(0.0f);
     }
 
@@ -127,10 +124,6 @@ public abstract class ChassisBase implements Chassis {
         rotation_offset = -getRawRotation() + rotation;
     }
 
-    public void setRotationAxis(int axis) {
-        rotation_axis = axis;
-    }
-
     public double getRotation() {
         return rotation.get();
     }
@@ -145,24 +138,20 @@ public abstract class ChassisBase implements Chassis {
             ret += String.format("velocity :: vx=%+1.2f vy=%+1.2f wz=%+1.2f", velocity.getVX(), velocity.getVY(), velocity.getWZ());
         if (drivenDistance != null)
             ret += String.format(
-                "drivenDistance :: x=%+2.2f y=%+2.2f", drivenDistance.getX(), drivenDistance.getY());
-        ret += String.format("\nrotation :: %+3.2f\n", getRotation());
+                "\ndrivenDistance :: x=%+2.2f y=%+2.2f", drivenDistance.getX(), drivenDistance.getY());
+        ret += String.format("\nrotation :: %+3.2f", getRotation());
 
         // add wheel debug
         for (int i=0; i<wheelMotors.length; i++) {
-            ret += String.format("Wheel %d :: v=%+1.2f  steps=%+5d  delta steps=%+3d\n", i, wheelSpeeds[i], wheelMotors[i].getCurrentPosition(), deltaWheelMotorSteps[i]);
+            ret += String.format("\nWheel %d :: v=%+1.2f  steps=%+5d  delta steps=%+3d", i, wheelSpeeds[i], wheelMotors[i].getCurrentPosition(), deltaWheelMotorSteps[i]);
         }
 
         return ret;
     }
 
     private float getRawRotation() {
-        switch(rotation_axis) {
-            case 1: return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
-            case 2: return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle;
-            case 3: return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
-            default: return 0.0f;
-        }
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        return (float) orientation.getYaw(AngleUnit.DEGREES);
     }
 
     private void calculateRotation() {
