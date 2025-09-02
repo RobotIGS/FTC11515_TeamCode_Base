@@ -32,7 +32,7 @@ public class MecanumChassis extends ChassisBase {
     private final double[][] backwardMatrix = {
             {+1, +1, +1, +1},
             {-1, +1, +1, -1},
-            {-1/(lx+ly), 1/(lx+ly), -1/(lx+ly), 1/(lx+ly)}
+            {(double) -1 /(lx+ly), (double) 1 /(lx+ly), (double) -1 /(lx+ly), (double) 1 /(lx+ly)}
     };
 
     /**
@@ -49,13 +49,6 @@ public class MecanumChassis extends ChassisBase {
         // save lx and ly
         this.lx = lx;
         this.ly = ly;
-    }
-
-    /**
-     * get squared mecanum chassis
-     */
-    public MecanumChassis(RevHubOrientationOnRobot hubOrientation) {
-        this(1,1, hubOrientation);
     }
 
     @Override

@@ -1,29 +1,15 @@
 package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import android.annotation.SuppressLint;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
-
-/*
-vx
-
-0.0+0.0
-    | +0.0 |
-    | +0.0 |
-    |  0.0 |
-+0.0+-----+ 0.0
- */
 
 //TODO add l_x, l_y
 public abstract class ChassisBase implements Chassis {
@@ -39,7 +25,6 @@ public abstract class ChassisBase implements Chassis {
     protected int[] deltaWheelMotorSteps;
     private double rotation_offset;
     private final Rotation rotation;
-    private int rotation_axis;
 
     // set default capabilities for any chassis
     protected ChassisCapabilities capabilities;
@@ -57,7 +42,6 @@ public abstract class ChassisBase implements Chassis {
         this.hubOrientationOnRobot = huborientation;
         rotation_offset = 0;
         rotation = new Rotation(0.0);
-        rotation_axis = 1;
 
         // drive stuff
         capabilities.setGetDrivenDistance(true);
@@ -132,13 +116,13 @@ public abstract class ChassisBase implements Chassis {
         return capabilities;
     }
 
+    @SuppressLint("DefaultLocale")
     public String debug() {
         String ret = "--- Chassis Debug ---\n";
         if (velocity != null)
             ret += String.format("velocity :: vx=%+1.2f vy=%+1.2f wz=%+1.2f", velocity.getVX(), velocity.getVY(), velocity.getWZ());
         if (drivenDistance != null)
-            ret += String.format(
-                "\ndrivenDistance :: x=%+2.2f y=%+2.2f", drivenDistance.getX(), drivenDistance.getY());
+            ret += String.format("\ndrivenDistance :: x=%+2.2f y=%+2.2f", drivenDistance.getX(), drivenDistance.getY());
         ret += String.format("\nrotation :: %+3.2f", getRotation());
 
         // add wheel debug

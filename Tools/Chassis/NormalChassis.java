@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
@@ -16,7 +15,7 @@ import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
  */
 
 public class NormalChassis extends ChassisBase {
-    private final double WHEELDIAMETER = 9.35; // wheel diameter in centimeters
+    private final double WHEELDIAMETER = 9.15; // wheel diameter in centimeters
     private final double ONE_OVER_R = 1/(WHEELDIAMETER/2);
     private final double R_OVER_4 = (WHEELDIAMETER/2)/4;
 

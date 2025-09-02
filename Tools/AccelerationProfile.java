@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Tools;
 import android.annotation.SuppressLint;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
-public class Profile {
+public class AccelerationProfile {
     protected Position2D endPosition;
     protected Position2D startPosition;
     protected Long startTime;
@@ -18,11 +18,11 @@ public class Profile {
 
     /**
      * create the acceleration profile
-     * @param accelerationDistance the distance after which the acceleration profile has reached 100%
+     * @param accelerationDistance_in_cm the distance after which the acceleration profile has reached 100%
      */
-    public Profile(double accelerationDistance, double accelerationTime) {
-        this.accelerationDistance = Math.abs(accelerationDistance);
-        this.accelerationTime = (long) accelerationTime*1000;
+    public AccelerationProfile(double accelerationDistance_in_cm, double accelerationTime_in_s) {
+        this.accelerationDistance = Math.abs(accelerationDistance_in_cm);
+        this.accelerationTime = (long) accelerationTime_in_s*1000;
     }
     /**
      * start the acceleration profile for a distance

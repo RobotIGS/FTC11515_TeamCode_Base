@@ -19,14 +19,14 @@ public class FieldNavigation {
 
     public PIDcontroller rotationPIDcontroller;
     private double autoVelFactor;
-    private Profile accProfile;
+    private AccelerationProfile accProfile;
     private double rotation_accuracy;
     public Position2D distance;
 
     private ChassisCapabilities chassisCapabilities;
 
     /**
-     * create new FieldNavigation object with given position
+     * create new FieldNavigation object with given position and pid controller for rotation
      * @param position position of the robot in CM
      * @param pidController PID Controller used for rotation
      */
@@ -44,14 +44,6 @@ public class FieldNavigation {
         this.accProfile = null;
         this.autoVelFactor = 1.0;
         keeprotation = false;
-    }
-
-    /**
-     * create new FieldNavigation object with given position and pid controller for rotation
-     * @param position position of the robot in CM
-     */
-    public FieldNavigation(Position2D position) {
-        this(position, new PIDcontroller(6e-3,2e-5,0.0));
     }
 
     /**
@@ -82,7 +74,7 @@ public class FieldNavigation {
      * set the acceleration profile
      * @param accProfile the acceleration profile or null to deactivate
      */
-    public void setProfile(Profile accProfile) {
+    public void setProfile(AccelerationProfile accProfile) {
         this.accProfile = accProfile;
     }
 

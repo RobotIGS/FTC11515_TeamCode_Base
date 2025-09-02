@@ -4,9 +4,10 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.Tools.Chassis.Chassis;
 import org.firstinspires.ftc.teamcode.Tools.Chassis.MecanumChassis;
-import org.firstinspires.ftc.teamcode.Tools.Chassis.NormalChassis;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.FieldNavigation;
+import org.firstinspires.ftc.teamcode.Tools.AccelerationProfile;
+import org.firstinspires.ftc.teamcode.Tools.PIDcontroller;
 import org.firstinspires.ftc.teamcode.Tools.Robot;
 
 public class HwMap {
@@ -14,6 +15,7 @@ public class HwMap {
     public Robot robot;
     public FieldNavigation navi;
     public Chassis chassis;
+    public AccelerationProfile accelerationProfile;
 
     /* PLACE YOUR HARDWARE INTERFACES DOWN BELOW */
 
@@ -36,12 +38,18 @@ public class HwMap {
      */
     public void initialize(HardwareMap hardwareMap) {
         // get chassis
-        chassis = new MecanumChassis(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)); // most likely your chassis is a mecanumwheel driven chassis
+        chassis = new MecanumChassis(1, 1, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)); // most likely your chassis is a mecanumwheel driven chassis
         chassis.populateMotorArray(hardwareMap); // uses hardwareMap.get(...) to get motor interfaces as defined in the used chassis class
         chassis.setRotation(0.0f); // start rotation is 0 degrees
 
         // get field navigator
-        navi = new FieldNavigation(new Position2D(0.0, 0.0)); // start position is (0|0)
+        navi = new FieldNavigation(new Position2D(0.0, 0.0), new PIDcontroller(0.006,0.00002,0.0)); // start position is (0|0)
+        this.accelerationProfile = new AccelerationProfile(50, 1.5); // create an acceleration profile for better location resolution
+        navi.setProfile(accelerationProfile);
+        navi.setAutoVelFactor(this.speed_normal);
+        navi.setRotationAccuracy(this.rotation_accuracy);
+        navi.setDrivingAccuracy(this.driving_accuracy);
+        navi.setKeepRotation(false);
 
         // get robot api object
         robot = new Robot(navi, chassis);

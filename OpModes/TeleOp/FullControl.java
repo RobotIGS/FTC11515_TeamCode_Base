@@ -66,6 +66,7 @@ public class FullControl extends BaseTeleOp {
         telemetry.addLine();
         telemetry.addLine(hwMap.chassis.debug());
         telemetry.addLine(hwMap.navi.debug());
+        telemetry.addLine(hwMap.accelerationProfile.debug());
         telemetry.update();
     }
 }

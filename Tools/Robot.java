@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 public class Robot {
     public FieldNavigation navi;
     public Chassis chassis;
-    protected Profile profile;
+    protected AccelerationProfile accelerationProfile;
 
     /**
      * create Robot object
@@ -25,16 +25,16 @@ public class Robot {
      * Set acceleration profile
      * @param p new acceleration profile
      */
-    public void setProfile(Profile p) {
-        profile = p;
+    public void setAccelerationProfile(AccelerationProfile p) {
+        accelerationProfile = p;
     }
 
     /**
      * get current acceleration profile
      * @return the current acceleration profile
      */
-    public Profile getProfile() {
-        return profile;
+    public AccelerationProfile getAccelerationProfile() {
+        return accelerationProfile;
     }
 
     /**

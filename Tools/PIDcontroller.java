@@ -9,7 +9,7 @@ public class PIDcontroller {
     double pid_value;
 
     /**
-     * creat a PID controller (see WIKIPEDIA PID controller)
+     * create a PID controller (see WIKIPEDIA PID controller)
      * @param p proportional factor
      * @param i integral factor
      * @param d derivative factor
