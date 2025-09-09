@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
  */
 
 public class MecanumChassis extends ChassisBase {
-    private final double WHEELDIAMETER = 10; // wheel diameter in centimeters
+    private final double WHEELDIAMETER = 10.4; // wheel diameter in centimeters
     private final double ONE_OVER_R = 1/(WHEELDIAMETER/2);
     private final double R_OVER_4 = (WHEELDIAMETER/2)/4;
     private int lx = 1;
@@ -46,7 +46,9 @@ public class MecanumChassis extends ChassisBase {
         // allow sideways motion
         capabilities.setDriveSideways(true);
 
-        // save lx and ly
+        // lx und ly sind geometrische Parameter des Mecanum-Chassis, die den Abstand zwischen den Radachsen und dem Mittelpunkt des Roboters festlegen.
+        // lx: Der seitliche Abstand (in der X-Richtung) von der Mitte des Roboters zu jedem Rad; oft als halbe Distanz zwischen Vorder- und Hinterachse angegeben.
+        // ly: Der Abstand in Fahrtrichtung (Y-Richtung) von der Mitte des Roboters zu jedem Rad; meist halbe Distanz zwischen linker und rechter Seite des Chassis.
         this.lx = lx;
         this.ly = ly;
     }

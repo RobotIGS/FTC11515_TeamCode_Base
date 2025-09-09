@@ -21,7 +21,7 @@ public class AutonomeTestQuadrat extends BaseAutonomous {
     }
 
     void schleife() {
-        while (opModeIsActive() && hwMap.navi.getDriving()) {
+        while (opModeIsActive() && hwMap.navi.getDriving_to_position()) {
             hwMap.robot.step();
             telemetry.addLine(hwMap.navi.debug());
             telemetry.addLine(hwMap.chassis.debug());

@@ -23,6 +23,7 @@ public class AccelerationProfile {
     public AccelerationProfile(double accelerationDistance_in_cm, double accelerationTime_in_s) {
         this.accelerationDistance = Math.abs(accelerationDistance_in_cm);
         this.accelerationTime = (long) accelerationTime_in_s*1000;
+        this.startTime = System.currentTimeMillis();
     }
     /**
      * start the acceleration profile for a distance

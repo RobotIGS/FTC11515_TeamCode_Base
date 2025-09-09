@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
 public class FieldNavigation {
-    private boolean driving;
+    private boolean driving_to_position;
     private boolean keeprotation;
 
     private Position2D position;
@@ -31,7 +31,7 @@ public class FieldNavigation {
      * @param pidController PID Controller used for rotation
      */
     public FieldNavigation(Position2D position, PIDcontroller pidController) {
-        this.driving = false;
+        this.driving_to_position = false;
         this.position = position;
         this.rotation = new Rotation(0.0);
         this.target_rotation = new Rotation(0.0);
@@ -50,8 +50,8 @@ public class FieldNavigation {
      * return if the robot is currently driving
      * @return is driving
      */
-    public boolean getDriving() {
-        return driving;
+    public boolean getDriving_to_position() {
+        return driving_to_position;
     }
 
     /**
@@ -91,7 +91,7 @@ public class FieldNavigation {
      * @param p target position
      */
     public void drive_pos(Position2D p) {
-        this.driving = true;
+        this.driving_to_position = true;
         this.target_position = p;
 
         // start the acceleration profile
@@ -201,8 +201,8 @@ public class FieldNavigation {
      * @param wz rotation speed (+ => turn left)
      */
     public void drive_speed(double vx, double vy, double wz){
-        if (driving)
-           driving = false;
+        if (driving_to_position)
+           driving_to_position = false;
 
         this.velocity.set(vx,vy,wz);
     }
@@ -214,9 +214,9 @@ public class FieldNavigation {
 
     @SuppressLint("DefaultLocale")
     public String debug() {
-        String ret = "--- FieldNavigation Debug ---\n";
+        String ret = "\n--- FieldNavigation Debug ---\n";
         ret += String.format("driving :: %s\ntarget position :: x=%+3.1f y=%+3.1f rot=%+3.1f\n",
-                (this.driving?"True":"False"), target_position.getX(), target_position.getY(), target_rotation.get());
+                (this.driving_to_position ?"True":"False"), target_position.getX(), target_position.getY(), target_rotation.get());
         ret += String.format("distance :: x=%+3.1f %+3.1f\n", this.distance.getX(), this.distance.getY());
         ret += String.format("position :: x=%+3.1f y=%+3.1f rot=%+3.1f\n",
                 position.getX(), position.getY(), rotation.get());
@@ -234,7 +234,7 @@ public class FieldNavigation {
      * refresh
      */
     public void step() {
-        if (driving) {
+        if (driving_to_position) {
             // calculate the distance to the target position
             this.distance = target_position.copy();
             this.distance.subtract(position);

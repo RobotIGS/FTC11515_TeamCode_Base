@@ -55,6 +55,7 @@ public abstract class ChassisBase implements Chassis {
         deltaWheelMotorSteps = new int[numWheels];
     }
 
+    @SuppressLint("DefaultLocale")
     public void populateMotorArray(HardwareMap hw_map) {
         for (int i = 0; i < this.wheelMotors.length; i++) {
             wheelMotors[i] = hw_map.get(DcMotor.class, String.format("wheelMotor_%d", i));
@@ -123,7 +124,7 @@ public abstract class ChassisBase implements Chassis {
             ret += String.format("velocity :: vx=%+1.2f vy=%+1.2f wz=%+1.2f", velocity.getVX(), velocity.getVY(), velocity.getWZ());
         if (drivenDistance != null)
             ret += String.format("\ndrivenDistance :: x=%+2.2f y=%+2.2f", drivenDistance.getX(), drivenDistance.getY());
-        ret += String.format("\nrotation :: %+3.2f", getRotation());
+            ret += String.format("\nrotation :: %+3.2f", getRotation());
 
         // add wheel debug
         for (int i=0; i<wheelMotors.length; i++) {
