@@ -29,7 +29,7 @@ public class HwMap {
 
     // autonomous values
     public final double driving_accuracy = 1.5;
-    public final float rotation_accuracy = 3.0f;
+    public final double rotation_accuracy = 3.0;
     /* END SECTION */
 
     /**
@@ -38,13 +38,13 @@ public class HwMap {
      */
     public void initialize(HardwareMap hardwareMap) {
         // get chassis
-        chassis = new MecanumChassis(1, 1, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)); // most likely your chassis is a mecanumwheel driven chassis
+        chassis = new MecanumChassis(2, 1, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.FORWARD, RevHubOrientationOnRobot.UsbFacingDirection.LEFT)); // most likely your chassis is a mecanumwheel driven chassis
         chassis.populateMotorArray(hardwareMap); // uses hardwareMap.get(...) to get motor interfaces as defined in the used chassis class
-        chassis.setRotation(0.0f); // start rotation is 0 degrees
+        chassis.setRotation(0.0); // start rotation is 0 degrees
 
         // get field navigator
-        navi = new FieldNavigation(new Position2D(0.0, 0.0), new PIDcontroller(0.006,0.00002,0.0)); // start position is (0|0)
-        this.accelerationProfile = new AccelerationProfile(50, 1.5); // create an acceleration profile for better location resolution
+        navi = new FieldNavigation(new Position2D(0.0, 0.0), new PIDcontroller(0.001,0.001,0.0)); // start position is (0|0)
+        this.accelerationProfile = new AccelerationProfile(50, 1); // create an acceleration profile for better location resolution
         navi.setProfile(accelerationProfile);
         navi.setAutoVelFactor(this.speed_normal);
         navi.setRotationAccuracy(this.rotation_accuracy);

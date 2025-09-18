@@ -214,19 +214,21 @@ public class FieldNavigation {
 
     @SuppressLint("DefaultLocale")
     public String debug() {
-        String ret = "\n--- FieldNavigation Debug ---\n";
-        ret += String.format("driving :: %s\ntarget position :: x=%+3.1f y=%+3.1f rot=%+3.1f\n",
+        String ret = "--- FieldNavigation Debug ---\n";
+        ret += String.format("driving : %s\ntarget position :: x=%+3.1f y=%+3.1f rot=%+3.1f\n",
                 (this.driving_to_position ?"True":"False"), target_position.getX(), target_position.getY(), target_rotation.get());
-        ret += String.format("distance :: x=%+3.1f %+3.1f\n", this.distance.getX(), this.distance.getY());
-        ret += String.format("position :: x=%+3.1f y=%+3.1f rot=%+3.1f\n",
+        ret += String.format("distance : x=%+3.1f %+3.1f\n", this.distance.getX(), this.distance.getY());
+        ret += String.format("position : x=%+3.1f y=%+3.1f rot=%+3.1f\n",
                 position.getX(), position.getY(), rotation.get());
-        ret += String.format("velocity :: x=%+1.2f y=%+1.2f wz=%+1.2f\n",
+        ret += String.format("velocity : x=%+1.2f y=%+1.2f wz=%+1.2f\n",
                 velocity.getVX(), velocity.getVY(), velocity.getWZ());
 
         Rotation rotation_error = new Rotation(target_rotation.get());
         rotation_error.add(-rotation.get());
         ret += String.format("rotation error : %f\n", rotation_error.get());
         ret += String.format("pid value : %f\n", rotationPIDcontroller.pid_value);
+        ret += String.format("integral : %f\n", rotationPIDcontroller.integral);
+        ret += String.format("last_error : %f\n", rotationPIDcontroller.last_error);
         return ret;
     }
 

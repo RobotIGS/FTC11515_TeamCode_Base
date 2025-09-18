@@ -53,11 +53,11 @@ public class Robot {
      * @param rel interpret d as a relative position
      */
     public void drive(Position2D d, boolean rel) {
+        navi.rotationPIDcontroller.reset(); // reset pid controller before usage
         if (rel)
             navi.drive_rel(d);
         else
             navi.drive_pos(d);
-        navi.rotationPIDcontroller.reset();
     }
 
     /**

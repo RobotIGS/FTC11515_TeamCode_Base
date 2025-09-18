@@ -121,14 +121,14 @@ public abstract class ChassisBase implements Chassis {
     public String debug() {
         String ret = "--- Chassis Debug ---\n";
         if (velocity != null)
-            ret += String.format("velocity :: vx=%+1.2f vy=%+1.2f wz=%+1.2f", velocity.getVX(), velocity.getVY(), velocity.getWZ());
+            ret += String.format("velocity : vx=%+1.2f vy=%+1.2f wz=%+1.2f\n", velocity.getVX(), velocity.getVY(), velocity.getWZ());
         if (drivenDistance != null)
-            ret += String.format("\ndrivenDistance :: x=%+2.2f y=%+2.2f", drivenDistance.getX(), drivenDistance.getY());
-            ret += String.format("\nrotation :: %+3.2f", getRotation());
+            ret += String.format("drivenDistance : x=%+2.2f y=%+2.2f\n", drivenDistance.getX(), drivenDistance.getY());
+        ret += String.format("rotation : %+3.2f\n", getRotation());
 
         // add wheel debug
         for (int i=0; i<wheelMotors.length; i++) {
-            ret += String.format("\nWheel %d :: v=%+1.2f  steps=%+5d  delta steps=%+3d", i, wheelSpeeds[i], wheelMotors[i].getCurrentPosition(), deltaWheelMotorSteps[i]);
+            ret += String.format("Wheel %d : v=%+1.2f  steps=%+5d  delta steps=%+3d\n", i, wheelSpeeds[i], wheelMotors[i].getCurrentPosition(), deltaWheelMotorSteps[i]);
         }
 
         return ret;

@@ -61,12 +61,10 @@ public class FullControl extends BaseTeleOp {
 
         /* ADD TELEMETRY FOR DRIVER DOWN BELOW */
         telemetry.addData("SNEAK", drive_sneak);
-
-        /* END SECTION */
         telemetry.addLine();
         telemetry.addLine(hwMap.chassis.debug());
         telemetry.addLine(hwMap.navi.debug());
-        telemetry.addLine(hwMap.accelerationProfile.debug());
         telemetry.update();
+        /* END SECTION */
     }
 }

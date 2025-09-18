@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
 public class PIDcontroller {
-    private final double k_p;
-    private final double k_i;
-    private final double k_d;
-    private double integral;
-    private double last_error;
+    double k_p;
+    double k_i;
+    double k_d;
+    double integral;
+    double last_error;
     double pid_value;
 
     /**

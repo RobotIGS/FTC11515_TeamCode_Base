@@ -14,9 +14,10 @@ public class AutonomeTestQuadrat extends BaseAutonomous {
         for(int i = 0; i<4; i++) {
             hwMap.robot.drive(new Position2D(100,0));
             schleife();
-            hwMap.robot.rotate(40);
+            sleep(500);
+            hwMap.robot.rotate(90);
             schleife();
-            sleep(1000);
+            sleep(500);
         }
     }
 
@@ -25,6 +26,7 @@ public class AutonomeTestQuadrat extends BaseAutonomous {
             hwMap.robot.step();
             telemetry.addLine(hwMap.navi.debug());
             telemetry.addLine(hwMap.chassis.debug());
+            telemetry.addLine(hwMap.accelerationProfile.debug());
             telemetry.update();
         }
     }

@@ -18,10 +18,10 @@ public class AccelerationProfile {
 
     /**
      * create the acceleration profile
-     * @param accelerationDistance_in_cm the distance after which the acceleration profile has reached 100%
+     * @param deaccelerationDistance_in_cm the distance after which the acceleration profile has reached 100%
      */
-    public AccelerationProfile(double accelerationDistance_in_cm, double accelerationTime_in_s) {
-        this.accelerationDistance = Math.abs(accelerationDistance_in_cm);
+    public AccelerationProfile(double deaccelerationDistance_in_cm, double accelerationTime_in_s) {
+        this.accelerationDistance = Math.abs(deaccelerationDistance_in_cm);
         this.accelerationTime = (long) accelerationTime_in_s*1000;
         this.startTime = System.currentTimeMillis();
     }
@@ -61,7 +61,7 @@ public class AccelerationProfile {
         // acceleration
         else {
             double x = (System.currentTimeMillis()-startTime)/accelerationTime;
-            accelerationFactor = (x<=1)? -x * (x-2) : 1.0; // calculate the parabola only for x smaller 1
+            accelerationFactor = (x<1) ? -x * (x-2) : 1.0; // calculate the parabola only for x smaller 1
         }
 
         // keep factor in domain
@@ -77,11 +77,11 @@ public class AccelerationProfile {
     @SuppressLint("DefaultLocale")
     public String debug(){
         String ret = "--- Acceleration Profile Debug ---\n";
-        ret += String.format(" value :: %+.4f\n", (accelerationFactor));
-        ret += String.format(" distance :: %+.4f\n", (distance));
-        ret += String.format(" distanceTOSTART :: %+.4f\n", (distanceToStart));
-        ret += String.format(" distanceTOEND :: %+.4f\n", (distanceToEnd));
-        ret += String.format(" time :: %d\n", (System.currentTimeMillis()-startTime));
+        ret += String.format(" value : %+.4f\n", (accelerationFactor));
+        ret += String.format(" distance : %+.4f\n", (distance));
+        ret += String.format(" distanceTOSTART : %+.4f\n", (distanceToStart));
+        ret += String.format(" distanceTOEND : %+.4f\n", (distanceToEnd));
+        ret += String.format(" time : %d\n", (System.currentTimeMillis()-startTime));
         return ret;
     }
 }
