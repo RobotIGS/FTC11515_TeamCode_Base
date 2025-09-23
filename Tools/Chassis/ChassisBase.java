@@ -1,33 +1,33 @@
 package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
 import android.annotation.SuppressLint;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
 //TODO add l_x, l_y
 public abstract class ChassisBase implements Chassis {
+    private final DcMotor[] wheelMotors;
+    private final int[] wheelMotorSteps;
+    private final Rotation rotation;
     protected IMU imu;
     protected RevHubOrientationOnRobot hubOrientationOnRobot;
-
-    protected  Velocity velocity;
+    protected Velocity velocity;
     protected Position2D drivenDistance;
     protected double[] wheelSpeeds;
     protected double[] wheelSpeedsFactors;
-    private final DcMotor[] wheelMotors;
-    private final int[] wheelMotorSteps;
     protected int[] deltaWheelMotorSteps;
-    private double rotation_offset;
-    private final Rotation rotation;
-
     // set default capabilities for any chassis
     protected ChassisCapabilities capabilities;
+    private double rotation_offset;
 
     /**
      * create chassis
@@ -67,7 +67,7 @@ public abstract class ChassisBase implements Chassis {
             deltaWheelMotorSteps[i] = wheelMotorSteps[i];
         }
 
-        imu = hw_map.get(IMU.class,"imu");
+        imu = hw_map.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(this.hubOrientationOnRobot));
         setRotation(0.0f);
     }
@@ -98,19 +98,19 @@ public abstract class ChassisBase implements Chassis {
 
     private void updateMotorSteps() {
         int steps;
-        for (int i=0; i<deltaWheelMotorSteps.length; i++) {
+        for (int i = 0; i < deltaWheelMotorSteps.length; i++) {
             steps = wheelMotors[i].getCurrentPosition();
             deltaWheelMotorSteps[i] = steps - wheelMotorSteps[i];
             wheelMotorSteps[i] = steps;
         }
     }
 
-    public void setRotation(double rotation) {
-        rotation_offset = -getRawRotation() + rotation;
-    }
-
     public double getRotation() {
         return rotation.get();
+    }
+
+    public void setRotation(double rotation) {
+        rotation_offset = -getRawRotation() + rotation;
     }
 
     public ChassisCapabilities getCapabilities() {
@@ -127,7 +127,7 @@ public abstract class ChassisBase implements Chassis {
         ret += String.format("rotation : %+3.2f\n", getRotation());
 
         // add wheel debug
-        for (int i=0; i<wheelMotors.length; i++) {
+        for (int i = 0; i < wheelMotors.length; i++) {
             ret += String.format("Wheel %d : v=%+1.2f  steps=%+5d  delta steps=%+3d\n", i, wheelSpeeds[i], wheelMotors[i].getCurrentPosition(), deltaWheelMotorSteps[i]);
         }
 

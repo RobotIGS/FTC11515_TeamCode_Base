@@ -6,10 +6,11 @@ public class Position2D {
 
     /**
      * create position object
+     *
      * @param x x value
      * @param y y value
      */
-    public Position2D(double x, double y){
+    public Position2D(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -21,26 +22,37 @@ public class Position2D {
         this(0.0, 0.0);
     }
 
-    public void add(Position2D pos){
+    public void add(Position2D pos) {
         this.x += pos.x;
         this.y += pos.y;
     }
 
-    public void subtract(Position2D pos){
+    public void subtract(Position2D pos) {
         this.x -= pos.x;
         this.y -= pos.y;
     }
 
     /**
      * get x position
+     *
      * @return x position
      */
-    public double getX(){
+    public double getX() {
         return x;
     }
 
     /**
+     * set x position
+     *
+     * @param x x position
+     */
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    /**
      * get y position
+     *
      * @return y position
      */
     public double getY() {
@@ -48,23 +60,17 @@ public class Position2D {
     }
 
     /**
-     * set x position
-     * @param x x position
-     */
-    public void setX(double x){
-        this.x = x;
-    }
-
-    /**
      * set y position
+     *
      * @param y y position
      */
-    public void setY(double y){
+    public void setY(double y) {
         this.y = y;
     }
 
     /**
      * set x,y position
+     *
      * @param x x position
      * @param y y position
      */
@@ -75,9 +81,10 @@ public class Position2D {
 
     /**
      * rotate position around origin
+     *
      * @param alpha rotation angle (mathematical positive)
      */
-    public void rotate(double alpha){
+    public void rotate(double alpha) {
         // see rotation matrix
         double sin = Math.sin(Math.toRadians(alpha));
         double cos = Math.cos(Math.toRadians(alpha));
@@ -89,14 +96,16 @@ public class Position2D {
 
     /**
      * return absolute value
+     *
      * @return get absolute distance
      */
     public double getAbsolute() {
-        return Math.sqrt(Math.pow(this.x,2) + Math.pow(this.y,2));
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
 
     /**
      * copy position object
+     *
      * @return copy of object
      */
     public Position2D copy() {
@@ -105,6 +114,7 @@ public class Position2D {
 
     /**
      * normalize position (absolute value = 1)
+     *
      * @return normalized copy
      */
     public Position2D getNormalization() {
@@ -112,17 +122,17 @@ public class Position2D {
         if (this.x == 0.0 && this.y == 0.0)
             return copy();
 
-        // one dim
+            // one dim
         else if (this.x == 0.0)
-            return new Position2D(0.0,this.y>0?1.0:-1.0);
+            return new Position2D(0.0, this.y > 0 ? 1.0 : -1.0);
         else if (this.y == 0.0)
-            return new Position2D(this.x>0?1.0:-1.0,0.0);
+            return new Position2D(this.x > 0 ? 1.0 : -1.0, 0.0);
 
         // normalize
         double alpha = Math.atan(this.y / this.x);
         return new Position2D(
-                (this.x/Math.abs(this.x)) * Math.cos(alpha),
-                (this.x/Math.abs(this.x)) * Math.sin(alpha)
+                (this.x / Math.abs(this.x)) * Math.cos(alpha),
+                (this.x / Math.abs(this.x)) * Math.sin(alpha)
         );
     }
 }

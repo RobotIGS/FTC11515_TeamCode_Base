@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode.OpModes.Testing;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BaseTeleOp;
+
 @TeleOp(name = "Gyro Test", group = "TESTING")
 //@Disabled
 public class GyroTest extends BaseTeleOp {
@@ -24,7 +24,7 @@ public class GyroTest extends BaseTeleOp {
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-        imu = hardwareMap.get(BNO055IMU.class,"imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
     }
 
@@ -41,5 +41,6 @@ public class GyroTest extends BaseTeleOp {
     }
 
     @Override
-    public void end() {}
+    public void end() {
+    }
 }

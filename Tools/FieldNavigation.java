@@ -1,33 +1,32 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
 import android.annotation.SuppressLint;
+
 import org.firstinspires.ftc.teamcode.Tools.Chassis.ChassisCapabilities;
+import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
 public class FieldNavigation {
+    public PIDcontroller rotationPIDcontroller;
+    public Position2D distance;
     private boolean driving_to_position;
     private boolean keeprotation;
-
     private Position2D position;
-    private Rotation rotation;
+    private final Rotation rotation;
     private Position2D target_position;
-    private Rotation target_rotation;
+    private final Rotation target_rotation;
     private double driving_accuracy;
-    private Velocity velocity;
-
-    public PIDcontroller rotationPIDcontroller;
+    private final Velocity velocity;
     private double autoVelFactor;
     private AccelerationProfile accProfile;
     private double rotation_accuracy;
-    public Position2D distance;
-
     private ChassisCapabilities chassisCapabilities;
 
     /**
      * create new FieldNavigation object with given position and pid controller for rotation
-     * @param position position of the robot in CM
+     *
+     * @param position      position of the robot in CM
      * @param pidController PID Controller used for rotation
      */
     public FieldNavigation(Position2D position, PIDcontroller pidController) {
@@ -48,6 +47,7 @@ public class FieldNavigation {
 
     /**
      * return if the robot is currently driving
+     *
      * @return is driving
      */
     public boolean getDriving_to_position() {
@@ -56,6 +56,7 @@ public class FieldNavigation {
 
     /**
      * set driving accuracy
+     *
      * @param accu accuracy in CM
      */
     public void setDrivingAccuracy(double accu) {
@@ -64,6 +65,7 @@ public class FieldNavigation {
 
     /**
      * set rotating accuracy
+     *
      * @param accu accuracy in degrees
      */
     public void setRotationAccuracy(double accu) {
@@ -72,6 +74,7 @@ public class FieldNavigation {
 
     /**
      * set the acceleration profile
+     *
      * @param accProfile the acceleration profile or null to deactivate
      */
     public void setProfile(AccelerationProfile accProfile) {
@@ -80,6 +83,7 @@ public class FieldNavigation {
 
     /**
      * give the filed navigator the capabilities of the used chassis
+     *
      * @param capabilities the capabilities of the chassis
      */
     public void setChassisCapabilities(ChassisCapabilities capabilities) {
@@ -88,6 +92,7 @@ public class FieldNavigation {
 
     /**
      * drive to position
+     *
      * @param p target position
      */
     public void drive_pos(Position2D p) {
@@ -100,6 +105,7 @@ public class FieldNavigation {
 
     /**
      * drive a relative distance
+     *
      * @param d relative target position
      */
     public void drive_rel(Position2D d) {
@@ -110,6 +116,7 @@ public class FieldNavigation {
 
     /**
      * get target velocity
+     *
      * @return target velocity
      */
     public Velocity getVelocity() {
@@ -118,14 +125,25 @@ public class FieldNavigation {
 
     /**
      * get current position
+     *
      * @return current position
      */
-    public Position2D getPosition(){
+    public Position2D getPosition() {
         return position;
     }
 
     /**
+     * set current position
+     *
+     * @param p position
+     */
+    public void setPosition(Position2D p) {
+        position = p;
+    }
+
+    /**
      * set current rotation
+     *
      * @param rot current rotation
      */
     public void setRotation(double rot) {
@@ -134,8 +152,9 @@ public class FieldNavigation {
 
     /**
      * set target rotation
+     *
      * @param rotation new target rotation or delta rotation
-     * @param rel specifies if rotation is relative
+     * @param rel      specifies if rotation is relative
      */
     public void setTargetRotation(double rotation, boolean rel) {
         if (rel)
@@ -146,39 +165,29 @@ public class FieldNavigation {
 
     /**
      * set the velocity factor used in the autonomous driving
+     *
      * @param velFactor the factor [0-1] (domain gets forced)
      */
     public void setAutoVelFactor(double velFactor) {
         this.autoVelFactor = Math.min(1, Math.abs(velFactor));
     }
 
+    public double getTargetRotation() {
+        return target_rotation.get();
+    }
+
     /**
      * set target rotation relative
+     *
      * @param rotation delta rotation
      */
     public void setTargetRotation(double rotation) {
         setTargetRotation(rotation, true);
     }
 
-    public double getTargetRotation() {
-        return target_rotation.get();
-    }
-    /**
-     * set current position
-     * @param p position
-     */
-    public void setPosition(Position2D p) {
-        position = p;
-    }
-
-    /**
-     * set if the robot should keep the target rotation
-     * @param keep whether the rotation has to be kept
-     */
-    public void setKeepRotation(boolean keep) {keeprotation = keep;}
-
     /**
      * get keep rotation
+     *
      * @return true = keep rotation
      */
     public boolean getKeepRotation() {
@@ -186,7 +195,17 @@ public class FieldNavigation {
     }
 
     /**
+     * set if the robot should keep the target rotation
+     *
+     * @param keep whether the rotation has to be kept
+     */
+    public void setKeepRotation(boolean keep) {
+        keeprotation = keep;
+    }
+
+    /**
      * calculate current position utilising the driven distance since the last refresh
+     *
      * @param d the driven distance
      */
     public void addDrivenDistance(Position2D d) {
@@ -196,28 +215,29 @@ public class FieldNavigation {
 
     /**
      * manual drive
+     *
      * @param vx forward speed (+ => forward)
      * @param vy sideways speed (+ => left)
      * @param wz rotation speed (+ => turn left)
      */
-    public void drive_speed(double vx, double vy, double wz){
+    public void drive_speed(double vx, double vy, double wz) {
         if (driving_to_position)
-           driving_to_position = false;
+            driving_to_position = false;
 
-        this.velocity.set(vx,vy,wz);
+        this.velocity.set(vx, vy, wz);
     }
 
-    public void stop(){
-        drive_speed(0.0,0.0,0.0);
+    public void stop() {
+        drive_speed(0.0, 0.0, 0.0);
     }
 
 
     @SuppressLint("DefaultLocale")
     public String debug() {
         String ret = "--- FieldNavigation Debug ---\n";
-        ret += String.format("driving : %s\ntarget position :: x=%+3.1f y=%+3.1f rot=%+3.1f\n",
-                (this.driving_to_position ?"True":"False"), target_position.getX(), target_position.getY(), target_rotation.get());
-        ret += String.format("distance : x=%+3.1f %+3.1f\n", this.distance.getX(), this.distance.getY());
+        ret += String.format("driving : %s\ntarget position : x=%+3.1f y=%+3.1f rot=%+3.1f\n",
+                (this.driving_to_position ? "True" : "False"), target_position.getX(), target_position.getY(), target_rotation.get());
+        ret += String.format("distance : x=%+3.1f y=%+3.1f\n", this.distance.getX(), this.distance.getY());
         ret += String.format("position : x=%+3.1f y=%+3.1f rot=%+3.1f\n",
                 position.getX(), position.getY(), rotation.get());
         ret += String.format("velocity : x=%+1.2f y=%+1.2f wz=%+1.2f\n",
@@ -258,12 +278,13 @@ public class FieldNavigation {
                             && Math.abs(rotation_error.get()) <= rotation_accuracy))
                 stop();
 
-            // if sideways is allowed : just drive in the direction and rotate
+                // if sideways is allowed : just drive in the direction and rotate
             else if (chassisCapabilities.getDriveSideways()) {
                 velocity.set(
                         distance.getX() * velFactor,
                         distance.getY() * velFactor,
-                        keeprotation ? rotationPIDcontroller.step(rotation_error.get()): 0.0);
+                        keeprotation ? rotationPIDcontroller.step(rotation_error.get() / 180) : 0.0
+                );
             }
 
             // just drive forward in the direction and rotate to the target
@@ -278,7 +299,7 @@ public class FieldNavigation {
                 velocity.set(
                         distance.getX() * velFactor,
                         0.0,
-                        rotationPIDcontroller.step(rotation_error.get())
+                        rotationPIDcontroller.step(rotation_error.get() / 180)
                 );
             }
         }

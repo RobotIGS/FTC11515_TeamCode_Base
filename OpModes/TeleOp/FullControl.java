@@ -2,10 +2,15 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Tools.Gegensteuern;
+
 @TeleOp(name = "FullControl", group = "FTC")
 public class FullControl extends BaseTeleOp {
     /* ADD VARIABLES ONLY USED IN FULL CONTROL */
-    protected boolean drive_sneak = false; // flag for storing the current speed mode
+    protected boolean drive_sneak = true; // flag for storing the current speed mode
+    double alt_left_stick_x;
+    double alt_left_stick_y;
+    double alt_div_trigger;
     /* END SECTION */
 
     @Override
@@ -35,25 +40,16 @@ public class FullControl extends BaseTeleOp {
             while ((gamepad1.left_bumper || gamepad1.right_bumper) && opModeIsActive()) {
             }
         }
-        if (gamepad1.a) { // rückwarts
-            hwMap.robot.setSpeed(
-                    -1 * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                    -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                    (gamepad1.left_trigger - gamepad1.right_trigger) *
-                            (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full));
-        } else if (gamepad1.b) { // vorwärts
-            hwMap.robot.setSpeed(
-                    1 * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                    -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                    (gamepad1.left_trigger - gamepad1.right_trigger) *
-                            (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full));
-        } else {
-            hwMap.robot.setSpeed(
-                    -gamepad1.left_stick_y * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                    -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                    (gamepad1.left_trigger - gamepad1.right_trigger) *
-                            (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full));
-        }
+        hwMap.robot.setSpeed(
+                -Gegensteuern.gegensteuern(alt_left_stick_y, gamepad1.left_stick_y) * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
+                -Gegensteuern.gegensteuern(alt_left_stick_x, gamepad1.left_stick_x) * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
+                Gegensteuern.gegensteuern(alt_div_trigger, (gamepad1.left_trigger - gamepad1.right_trigger)) *
+                        (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full));
+
+        // Werte speichern
+        alt_left_stick_x = gamepad1.left_stick_x;
+        alt_left_stick_y = gamepad1.left_stick_y;
+        alt_div_trigger = (gamepad1.left_trigger - gamepad1.right_trigger);
 
 
         /* UPDATE THE ROBOT */

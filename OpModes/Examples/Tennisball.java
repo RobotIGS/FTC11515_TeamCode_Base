@@ -7,13 +7,11 @@ import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BaseTeleOp;
 
 @TeleOp(name = "Tennisball", group = "FTC")
 public class Tennisball extends BaseTeleOp {
-    /* ADD VARIABLES ONLY USED IN FULL CONTROL */
-    protected boolean drive_sneak = false; // flag for storing the current speed mode
-
     public DcMotor motor_schuss_L;
     public DcMotor motor_schuss_R;
     public DcMotor motor_lagerung;
-
+    /* ADD VARIABLES ONLY USED IN FULL CONTROL */
+    protected boolean drive_sneak = false; // flag for storing the current speed mode
     int wert = 2375;
     /* END SECTION */
 
@@ -53,7 +51,8 @@ public class Tennisball extends BaseTeleOp {
         if (gamepad1.y) {
             motor_schuss_R.setPower(0.3);
             motor_schuss_L.setPower(-0.3);
-            while (gamepad1.y) {}
+            while (gamepad1.y) {
+            }
         } else {
             motor_schuss_R.setPower(0);
             motor_schuss_L.setPower(0);
@@ -61,7 +60,8 @@ public class Tennisball extends BaseTeleOp {
 
         if (gamepad1.x) {
             motor_lagerung.setTargetPosition(motor_lagerung.getCurrentPosition() - wert);
-            while (gamepad1.x) {}
+            while (gamepad1.x) {
+            }
         }
 
         /* END SECTION */

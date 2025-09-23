@@ -9,6 +9,7 @@ public abstract class BaseAutonomous extends LinearOpMode {
 
     /**
      * get the alliance color
+     *
      * @return return if the alliance color is red
      */
     public boolean isRed() {
@@ -25,7 +26,7 @@ public abstract class BaseAutonomous extends LinearOpMode {
 
         /* OVERWRITE VALUES SET BY hwMap.initialize() */
         /* END SECTION */
-    };
+    }
 
     /**
      * this gets executed when pressing the start button on the phone / driver hub

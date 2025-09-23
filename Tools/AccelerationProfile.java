@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
 import android.annotation.SuppressLint;
+
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
 public class AccelerationProfile {
@@ -18,17 +19,20 @@ public class AccelerationProfile {
 
     /**
      * create the acceleration profile
+     *
      * @param deaccelerationDistance_in_cm the distance after which the acceleration profile has reached 100%
      */
     public AccelerationProfile(double deaccelerationDistance_in_cm, double accelerationTime_in_s) {
         this.accelerationDistance = Math.abs(deaccelerationDistance_in_cm);
-        this.accelerationTime = (long) accelerationTime_in_s*1000;
+        this.accelerationTime = (long) accelerationTime_in_s * 1000;
         this.startTime = System.currentTimeMillis();
     }
+
     /**
      * start the acceleration profile for a distance
+     *
      * @param start the start position
-     * @param end the end position
+     * @param end   the end position
      */
     public void start(Position2D start, Position2D end) {
         this.startPosition = start.copy();
@@ -38,6 +42,7 @@ public class AccelerationProfile {
 
     /**
      * get the velocity factor of the acceleration profile
+     *
      * @param position The current position
      * @return the velocity factor in the range [0-1]
      */
@@ -56,12 +61,12 @@ public class AccelerationProfile {
 
         // deceleration
         if (distanceToStart > distanceToEnd) {
-            accelerationFactor = distanceToEnd/accelerationDistance;
+            accelerationFactor = distanceToEnd / accelerationDistance;
         }
         // acceleration
         else {
-            double x = (System.currentTimeMillis()-startTime)/accelerationTime;
-            accelerationFactor = (x<1) ? -x * (x-2) : 1.0; // calculate the parabola only for x smaller 1
+            double x = (System.currentTimeMillis() - startTime) / accelerationTime;
+            accelerationFactor = (x < 1) ? -x * (x - 2) : 1.0; // calculate the parabola only for x smaller 1
         }
 
         // keep factor in domain
@@ -70,18 +75,18 @@ public class AccelerationProfile {
         return accelerationFactor;
     }
 
-    public double get(){
+    public double get() {
         return accelerationFactor;
     }
 
     @SuppressLint("DefaultLocale")
-    public String debug(){
+    public String debug() {
         String ret = "--- Acceleration Profile Debug ---\n";
-        ret += String.format(" value : %+.4f\n", (accelerationFactor));
-        ret += String.format(" distance : %+.4f\n", (distance));
-        ret += String.format(" distanceTOSTART : %+.4f\n", (distanceToStart));
-        ret += String.format(" distanceTOEND : %+.4f\n", (distanceToEnd));
-        ret += String.format(" time : %d\n", (System.currentTimeMillis()-startTime));
+        ret += String.format("value : %+.4f\n", (accelerationFactor));
+        ret += String.format("distance : %+.4f\n", (distance));
+        ret += String.format("distanceToSTART : %+.4f\n", (distanceToStart));
+        ret += String.format("distanceToEND : %+.4f\n", (distanceToEnd));
+        ret += String.format("time : %d\n", (System.currentTimeMillis() - startTime));
         return ret;
     }
 }

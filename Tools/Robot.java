@@ -10,7 +10,8 @@ public class Robot {
 
     /**
      * create Robot object
-     * @param navi the field-navigator used for this robot
+     *
+     * @param navi    the field-navigator used for this robot
      * @param chassis the chassis of the robot
      */
     public Robot(FieldNavigation navi, Chassis chassis) {
@@ -22,15 +23,8 @@ public class Robot {
     }
 
     /**
-     * Set acceleration profile
-     * @param p new acceleration profile
-     */
-    public void setAccelerationProfile(AccelerationProfile p) {
-        accelerationProfile = p;
-    }
-
-    /**
      * get current acceleration profile
+     *
      * @return the current acceleration profile
      */
     public AccelerationProfile getAccelerationProfile() {
@@ -38,18 +32,29 @@ public class Robot {
     }
 
     /**
+     * Set acceleration profile
+     *
+     * @param p new acceleration profile
+     */
+    public void setAccelerationProfile(AccelerationProfile p) {
+        accelerationProfile = p;
+    }
+
+    /**
      * set robot speed not utilising the acceleration profile
+     *
      * @param vx forward speed (+ => forward)
      * @param vy sideways speed (+ => left)
      * @param wz rotation speed (+ => turn left)
      */
     public void setSpeed(double vx, double vy, double wz) {
-        navi.drive_speed(vx,vy,wz);
+        navi.drive_speed(vx, vy, wz);
     }
 
     /**
      * drive to position
-     * @param d relative or absolute target position
+     *
+     * @param d   relative or absolute target position
      * @param rel interpret d as a relative position
      */
     public void drive(Position2D d, boolean rel) {
@@ -62,6 +67,7 @@ public class Robot {
 
     /**
      * drive to relative position
+     *
      * @param d relative position
      */
     public void drive(Position2D d) {
@@ -70,8 +76,9 @@ public class Robot {
 
     /**
      * rotate the robot
+     *
      * @param rotation target rotation (relative if rel)
-     * @param rel specify if rotation is relative
+     * @param rel      specify if rotation is relative
      */
     public void rotate(float rotation, boolean rel) {
         navi.rotationPIDcontroller.reset(); // reset pid controller before usage
@@ -81,9 +88,12 @@ public class Robot {
 
     /**
      * rotate the robot relative
+     *
      * @param rotation target rotation (relative if rel)
      */
-    public void rotate(float rotation) { rotate(rotation, true); }
+    public void rotate(float rotation) {
+        rotate(rotation, true);
+    }
 
     /**
      * stop all

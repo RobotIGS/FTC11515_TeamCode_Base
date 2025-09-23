@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.teamcode.HwMap;
 
 public abstract class BaseTeleOp extends LinearOpMode {
@@ -9,7 +10,7 @@ public abstract class BaseTeleOp extends LinearOpMode {
     /**
      * this gets executed when pressing the init button on the phone / driver hub
      */
-    public void initialize(){
+    public void initialize() {
         // initialize the hardware map
         hwMap = new HwMap();
         hwMap.initialize(hardwareMap);

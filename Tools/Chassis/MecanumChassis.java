@@ -2,44 +2,44 @@ package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
+import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 
 /**
  * Robot:
- *
+ * <p>
  * W0+----+W1
- *   |    |
- *   |    |
+ * |    |
+ * |    |
  * W2+----+W3
- *
  */
 
 public class MecanumChassis extends ChassisBase {
     private final double WHEELDIAMETER = 10.4; // wheel diameter in centimeters
-    private final double ONE_OVER_R = 1/(WHEELDIAMETER/2);
-    private final double R_OVER_4 = (WHEELDIAMETER/2)/4;
+    private final double ONE_OVER_R = 1 / (WHEELDIAMETER / 2);
+    private final double R_OVER_4 = (WHEELDIAMETER / 2) / 4;
     private int lx = 1;
     private int ly = 1;
 
     // TODO: based on https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
     private final double[][] forwardMatrix = {
-            {+1, -1, -(lx+ly)},
-            {+1, +1, +(lx+ly)},
-            {+1, +1, -(lx+ly)},
-            {+1, -1, +(lx+ly)}
+            {+1, -1, -(lx + ly)},
+            {+1, +1, +(lx + ly)},
+            {+1, +1, -(lx + ly)},
+            {+1, -1, +(lx + ly)}
     };
     private final double[][] backwardMatrix = {
             {+1, +1, +1, +1},
             {-1, +1, +1, -1},
-            {(double) -1 /(lx+ly), (double) 1 /(lx+ly), (double) -1 /(lx+ly), (double) 1 /(lx+ly)}
+            {(double) -1 / (lx + ly), (double) 1 / (lx + ly), (double) -1 / (lx + ly), (double) 1 / (lx + ly)}
     };
 
     /**
      * get mecanum chassis
+     *
      * @param lx the sideways distance between wheel center and robot center
      * @param ly the forwards distance between wheel center and robot center
-      */
+     */
     public MecanumChassis(int lx, int ly, RevHubOrientationOnRobot hubOrientation) {
         super(4, hubOrientation);
 
@@ -58,11 +58,11 @@ public class MecanumChassis extends ChassisBase {
         super.setVelocity(velocity);
 
         // perform the calculation based on the matrix above
-        for (int i=0; i<4; i++) {
+        for (int i = 0; i < 4; i++) {
             wheelSpeeds[i] = ONE_OVER_R * (
-                    forwardMatrix[i][0] *  velocity.getVX() +
-                    forwardMatrix[i][1] * -velocity.getVY() +
-                    forwardMatrix[i][2] *  velocity.getWZ()
+                    forwardMatrix[i][0] * velocity.getVX() +
+                            forwardMatrix[i][1] * -velocity.getVY() +
+                            forwardMatrix[i][2] * velocity.getWZ()
             );
         }
 
@@ -89,7 +89,7 @@ public class MecanumChassis extends ChassisBase {
         deltaWheelMotorSteps[1] *= -1;
         deltaWheelMotorSteps[3] *= -1;
 
-        for (int i=0; i<4; i++) {
+        for (int i = 0; i < 4; i++) {
             dx += backwardMatrix[0][i] * deltaWheelMotorSteps[i];
             dy += backwardMatrix[1][i] * deltaWheelMotorSteps[i];
         }
@@ -104,6 +104,6 @@ public class MecanumChassis extends ChassisBase {
         dx *= 2 * Math.PI;
         dy *= -2 * Math.PI;
 
-        drivenDistance = new Position2D(dx,dy);
+        drivenDistance = new Position2D(dx, dy);
     }
 }

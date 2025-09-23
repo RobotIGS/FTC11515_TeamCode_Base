@@ -7,11 +7,10 @@ import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BaseTeleOp;
 
 @TeleOp(name = "Fußball", group = "FTC")
 public class Fußball extends BaseTeleOp {
-    /* ADD VARIABLES ONLY USED IN FULL CONTROL */
-    protected boolean drive_sneak = false; // flag for storing the current speed mode
-
     public DcMotor motor_schuss;
     public int wert = 5000;
+    /* ADD VARIABLES ONLY USED IN FULL CONTROL */
+    protected boolean drive_sneak = false; // flag for storing the current speed mode
     /* END SECTION */
 
     @Override
@@ -41,7 +40,8 @@ public class Fußball extends BaseTeleOp {
 
         if (gamepad1.y) {
             motor_schuss.setTargetPosition(motor_schuss.getCurrentPosition() + wert);
-            while (gamepad1.y) {}
+            while (gamepad1.y) {
+            }
         }
 
 //        if (gamepad2.left_trigger > 0) {

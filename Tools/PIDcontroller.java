@@ -10,6 +10,7 @@ public class PIDcontroller {
 
     /**
      * create a PID controller (see WIKIPEDIA PID controller)
+     *
      * @param p proportional factor
      * @param i integral factor
      * @param d derivative factor
@@ -25,6 +26,7 @@ public class PIDcontroller {
 
     /**
      * calculate the proportional part
+     *
      * @param error the error
      * @return proportional part
      */
@@ -34,6 +36,7 @@ public class PIDcontroller {
 
     /**
      * calculate and integrate the integral part
+     *
      * @param error the error
      * @return integral part
      */
@@ -44,6 +47,7 @@ public class PIDcontroller {
 
     /**
      * calculate the derivative part
+     *
      * @param error the error
      * @return derivative part
      */
@@ -62,17 +66,14 @@ public class PIDcontroller {
 
     /**
      * update the PID controller and calculate the result
+     *
      * @param error the system error
      * @return output of the PID controller
      */
     public double step(double error) {
-        pid_value = P(error) + I(error) + D(error); // sum up the three parts
         last_error = error; // remember the last error for later use
-        /*if (Math.abs(pid_value) > 1) {
-            pid_value = Math.max(Math.min(pid_value, 1), -1);
-            integral = 1;
-        }*/
-        return pid_value;
+        pid_value = P(error) + I(error) + D(error); // sum up the three parts
+        return Math.max(-1.0, Math.min(1.0, pid_value));
     }
 }
 
