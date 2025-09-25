@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Tools.DTypes;
 public class Rotation {
     private double rotation;
 
-    // range [-180;180]
+    // [-180;180]
     // POSITIVE ROTATION: nach links
     // NEGATIVE ROTATION: nach rechts
 

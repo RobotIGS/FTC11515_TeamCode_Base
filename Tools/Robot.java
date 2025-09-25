@@ -6,7 +6,6 @@ import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 public class Robot {
     public FieldNavigation navi;
     public Chassis chassis;
-    protected AccelerationProfile accelerationProfile;
 
     /**
      * create Robot object
@@ -20,24 +19,6 @@ public class Robot {
 
         // transmit the capabilities of the chassis
         this.navi.setChassisCapabilities(chassis.getCapabilities());
-    }
-
-    /**
-     * get current acceleration profile
-     *
-     * @return the current acceleration profile
-     */
-    public AccelerationProfile getAccelerationProfile() {
-        return accelerationProfile;
-    }
-
-    /**
-     * Set acceleration profile
-     *
-     * @param p new acceleration profile
-     */
-    public void setAccelerationProfile(AccelerationProfile p) {
-        accelerationProfile = p;
     }
 
     /**

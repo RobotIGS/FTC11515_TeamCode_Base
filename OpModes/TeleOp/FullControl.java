@@ -41,10 +41,10 @@ public class FullControl extends BaseTeleOp {
             }
         }
         hwMap.robot.setSpeed(
-                -Gegensteuern.gegensteuern(alt_left_stick_y, gamepad1.left_stick_y) * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                -Gegensteuern.gegensteuern(alt_left_stick_x, gamepad1.left_stick_x) * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
+                -Gegensteuern.gegensteuern(alt_left_stick_y, gamepad1.left_stick_y) * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
+                -Gegensteuern.gegensteuern(alt_left_stick_x, gamepad1.left_stick_x) * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
                 Gegensteuern.gegensteuern(alt_div_trigger, (gamepad1.left_trigger - gamepad1.right_trigger)) *
-                        (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full));
+                        (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal));
 
         // Werte speichern
         alt_left_stick_x = gamepad1.left_stick_x;

@@ -2,26 +2,25 @@ package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
+import org.firstinspires.ftc.teamcode.HwMap;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 
 /**
  * Robot:
- * <p>
  * W0+----+W1
- * |    |
- * |    |
+ * |        |
+ * |        |
  * W2+----+W3
  */
 
 public class MecanumChassis extends ChassisBase {
     private final double WHEELDIAMETER = 10.4; // wheel diameter in centimeters
     private final double ONE_OVER_R = 1 / (WHEELDIAMETER / 2);
-    private final double R_OVER_4 = (WHEELDIAMETER / 2) / 4;
     private int lx = 1;
     private int ly = 1;
 
-    // TODO: based on https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
+    // based on https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
     private final double[][] forwardMatrix = {
             {+1, -1, -(lx + ly)},
             {+1, +1, +(lx + ly)},
@@ -89,20 +88,21 @@ public class MecanumChassis extends ChassisBase {
         deltaWheelMotorSteps[1] *= -1;
         deltaWheelMotorSteps[3] *= -1;
 
+        // calculate steps
         for (int i = 0; i < 4; i++) {
             dx += backwardMatrix[0][i] * deltaWheelMotorSteps[i];
             dy += backwardMatrix[1][i] * deltaWheelMotorSteps[i];
         }
-        dx *= R_OVER_4;
-        dy *= R_OVER_4;
+        dx /= 4;
+        dy /= 4;
 
         // calculate rotations
-        dx /= 751.8;
-        dy /= 751.8;
+        dx /= HwMap.driving_encoder_steps_per_rotation;
+        dy /= HwMap.driving_encoder_steps_per_rotation;
 
         // calculate distance
-        dx *= 2 * Math.PI;
-        dy *= -2 * Math.PI;
+        dx *= 2 * Math.PI * (WHEELDIAMETER / 2);
+        dy *= -2 * Math.PI * (WHEELDIAMETER / 2);
 
         drivenDistance = new Position2D(dx, dy);
     }

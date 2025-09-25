@@ -2,22 +2,20 @@ package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
+import org.firstinspires.ftc.teamcode.HwMap;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 
 /**
  * Robot:
- * <p>
  * W0+----+W1
- * |    |
- * |    |
+ * |        |
+ * |        |
  * W3+----+W2
  */
 
 public class NormalChassis extends ChassisBase {
     private final double WHEELDIAMETER = 9.15; // wheel diameter in centimeters
-    private final double ONE_OVER_R = 1 / (WHEELDIAMETER / 2);
-    private final double R_OVER_4 = (WHEELDIAMETER / 2) / 4;
 
     public NormalChassis(RevHubOrientationOnRobot hubOrientation) {
         super(4, hubOrientation);
@@ -35,16 +33,16 @@ public class NormalChassis extends ChassisBase {
     public void step() {
         super.step();
 
-        // calculate driven distance
+        // calculate driven steps
         double dx = -deltaWheelMotorSteps[0] + deltaWheelMotorSteps[1] + deltaWheelMotorSteps[2] - deltaWheelMotorSteps[3];
 
-        dx *= R_OVER_4;
+        dx /= 4;
 
         // calculate rotations
-        dx /= 1478.4;
+        dx /= HwMap.driving_encoder_steps_per_rotation;
 
         // calculate distance
-        dx *= 2 * Math.PI;
+        dx *= 2 * Math.PI * (WHEELDIAMETER / 2);
 
         drivenDistance = new Position2D(dx, 0.0);
     }

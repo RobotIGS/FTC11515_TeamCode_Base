@@ -1,11 +1,12 @@
-package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
+package org.firstinspires.ftc.teamcode.OpModes.Autonomous.Examples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.OpModes.Autonomous.BaseAutonomous;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 
 @Autonomous(name = "Autonome Quadrat")
-public class AutonomeTestQuadrat extends BaseAutonomous {
+public class AutonomeQuadrat extends BaseAutonomous {
 
     @Override
     public void run() {
@@ -26,7 +27,7 @@ public class AutonomeTestQuadrat extends BaseAutonomous {
             hwMap.robot.step();
             telemetry.addLine(hwMap.navi.debug());
             telemetry.addLine(hwMap.chassis.debug());
-            telemetry.addLine(hwMap.accelerationProfile.debug());
+            telemetry.addLine(hwMap.navi.getAccProfile().debug());
             telemetry.update();
         }
     }

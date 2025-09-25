@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes.Examples;
+package org.firstinspires.ftc.teamcode.OpModes.TeleOp.Examples;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -62,22 +62,22 @@ public class Fußball extends BaseTeleOp {
         }
         if (gamepad1.a) { // rückwarts
             hwMap.robot.setSpeed(
-                    -1 * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                    -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
+                    -1 * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
+                    -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
                     (gamepad1.left_trigger - gamepad1.right_trigger) *
-                            (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full));
+                            (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal));
         } else if (gamepad1.b) { // vorwärts
             hwMap.robot.setSpeed(
-                    1 * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                    -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
+                    1 * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
+                    -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
                     (gamepad1.left_trigger - gamepad1.right_trigger) *
-                            (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full));
+                            (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal));
         } else {
             hwMap.robot.setSpeed(
-                    -gamepad1.left_stick_y * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
-                    -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full),
+                    -gamepad1.left_stick_y * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
+                    -gamepad1.right_stick_x * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
                     (gamepad1.left_trigger - gamepad1.right_trigger) *
-                            (drive_sneak ? hwMap.speed_sneak : hwMap.speed_full));
+                            (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal));
         }
 
 

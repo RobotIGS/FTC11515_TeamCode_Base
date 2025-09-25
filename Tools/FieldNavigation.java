@@ -8,16 +8,16 @@ import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 
 public class FieldNavigation {
+    private final Rotation rotation;
+    private final Rotation target_rotation;
+    private final Velocity velocity;
     public PIDcontroller rotationPIDcontroller;
     public Position2D distance;
     private boolean driving_to_position;
     private boolean keeprotation;
     private Position2D position;
-    private final Rotation rotation;
     private Position2D target_position;
-    private final Rotation target_rotation;
     private double driving_accuracy;
-    private final Velocity velocity;
     private double autoVelFactor;
     private AccelerationProfile accProfile;
     private double rotation_accuracy;
@@ -77,7 +77,7 @@ public class FieldNavigation {
      *
      * @param accProfile the acceleration profile or null to deactivate
      */
-    public void setProfile(AccelerationProfile accProfile) {
+    public void setAccelerationProfile(AccelerationProfile accProfile) {
         this.accProfile = accProfile;
     }
 
@@ -112,6 +112,10 @@ public class FieldNavigation {
         d.rotate(this.rotation.get());
         d.add(this.position);
         drive_pos(d);
+    }
+
+    public AccelerationProfile getAccProfile() {
+        return accProfile;
     }
 
     /**
@@ -234,17 +238,15 @@ public class FieldNavigation {
 
     @SuppressLint("DefaultLocale")
     public String debug() {
+        Rotation rotation_error = new Rotation(target_rotation.get());
+        rotation_error.add(-rotation.get());
+
         String ret = "--- FieldNavigation Debug ---\n";
         ret += String.format("driving : %s\ntarget position : x=%+3.1f y=%+3.1f rot=%+3.1f\n",
                 (this.driving_to_position ? "True" : "False"), target_position.getX(), target_position.getY(), target_rotation.get());
         ret += String.format("distance : x=%+3.1f y=%+3.1f\n", this.distance.getX(), this.distance.getY());
-        ret += String.format("position : x=%+3.1f y=%+3.1f rot=%+3.1f\n",
-                position.getX(), position.getY(), rotation.get());
-        ret += String.format("velocity : x=%+1.2f y=%+1.2f wz=%+1.2f\n",
-                velocity.getVX(), velocity.getVY(), velocity.getWZ());
-
-        Rotation rotation_error = new Rotation(target_rotation.get());
-        rotation_error.add(-rotation.get());
+        ret += String.format("position : x=%+3.1f y=%+3.1f rot=%+3.1f\n", position.getX(), position.getY(), rotation.get());
+        ret += String.format("velocity : x=%+1.2f y=%+1.2f wz=%+1.2f\n",velocity.getVX(), velocity.getVY(), velocity.getWZ());
         ret += String.format("rotation error : %f\n", rotation_error.get());
         ret += String.format("pid value : %f\n", rotationPIDcontroller.pid_value);
         ret += String.format("integral : %f\n", rotationPIDcontroller.integral);

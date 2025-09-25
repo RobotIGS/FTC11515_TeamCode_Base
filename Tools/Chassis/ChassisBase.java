@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 
-//TODO add l_x, l_y
 public abstract class ChassisBase implements Chassis {
     private final DcMotor[] wheelMotors;
     private final int[] wheelMotorSteps;
