@@ -11,6 +11,10 @@ public class FullControl extends BaseTeleOp {
     double alt_left_stick_x;
     double alt_left_stick_y;
     double alt_div_trigger;
+
+    // SEASON
+    boolean schiessen = false;
+    boolean kette = false;
     /* END SECTION */
 
     @Override
@@ -50,6 +54,33 @@ public class FullControl extends BaseTeleOp {
         alt_left_stick_x = gamepad1.left_stick_x;
         alt_left_stick_y = gamepad1.left_stick_y;
         alt_div_trigger = (gamepad1.left_trigger - gamepad1.right_trigger);
+
+
+        // SEASON
+        // schiessen
+        if (gamepad1.a) {
+            schiessen = !schiessen;
+            if (schiessen) {
+                hwMap.m_schiessen_l.setPower(1);
+                hwMap.m_schiessen_r.setPower(-1);
+            } else {
+                hwMap.m_schiessen_l.setPower(0);
+                hwMap.m_schiessen_r.setPower(0);
+            }
+            while ((gamepad1.a) && opModeIsActive()) {
+            }
+        }
+        // kette
+        if (gamepad1.b) {
+            kette = !kette;
+            if (kette) {
+                hwMap.m_kette.setPower(1);
+            } else {
+                hwMap.m_kette.setPower(0);
+            }
+            while ((gamepad1.b) && opModeIsActive()) {
+            }
+        }
 
 
         /* UPDATE THE ROBOT */

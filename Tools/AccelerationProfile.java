@@ -65,8 +65,12 @@ public class AccelerationProfile {
         }
         // acceleration
         else {
-            double x = (System.currentTimeMillis() - startTime) / accelerationTime;
-            accelerationFactor = (x < 1) ? -x * (x - 2) : 1.0; // calculate the parabola only for x smaller 1
+            if (accelerationTime > 0) {
+                double x = (System.currentTimeMillis() - startTime) / accelerationTime;
+                accelerationFactor = (x < 1) ? -x * (x - 2) : 1.0; // calculate the parabola only for x smaller 1
+            } else {
+                accelerationFactor = 1.0;
+            }
         }
 
         // keep factor in domain
