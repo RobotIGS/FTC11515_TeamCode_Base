@@ -7,8 +7,9 @@ import org.firstinspires.ftc.teamcode.Tools.Gegensteuern;
 @TeleOp(name = "FullControl", group = "FTC")
 public class FullControl extends BaseTeleOp {
     /* ADD VARIABLES ONLY USED IN FULL CONTROL */
-    protected boolean drive_sneak = true; // flag for storing the current speed mode
-    double alt_left_stick_x;
+    public static int gegensteuern = 0;
+    boolean drive_sneak = true; // flag for storing the current speed mode
+    double alt_right_stick_x;
     double alt_left_stick_y;
     double alt_div_trigger;
 
@@ -46,12 +47,12 @@ public class FullControl extends BaseTeleOp {
         }
         hwMap.robot.setSpeed(
                 -Gegensteuern.gegensteuern(alt_left_stick_y, gamepad1.left_stick_y) * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
-                -Gegensteuern.gegensteuern(alt_left_stick_x, gamepad1.left_stick_x) * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
+                -Gegensteuern.gegensteuern(alt_right_stick_x, gamepad1.right_stick_x) * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
                 Gegensteuern.gegensteuern(alt_div_trigger, (gamepad1.left_trigger - gamepad1.right_trigger)) *
                         (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal));
 
         // Werte speichern
-        alt_left_stick_x = gamepad1.left_stick_x;
+        alt_right_stick_x = gamepad1.right_stick_x;
         alt_left_stick_y = gamepad1.left_stick_y;
         alt_div_trigger = (gamepad1.left_trigger - gamepad1.right_trigger);
 
@@ -61,8 +62,8 @@ public class FullControl extends BaseTeleOp {
         if (gamepad1.a) {
             schiessen = !schiessen;
             if (schiessen) {
-                hwMap.m_schiessen_l.setPower(1);
-                hwMap.m_schiessen_r.setPower(-1);
+                hwMap.m_schiessen_l.setPower(-0.5);
+                hwMap.m_schiessen_r.setPower(0.5);
             } else {
                 hwMap.m_schiessen_l.setPower(0);
                 hwMap.m_schiessen_r.setPower(0);
@@ -74,7 +75,7 @@ public class FullControl extends BaseTeleOp {
         if (gamepad1.b) {
             kette = !kette;
             if (kette) {
-                hwMap.m_kette.setPower(1);
+                hwMap.m_kette.setPower(0.9);
             } else {
                 hwMap.m_kette.setPower(0);
             }
@@ -88,6 +89,7 @@ public class FullControl extends BaseTeleOp {
 
         /* ADD TELEMETRY FOR DRIVER DOWN BELOW */
         telemetry.addData("SNEAK", drive_sneak);
+        telemetry.addData("GEGENSTEUERN", gegensteuern);
         telemetry.addLine();
         telemetry.addLine(hwMap.chassis.debug());
         telemetry.addLine(hwMap.navi.debug());

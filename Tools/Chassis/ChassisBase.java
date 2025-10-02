@@ -68,6 +68,7 @@ public abstract class ChassisBase implements Chassis {
 
         imu = hw_map.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(this.hubOrientationOnRobot));
+        imu.getRobotAngularVelocity()
         setRotation(0.0f);
     }
 
