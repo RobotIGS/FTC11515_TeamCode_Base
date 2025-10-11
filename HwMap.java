@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Tools.AccelerationProfile;
 import org.firstinspires.ftc.teamcode.Tools.Chassis.Chassis;
@@ -37,6 +39,10 @@ public class HwMap {
     public DcMotor m_schiessen_r;
     public DcMotor m_kette;
 
+    public CRServo s_unten;
+    public CRServo s_oben;
+    public Servo s_stop;
+
     /* END SECTION */
 
     /**
@@ -65,6 +71,10 @@ public class HwMap {
         m_schiessen_l = hardwareMap.get(DcMotor.class, "schiessen_l");
         m_schiessen_r = hardwareMap.get(DcMotor.class, "schiessen_r");
         m_kette = hardwareMap.get(DcMotor.class, "kette");
+
+        s_unten = hardwareMap.get(CRServo.class, "s_unten");
+        s_oben = hardwareMap.get(CRServo.class, "s_oben");
+        s_stop = hardwareMap.get(Servo.class, "s_stop");
         /* END SECTION */
     }
 }
