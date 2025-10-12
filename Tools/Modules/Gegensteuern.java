@@ -27,6 +27,8 @@ public class Gegensteuern {
 
         durchschnitt = liste.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
         bremszeit = Math.abs(Math.round(500 * durchschnitt));
+        // funktion 25 * 25 ^ x - 1
+        // nicht eingabe sondern tatsächliche geschwindigkeit nutzen?
 
         if (steuer_neu == 0 && Math.abs(steuer_alt) > 0) {
             gegensteuern++;
