@@ -29,7 +29,7 @@ public class Gegensteuern {
         }
 
         durchschnitt = liste.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-        bremszeit = Math.abs(Math.round(1000 * Math.pow(durchschnitt, 2)));
+        bremszeit = Math.abs(Math.round(500 * Math.pow(durchschnitt, 2)));
 
         if (steuer_neu == 0 && Math.abs(steuer_alt) > 0) {
             liste.clear();

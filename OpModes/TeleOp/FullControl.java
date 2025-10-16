@@ -62,13 +62,13 @@ public class FullControl extends BaseTeleOp {
             }
         }
 
-        double vx = gamepad1.left_stick_y * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
-        double vy = gamepad1.right_stick_x * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
+        double vx = -gamepad1.left_stick_y * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
+        double vy = -gamepad1.right_stick_x * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
         double vz = (gamepad1.left_trigger - gamepad1.right_trigger) * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
 
         hwMap.robot.setSpeed(
-                -gegensteuern_X.gegensteuern(hwMap.navi.drive_gegensteuern, alt_vx, vx),
-                -gegensteuern_Y.gegensteuern(hwMap.navi.drive_gegensteuern, alt_vy, vy),
+                gegensteuern_X.gegensteuern(hwMap.navi.drive_gegensteuern, alt_vx, vx),
+                gegensteuern_Y.gegensteuern(hwMap.navi.drive_gegensteuern, alt_vy, vy),
                 gegensteuern_Z.gegensteuern(false, alt_vz, vz));
 
         alt_vx = vx;
@@ -151,7 +151,7 @@ public class FullControl extends BaseTeleOp {
                 hwMap.s_oben.setPower(0);
                 hwMap.s_unten.setPower(0);
             } else {
-                hwMap.m_kette.setPower(-1);
+                hwMap.m_kette.setPower(0);
                 hwMap.s_unten.setPower(1);
                 hwMap.s_oben.setPower(1);
 
@@ -180,9 +180,7 @@ public class FullControl extends BaseTeleOp {
                 hwMap.s_unten.setPower(0);
                 hwMap.m_kette.setPower(0);
             }
-        } else if (System.currentTimeMillis() > time_loswerden + 1000) {
-            hwMap.m_schiessen_l.setPower(-schussgeschwindigkeit);
-            hwMap.m_schiessen_r.setPower(schussgeschwindigkeit);
+        } else if (System.currentTimeMillis() > time_loswerden + 1500) {
             hwMap.m_kette.setPower(1);
             hwMap.s_unten.setPower(-1);
             hwMap.s_oben.setPower(-1);
