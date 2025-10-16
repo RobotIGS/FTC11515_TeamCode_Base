@@ -7,17 +7,15 @@ import org.firstinspires.ftc.teamcode.Tools.Modules.Gegensteuern;
 @TeleOp(name = "FullControl", group = "FTC")
 public class FullControl extends BaseTeleOp {
     /* ADD VARIABLES ONLY USED IN FULL CONTROL */
-    boolean drive_sneak = true; // flag for storing the current speed mode
-
     // SEASON
     boolean m_schiessen = false;
     boolean m_kette = false;
     boolean s_unten = false;
     boolean s_oben = false;
 
-    double alt_right_stick_x;
-    double alt_left_stick_y;
-    double alt_div_trigger;
+    double alt_vx;
+    double alt_vy;
+    double alt_vz;
 
     int phase_aufsammeln = 0;
     long time_loswerden = 0;
@@ -53,22 +51,31 @@ public class FullControl extends BaseTeleOp {
         /* END SECTION */
 
         /* DRIVING */
-        if (gamepad1.left_bumper || gamepad1.right_bumper) {
-            drive_sneak = !drive_sneak;
-            while ((gamepad1.left_bumper || gamepad1.right_bumper) && opModeIsActive()) {
+        if (gamepad1.left_bumper) {
+            hwMap.navi.drive_sneak = !hwMap.navi.drive_sneak;
+            while ((gamepad1.left_bumper) && opModeIsActive()) {
             }
         }
+        if (gamepad1.right_bumper) {
+            hwMap.navi.drive_gegensteuern = !hwMap.navi.drive_gegensteuern;
+            while (gamepad1.right_bumper && opModeIsActive()) {
+            }
+        }
+
+        double vx = gamepad1.left_stick_y * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
+        double vy = gamepad1.right_stick_x * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
+        double vz = (gamepad1.left_trigger - gamepad1.right_trigger) * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
+
         hwMap.robot.setSpeed(
-                -gegensteuern_X.gegensteuern(alt_left_stick_y, gamepad1.left_stick_y) * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
-                -gegensteuern_Y.gegensteuern(alt_right_stick_x, gamepad1.right_stick_x) * (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal),
-                gegensteuern_Z.gegensteuern(alt_div_trigger, (gamepad1.left_trigger - gamepad1.right_trigger)) *
-                        (drive_sneak ? hwMap.speed_sneak : hwMap.speed_normal));
+                -gegensteuern_X.gegensteuern(hwMap.navi.drive_gegensteuern, alt_vx, vx),
+                -gegensteuern_Y.gegensteuern(hwMap.navi.drive_gegensteuern, alt_vy, vy),
+                gegensteuern_Z.gegensteuern(false, alt_vz, vz));
+
+        alt_vx = vx;
+        alt_vy = vy;
+        alt_vz = vz;
 
         // SEASON
-        // Werte speichern
-        alt_right_stick_x = gamepad1.right_stick_x;
-        alt_left_stick_y = gamepad1.left_stick_y;
-        alt_div_trigger = (gamepad1.left_trigger - gamepad1.right_trigger);
 
         // motor schiessen
         if (gamepad1.a) {
@@ -144,10 +151,17 @@ public class FullControl extends BaseTeleOp {
                 hwMap.s_oben.setPower(0);
                 hwMap.s_unten.setPower(0);
             } else {
+                hwMap.m_kette.setPower(-1);
+                hwMap.s_unten.setPower(1);
+                hwMap.s_oben.setPower(1);
+
+                sleep(500);
+
                 hwMap.s_oben.setPower(0);
                 hwMap.s_unten.setPower(0);
                 hwMap.m_kette.setPower(0);
             }
+
             while ((gamepad1.dpad_up) && opModeIsActive()) {
             }
         }
@@ -182,8 +196,8 @@ public class FullControl extends BaseTeleOp {
         hwMap.robot.step();
 
         /* ADD TELEMETRY FOR DRIVER DOWN BELOW */
-        telemetry.addData("SNEAK", drive_sneak);
-        telemetry.addData("s_stop", hwMap.s_stop.getPosition());
+        telemetry.addData("SNEAK", hwMap.navi.drive_sneak);
+        telemetry.addData("GEGENSTEUERN", hwMap.navi.drive_gegensteuern);
         telemetry.addLine();
         telemetry.addLine(gegensteuern_X.debug());
         telemetry.addLine(gegensteuern_Y.debug());

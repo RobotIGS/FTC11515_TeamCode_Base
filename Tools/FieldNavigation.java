@@ -13,12 +13,15 @@ public class FieldNavigation {
     private final Velocity velocity;
     public PIDcontroller rotationPIDcontroller;
     public Position2D distance;
-    private boolean driving_to_position;
+    public boolean drive_sneak; // flag for storing the current speed mode
+    public boolean drive_gegensteuern; // flag for storing the current gegensteuern mode
+    public double speed_normal;
+    public double speed_sneak;
+    private boolean is_driving_to_position;
     private boolean keeprotation;
     private Position2D position;
     private Position2D target_position;
     private double driving_accuracy;
-    private double autoVelFactor;
     private AccelerationProfile accProfile;
     private double rotation_accuracy;
     private ChassisCapabilities chassisCapabilities;
@@ -30,7 +33,7 @@ public class FieldNavigation {
      * @param pidController PID Controller used for rotation
      */
     public FieldNavigation(Position2D position, PIDcontroller pidController) {
-        this.driving_to_position = false;
+        this.is_driving_to_position = false;
         this.position = position;
         this.rotation = new Rotation(0.0);
         this.target_rotation = new Rotation(0.0);
@@ -41,33 +44,25 @@ public class FieldNavigation {
         this.velocity = new Velocity();
         this.rotationPIDcontroller = pidController;
         this.accProfile = null;
-        this.autoVelFactor = 1.0;
-        keeprotation = false;
+        this.speed_normal = 1.0;
+        this.speed_sneak = 0.1;
+        this.keeprotation = false;
+        this.drive_sneak = true;
+        this.drive_gegensteuern = true;
     }
 
-    /**
-     * return if the robot is currently driving
-     *
-     * @return is driving
-     */
-    public boolean getDriving_to_position() {
-        return driving_to_position;
+    public void setSpeed_sneak(double speed_sneak) {
+        this.speed_sneak = speed_sneak;
     }
 
-    /**
-     * set driving accuracy
-     *
-     * @param accu accuracy in CM
-     */
+    public boolean getIsDrivingToPosition() {
+        return is_driving_to_position;
+    }
+
     public void setDrivingAccuracy(double accu) {
         driving_accuracy = accu;
     }
 
-    /**
-     * set rotating accuracy
-     *
-     * @param accu accuracy in degrees
-     */
     public void setRotationAccuracy(double accu) {
         rotation_accuracy = accu;
     }
@@ -96,7 +91,7 @@ public class FieldNavigation {
      * @param p target position
      */
     public void drive_pos(Position2D p) {
-        this.driving_to_position = true;
+        this.is_driving_to_position = true;
         this.target_position = p;
 
         // start the acceleration profile
@@ -172,8 +167,8 @@ public class FieldNavigation {
      *
      * @param velFactor the factor [0-1] (domain gets forced)
      */
-    public void setAutoVelFactor(double velFactor) {
-        this.autoVelFactor = Math.min(1, Math.abs(velFactor));
+    public void setSpeed_normal(double velFactor) {
+        this.speed_normal = Math.min(1, Math.abs(velFactor));
     }
 
     public double getTargetRotation() {
@@ -225,8 +220,8 @@ public class FieldNavigation {
      * @param wz rotation speed (+ => turn left)
      */
     public void drive_speed(double vx, double vy, double wz) {
-        if (driving_to_position)
-            driving_to_position = false;
+        if (is_driving_to_position)
+            is_driving_to_position = false;
 
         this.velocity.set(vx, vy, wz);
     }
@@ -243,7 +238,7 @@ public class FieldNavigation {
 
         String ret = "--- FieldNavigation Debug ---\n";
         ret += String.format("driving : %s\ntarget position : x=%+3.1f y=%+3.1f rot=%+3.1f\n",
-                (this.driving_to_position ? "True" : "False"), target_position.getX(), target_position.getY(), target_rotation.get());
+                (this.is_driving_to_position ? "True" : "False"), target_position.getX(), target_position.getY(), target_rotation.get());
         ret += String.format("distance : x=%+3.1f y=%+3.1f\n", this.distance.getX(), this.distance.getY());
         ret += String.format("position : x=%+3.1f y=%+3.1f rot=%+3.1f\n", position.getX(), position.getY(), rotation.get());
         ret += String.format("velocity : x=%+1.2f y=%+1.2f wz=%+1.2f\n", velocity.getVX(), velocity.getVY(), velocity.getWZ());
@@ -258,7 +253,7 @@ public class FieldNavigation {
      * refresh
      */
     public void step() {
-        if (driving_to_position) {
+        if (is_driving_to_position) {
             // calculate the distance to the target position
             this.distance = target_position.copy();
             this.distance.subtract(position);
@@ -268,7 +263,7 @@ public class FieldNavigation {
             rotation_error.add(-rotation.get());
 
             // setting the velocity for the chassis
-            double velFactor = this.accProfile != null ? this.accProfile.step(this.position) * this.autoVelFactor : this.autoVelFactor;
+            double velFactor = this.accProfile != null ? this.accProfile.step(this.position) * this.speed_normal : this.speed_normal;
 
             // calculate velocity for the chassis
             Position2D distance = this.distance.getNormalization();

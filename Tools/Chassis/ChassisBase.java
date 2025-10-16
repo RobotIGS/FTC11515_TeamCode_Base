@@ -17,6 +17,8 @@ public abstract class ChassisBase implements Chassis {
     private final DcMotor[] wheelMotors;
     private final int[] wheelMotorSteps;
     private final Rotation rotation;
+    // Encoder Steps pro Rotation eines Fahrmotors
+    protected double driving_encoder_steps_per_rotation;
     protected IMU imu;
     protected RevHubOrientationOnRobot hubOrientationOnRobot;
     protected Velocity velocity;
@@ -32,26 +34,28 @@ public abstract class ChassisBase implements Chassis {
      * create chassis
      */
     public ChassisBase(int numWheels, RevHubOrientationOnRobot huborientation) {
-        capabilities = new ChassisCapabilities();
+        this.capabilities = new ChassisCapabilities();
 
         // rotation stuff
-        capabilities.setGetRotation(true);
-        capabilities.setRotate(true);
-
+        this.capabilities.setGetRotation(true);
+        this.capabilities.setRotate(true);
         this.hubOrientationOnRobot = huborientation;
-        rotation_offset = 0;
-        rotation = new Rotation(0.0);
+        this.rotation_offset = 0;
+        this.rotation = new Rotation(0.0);
 
         // drive stuff
-        capabilities.setGetDrivenDistance(true);
-        capabilities.setDriveForward(true);
+        this.capabilities.setGetDrivenDistance(true);
+        this.capabilities.setDriveForward(true);
+        this.drivenDistance = new Position2D();
+        this.wheelMotors = new DcMotor[numWheels];
+        this.wheelSpeeds = new double[numWheels];
+        this.wheelSpeedsFactors = new double[numWheels];
+        this.wheelMotorSteps = new int[numWheels];
+        this.deltaWheelMotorSteps = new int[numWheels];
+    }
 
-        drivenDistance = new Position2D();
-        wheelMotors = new DcMotor[numWheels];
-        wheelSpeeds = new double[numWheels];
-        wheelSpeedsFactors = new double[numWheels];
-        wheelMotorSteps = new int[numWheels];
-        deltaWheelMotorSteps = new int[numWheels];
+    public void setDrivingEncoderStepsPerRotation(double driving_encoder_steps_per_rotation) {
+        this.driving_encoder_steps_per_rotation = driving_encoder_steps_per_rotation;
     }
 
     @SuppressLint("DefaultLocale")

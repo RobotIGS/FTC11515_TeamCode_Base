@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
-import org.firstinspires.ftc.teamcode.HwMap;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 
@@ -39,7 +38,7 @@ public class NormalChassis extends ChassisBase {
         dx /= 4;
 
         // calculate rotations
-        dx /= HwMap.driving_encoder_steps_per_rotation;
+        dx /= this.driving_encoder_steps_per_rotation;
 
         // calculate distance
         dx *= 2 * Math.PI * (WHEELDIAMETER / 2);

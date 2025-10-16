@@ -75,4 +75,6 @@ public interface Chassis {
      * update states, recalculate rotation and distance driven/etc
      */
     void step();
+
+    void setDrivingEncoderStepsPerRotation(double driving_encoder_steps_per_rotation);
 }
