@@ -1,17 +1,19 @@
-package org.firstinspires.ftc.teamcode.Tools.Modules;
+package org.firstinspires.ftc.teamcode.Tools;
 
 import android.annotation.SuppressLint;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 
 public class Gegensteuern {
-    String richtung = "";
+    final int MAX_BREMSZEIT = 500;
+    String richtung;
 
     long bremszeit = 0;
     double durchschnitt = 0;
     double endwert = 0;
     long time = 0;
-    ArrayList<Double> liste = new ArrayList<Double>();
+    ArrayDeque<Double> liste = new ArrayDeque<>();
+    double summe = 0;
 
     public Gegensteuern(String richtung) {
         this.richtung = richtung;
@@ -23,20 +25,20 @@ public class Gegensteuern {
         }
 
         endwert = steuer_neu;
+
         liste.add(steuer_neu);
+        summe += steuer_neu;
         if (liste.size() > 100) {
-            liste.remove(0);
+            summe -= liste.removeFirst();
         }
 
-        durchschnitt = liste.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-        bremszeit = Math.abs(Math.round(500 * Math.pow(durchschnitt, 2)));
+        durchschnitt = !liste.isEmpty() ? summe / liste.size() : 0;
+        bremszeit = Math.round(MAX_BREMSZEIT * Math.pow(durchschnitt, 2));
 
-        if (steuer_neu == 0 && Math.abs(steuer_alt) > 0) {
+        if (steuer_neu == 0 && steuer_alt != 0) {
             liste.clear();
             time = System.currentTimeMillis() + bremszeit;
-        }
-
-        if (Math.abs(steuer_neu) > Math.abs(steuer_alt)) {
+        } else if (steuer_neu != 0) {
             liste.clear();
             time = System.currentTimeMillis();
         }
@@ -48,7 +50,6 @@ public class Gegensteuern {
                 endwert = 1;
             }
         }
-
         return endwert;
     }
 

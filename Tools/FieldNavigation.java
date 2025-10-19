@@ -8,10 +8,10 @@ import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
 
 public class FieldNavigation {
-    private final Rotation rotation;
+    private final Rotation current_rotation;
     private final Rotation target_rotation;
     private final Velocity velocity;
-    public PIDcontroller rotationPIDcontroller;
+    public PidController rotationPidController;
     public Position2D distance;
     public boolean drive_sneak; // flag for storing the current speed mode
     public boolean drive_gegensteuern; // flag for storing the current gegensteuern mode
@@ -19,7 +19,7 @@ public class FieldNavigation {
     public double speed_sneak;
     private boolean is_driving_to_position;
     private boolean keeprotation;
-    private Position2D position;
+    private Position2D current_position;
     private Position2D target_position;
     private double driving_accuracy;
     private AccelerationProfile accProfile;
@@ -29,42 +29,42 @@ public class FieldNavigation {
     /**
      * create new FieldNavigation object with given position and pid controller for rotation
      *
-     * @param position      position of the robot in CM
-     * @param pidController PID Controller used for rotation
+     * @param current_position position of the robot in CM
+     * @param pidController    PID Controller used for rotation
      */
-    public FieldNavigation(Position2D position, PIDcontroller pidController) {
+    public FieldNavigation(Position2D current_position, PidController pidController) {
         this.is_driving_to_position = false;
-        this.position = position;
-        this.rotation = new Rotation(0.0);
+        this.current_position = current_position;
+        this.current_rotation = new Rotation(0.0);
         this.target_rotation = new Rotation(0.0);
         this.rotation_accuracy = 2.0;
-        this.target_position = position;
+        this.target_position = current_position;
         this.distance = new Position2D();
         this.driving_accuracy = 3.0;
         this.velocity = new Velocity();
-        this.rotationPIDcontroller = pidController;
+        this.rotationPidController = pidController;
         this.accProfile = null;
         this.speed_normal = 1.0;
         this.speed_sneak = 0.1;
-        this.keeprotation = false;
+        this.keeprotation = true;
         this.drive_sneak = true;
         this.drive_gegensteuern = true;
     }
 
-    public void setSpeed_sneak(double speed_sneak) {
+    public void setSpeedSneak(double speed_sneak) {
         this.speed_sneak = speed_sneak;
     }
 
-    public boolean getIsDrivingToPosition() {
-        return is_driving_to_position;
+    public boolean isDrivingToPosition() {
+        return this.is_driving_to_position;
     }
 
     public void setDrivingAccuracy(double accu) {
-        driving_accuracy = accu;
+        this.driving_accuracy = accu;
     }
 
     public void setRotationAccuracy(double accu) {
-        rotation_accuracy = accu;
+        this.rotation_accuracy = accu;
     }
 
     /**
@@ -95,7 +95,7 @@ public class FieldNavigation {
         this.target_position = p;
 
         // start the acceleration profile
-        this.accProfile.start(this.position, this.target_position);
+        this.accProfile.start(this.current_position, this.target_position);
     }
 
     /**
@@ -104,8 +104,8 @@ public class FieldNavigation {
      * @param d relative target position
      */
     public void drive_rel(Position2D d) {
-        d.rotate(this.rotation.get());
-        d.add(this.position);
+        d.rotate(this.current_rotation.get());
+        d.add(this.current_position);
         drive_pos(d);
     }
 
@@ -123,30 +123,12 @@ public class FieldNavigation {
     }
 
     /**
-     * get current position
-     *
-     * @return current position
-     */
-    public Position2D getPosition() {
-        return position;
-    }
-
-    /**
-     * set current position
-     *
-     * @param p position
-     */
-    public void setPosition(Position2D p) {
-        position = p;
-    }
-
-    /**
      * set current rotation
      *
      * @param rot current rotation
      */
-    public void setRotation(double rot) {
-        rotation.set(rot);
+    public void setCurrentRotation(double rot) {
+        current_rotation.set(rot);
     }
 
     /**
@@ -156,10 +138,12 @@ public class FieldNavigation {
      * @param rel      specifies if rotation is relative
      */
     public void setTargetRotation(double rotation, boolean rel) {
-        if (rel)
+        this.rotationPidController.reset(); // reset pid controller before usage
+        if (rel) {
             target_rotation.add(rotation);
-        else
+        } else {
             target_rotation.set(rotation);
+        }
     }
 
     /**
@@ -167,30 +151,8 @@ public class FieldNavigation {
      *
      * @param velFactor the factor [0-1] (domain gets forced)
      */
-    public void setSpeed_normal(double velFactor) {
+    public void setSpeedNormal(double velFactor) {
         this.speed_normal = Math.min(1, Math.abs(velFactor));
-    }
-
-    public double getTargetRotation() {
-        return target_rotation.get();
-    }
-
-    /**
-     * set target rotation relative
-     *
-     * @param rotation delta rotation
-     */
-    public void setTargetRotation(double rotation) {
-        setTargetRotation(rotation, true);
-    }
-
-    /**
-     * get keep rotation
-     *
-     * @return true = keep rotation
-     */
-    public boolean getKeepRotation() {
-        return keeprotation;
     }
 
     /**
@@ -208,8 +170,8 @@ public class FieldNavigation {
      * @param d the driven distance
      */
     public void addDrivenDistance(Position2D d) {
-        d.rotate(rotation.get());
-        position.add(d);
+        d.rotate(current_rotation.get());
+        current_position.add(d);
     }
 
     /**
@@ -220,9 +182,7 @@ public class FieldNavigation {
      * @param wz rotation speed (+ => turn left)
      */
     public void drive_speed(double vx, double vy, double wz) {
-        if (is_driving_to_position)
-            is_driving_to_position = false;
-
+        is_driving_to_position = false;
         this.velocity.set(vx, vy, wz);
     }
 
@@ -234,18 +194,18 @@ public class FieldNavigation {
     @SuppressLint("DefaultLocale")
     public String debug() {
         Rotation rotation_error = new Rotation(target_rotation.get());
-        rotation_error.add(-rotation.get());
+        rotation_error.add(-current_rotation.get());
 
         String ret = "--- FieldNavigation Debug ---\n";
         ret += String.format("driving : %s\ntarget position : x=%+3.1f y=%+3.1f rot=%+3.1f\n",
                 (this.is_driving_to_position ? "True" : "False"), target_position.getX(), target_position.getY(), target_rotation.get());
         ret += String.format("distance : x=%+3.1f y=%+3.1f\n", this.distance.getX(), this.distance.getY());
-        ret += String.format("position : x=%+3.1f y=%+3.1f rot=%+3.1f\n", position.getX(), position.getY(), rotation.get());
+        ret += String.format("position : x=%+3.1f y=%+3.1f rot=%+3.1f\n", current_position.getX(), current_position.getY(), current_rotation.get());
         ret += String.format("velocity : x=%+1.2f y=%+1.2f wz=%+1.2f\n", velocity.getVX(), velocity.getVY(), velocity.getWZ());
         ret += String.format("rotation error : %f\n", rotation_error.get());
-        ret += String.format("pid value : %f\n", rotationPIDcontroller.pid_value);
-        ret += String.format("integral : %f\n", rotationPIDcontroller.integral);
-        ret += String.format("last_error : %f\n", rotationPIDcontroller.last_error);
+        ret += String.format("pid value : %f\n", rotationPidController.pid_value);
+        ret += String.format("integral : %f\n", rotationPidController.integral);
+        ret += String.format("last_error : %f\n", rotationPidController.last_error);
         return ret;
     }
 
@@ -256,18 +216,18 @@ public class FieldNavigation {
         if (is_driving_to_position) {
             // calculate the distance to the target position
             this.distance = target_position.copy();
-            this.distance.subtract(position);
+            this.distance.subtract(current_position);
 
             // calculate the error in the rotation
             Rotation rotation_error = new Rotation(target_rotation.get());
-            rotation_error.add(-rotation.get());
+            rotation_error.add(-current_rotation.get());
 
             // setting the velocity for the chassis
-            double velFactor = this.accProfile != null ? this.accProfile.step(this.position) * this.speed_normal : this.speed_normal;
+            double velFactor = this.accProfile != null ? this.accProfile.step(this.current_position) * this.speed_normal : this.speed_normal;
 
             // calculate velocity for the chassis
             Position2D distance = this.distance.getNormalization();
-            distance.rotate(-this.rotation.get());
+            distance.rotate(-this.current_rotation.get());
 
             // test if in range of the target position (reached)
             if ((Math.abs(this.distance.getAbsolute()) <= this.driving_accuracy && !keeprotation) ||
@@ -280,7 +240,7 @@ public class FieldNavigation {
                 velocity.set(
                         distance.getX() * velFactor,
                         distance.getY() * velFactor,
-                        keeprotation ? rotationPIDcontroller.step(rotation_error.get() / 180) : 0.0
+                        keeprotation ? rotationPidController.step(rotation_error.get() / 180) : 0.0
                 );
             }
 
@@ -296,7 +256,7 @@ public class FieldNavigation {
                 velocity.set(
                         distance.getX() * velFactor,
                         0.0,
-                        rotationPIDcontroller.step(rotation_error.get() / 180)
+                        rotationPidController.step(rotation_error.get() / 180)
                 );
             }
         }

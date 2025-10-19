@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
-public class PIDcontroller {
+public class PidController {
     double k_p;
     double k_i;
     double k_d;
@@ -15,7 +15,7 @@ public class PIDcontroller {
      * @param i integral factor
      * @param d derivative factor
      */
-    public PIDcontroller(double p, double i, double d) {
+    public PidController(double p, double i, double d) {
         this.k_p = p;
         this.k_i = i;
         this.k_d = d;
@@ -73,7 +73,11 @@ public class PIDcontroller {
     public double step(double error) {
         last_error = error; // remember the last error for later use
         pid_value = P(error) + I(error) + D(error); // sum up the three parts
-        return Math.max(-1.0, Math.min(1.0, pid_value));
+        if (pid_value == 0) {
+            return error;
+        } else {
+            return Math.max(-1.0, Math.min(1.0, pid_value));
+        }
     }
 }
 

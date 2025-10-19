@@ -2,20 +2,22 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Tools.Modules.Gegensteuern;
+import org.firstinspires.ftc.teamcode.Tools.Gegensteuern;
 
 @TeleOp(name = "FullControl", group = "FTC")
 public class FullControl extends BaseTeleOp {
     /* ADD VARIABLES ONLY USED IN FULL CONTROL */
+    Gegensteuern gegensteuern_X = new Gegensteuern("X");
+    Gegensteuern gegensteuern_Y = new Gegensteuern("Y");
+
     // SEASON
     boolean m_schiessen = false;
-    boolean m_kette = false;
+    boolean m_aufnehmen = false;
     boolean s_unten = false;
     boolean s_oben = false;
 
     double alt_vx;
     double alt_vy;
-    double alt_vz;
 
     int phase_aufsammeln = 0;
     long time_loswerden = 0;
@@ -23,10 +25,6 @@ public class FullControl extends BaseTeleOp {
     double schussgeschwindigkeit = 0.683;
     double s_stop_kurz_position = 0.7;
     double s_stop_dauer_position = 0.23;
-
-    Gegensteuern gegensteuern_X = new Gegensteuern("X");
-    Gegensteuern gegensteuern_Y = new Gegensteuern("Y");
-    Gegensteuern gegensteuern_Z = new Gegensteuern("Z");
     /* END SECTION */
 
     @Override
@@ -46,10 +44,6 @@ public class FullControl extends BaseTeleOp {
 
     @Override
     public void runLoop() {
-        /* ADD OTHER HARDWARE CONTROLS DOWN BELOW */
-
-        /* END SECTION */
-
         /* DRIVING */
         if (gamepad1.left_bumper) {
             hwMap.navi.drive_sneak = !hwMap.navi.drive_sneak;
@@ -69,14 +63,12 @@ public class FullControl extends BaseTeleOp {
         hwMap.robot.setSpeed(
                 gegensteuern_X.gegensteuern(hwMap.navi.drive_gegensteuern, alt_vx, vx),
                 gegensteuern_Y.gegensteuern(hwMap.navi.drive_gegensteuern, alt_vy, vy),
-                gegensteuern_Z.gegensteuern(false, alt_vz, vz));
+                vz);
 
         alt_vx = vx;
         alt_vy = vy;
-        alt_vz = vz;
 
-        // SEASON
-
+        /* SEASON (ADD OTHER HARDWARE CONTROLS DOWN BELOW) */
         // motor schiessen
         if (gamepad1.a) {
             m_schiessen = !m_schiessen;
@@ -90,17 +82,30 @@ public class FullControl extends BaseTeleOp {
             while ((gamepad1.a) && opModeIsActive()) {
             }
         }
-        // motor kette
+        // motor aufnehmen
         if (gamepad1.b) {
-            m_kette = !m_kette;
-            if (m_kette) {
-                hwMap.m_kette.setPower(1);
+            m_aufnehmen = !m_aufnehmen;
+            if (m_aufnehmen) {
+                hwMap.m_aufnehmen.setPower(1);
             } else {
-                hwMap.m_kette.setPower(0);
+                hwMap.m_aufnehmen.setPower(0);
             }
             while ((gamepad1.b) && opModeIsActive()) {
             }
         }
+        // motor hoch
+        if (gamepad1.dpad_right) {
+            hwMap.m_hoch.setPower(1);
+            while ((gamepad1.dpad_right) && opModeIsActive()) {
+            }
+            hwMap.m_hoch.setPower(0);
+        } else if (gamepad1.dpad_left) {
+            hwMap.m_hoch.setPower(-1);
+            while ((gamepad1.dpad_left) && opModeIsActive()) {
+            }
+            hwMap.m_hoch.setPower(0);
+        }
+
         // servo unten
         if (gamepad1.x) {
             s_unten = !s_unten;
@@ -124,25 +129,25 @@ public class FullControl extends BaseTeleOp {
             }
         }
         // servo stop
-        if (gamepad1.dpad_left) {
-            hwMap.s_stop.setPosition(s_stop_kurz_position);
-            while (gamepad1.dpad_left && opModeIsActive()) {
-            }
-        } else if (hwMap.s_stop.getPosition() == s_stop_kurz_position) {
-            sleep(200);
-            hwMap.s_stop.setPosition(s_stop_dauer_position);
-            while (gamepad1.dpad_left && opModeIsActive()) {
-            }
-        }
+//        if (gamepad1.dpad_left) {
+//            hwMap.s_stop.setPosition(s_stop_kurz_position);
+//            while (gamepad1.dpad_left && opModeIsActive()) {
+//            }
+//        } else if (hwMap.s_stop.getPosition() == s_stop_kurz_position) {
+//            sleep(200);
+//            hwMap.s_stop.setPosition(s_stop_dauer_position);
+//            while (gamepad1.dpad_left && opModeIsActive()) {
+//            }
+//        }
 
-        // durchklicken aufsammeln
+        // one-klick aufsammeln
         if (gamepad1.dpad_up) {
             phase_aufsammeln += 1;
             if (phase_aufsammeln > 3) {
                 phase_aufsammeln = 0;
             }
             if (phase_aufsammeln == 1) {
-                hwMap.m_kette.setPower(1);
+                hwMap.m_aufnehmen.setPower(1);
                 hwMap.s_unten.setPower(-1);
                 hwMap.s_oben.setPower(-1);
             } else if (phase_aufsammeln == 2) {
@@ -151,17 +156,14 @@ public class FullControl extends BaseTeleOp {
                 hwMap.s_oben.setPower(0);
                 hwMap.s_unten.setPower(0);
             } else {
-                hwMap.m_kette.setPower(0);
+                hwMap.m_aufnehmen.setPower(0);
                 hwMap.s_unten.setPower(1);
                 hwMap.s_oben.setPower(1);
-
                 sleep(500);
-
                 hwMap.s_oben.setPower(0);
                 hwMap.s_unten.setPower(0);
-                hwMap.m_kette.setPower(0);
+                hwMap.m_aufnehmen.setPower(0);
             }
-
             while ((gamepad1.dpad_up) && opModeIsActive()) {
             }
         }
@@ -173,15 +175,19 @@ public class FullControl extends BaseTeleOp {
             }
         }
         if (System.currentTimeMillis() > time_loswerden + 7000) {
-            if (System.currentTimeMillis() < time_loswerden + 8000) {
+            if (System.currentTimeMillis() < time_loswerden + 7500) {
                 hwMap.m_schiessen_l.setPower(0);
                 hwMap.m_schiessen_r.setPower(0);
                 hwMap.s_oben.setPower(0);
                 hwMap.s_unten.setPower(0);
-                hwMap.m_kette.setPower(0);
+                hwMap.m_aufnehmen.setPower(0);
             }
+        } else if (System.currentTimeMillis() > time_loswerden + 5500) {
+            hwMap.s_stop.setPosition(s_stop_kurz_position);
+            sleep(200);
+            hwMap.s_stop.setPosition(s_stop_dauer_position);
         } else if (System.currentTimeMillis() > time_loswerden + 1500) {
-            hwMap.m_kette.setPower(1);
+            hwMap.m_aufnehmen.setPower(1);
             hwMap.s_unten.setPower(-1);
             hwMap.s_oben.setPower(-1);
         } else if (System.currentTimeMillis() > time_loswerden) {
@@ -199,7 +205,6 @@ public class FullControl extends BaseTeleOp {
         telemetry.addLine();
         telemetry.addLine(gegensteuern_X.debug());
         telemetry.addLine(gegensteuern_Y.debug());
-        telemetry.addLine(gegensteuern_Z.debug());
         telemetry.addLine(hwMap.chassis.debug());
         telemetry.addLine(hwMap.navi.debug());
         telemetry.update();
