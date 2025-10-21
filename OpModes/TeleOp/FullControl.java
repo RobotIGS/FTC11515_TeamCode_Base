@@ -22,7 +22,7 @@ public class FullControl extends BaseTeleOp {
     int phase_aufsammeln = 0;
     long time_loswerden = 0;
 
-    double schussgeschwindigkeit = 0.683;
+    double schussgeschwindigkeit = 0.7;
     double s_stop_kurz_position = 0.7;
     double s_stop_dauer_position = 0.23;
     /* END SECTION */
@@ -57,8 +57,8 @@ public class FullControl extends BaseTeleOp {
         }
 
         double vx = -gamepad1.left_stick_y * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
-        double vy = -gamepad1.right_stick_x * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
-        double vz = (gamepad1.left_trigger - gamepad1.right_trigger) * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
+        double vy = gamepad1.right_stick_x * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
+        double vz = (gamepad1.left_trigger - gamepad1.right_trigger) * (hwMap.navi.drive_sneak ? hwMap.navi.speed_drehen : hwMap.navi.speed_normal);
 
         hwMap.robot.setSpeed(
                 gegensteuern_X.gegensteuern(hwMap.navi.drive_gegensteuern, alt_vx, vx),
@@ -156,6 +156,8 @@ public class FullControl extends BaseTeleOp {
                 hwMap.s_oben.setPower(0);
                 hwMap.s_unten.setPower(0);
             } else {
+                hwMap.m_aufnehmen.setPower(-1);
+                sleep(80);
                 hwMap.m_aufnehmen.setPower(0);
                 hwMap.s_unten.setPower(1);
                 hwMap.s_oben.setPower(1);
@@ -174,15 +176,15 @@ public class FullControl extends BaseTeleOp {
             while ((gamepad1.dpad_down) && opModeIsActive()) {
             }
         }
-        if (System.currentTimeMillis() > time_loswerden + 7000) {
-            if (System.currentTimeMillis() < time_loswerden + 7500) {
+        if (System.currentTimeMillis() > time_loswerden + 6500) {
+            if (System.currentTimeMillis() < time_loswerden + 7000) {
                 hwMap.m_schiessen_l.setPower(0);
                 hwMap.m_schiessen_r.setPower(0);
                 hwMap.s_oben.setPower(0);
                 hwMap.s_unten.setPower(0);
                 hwMap.m_aufnehmen.setPower(0);
             }
-        } else if (System.currentTimeMillis() > time_loswerden + 5500) {
+        } else if (System.currentTimeMillis() > time_loswerden + 5000) {
             hwMap.s_stop.setPosition(s_stop_kurz_position);
             sleep(200);
             hwMap.s_stop.setPosition(s_stop_dauer_position);

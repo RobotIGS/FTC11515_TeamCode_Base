@@ -44,7 +44,8 @@ public class HwMap {
         // field navigation
         navi = new FieldNavigation(new Position2D(0.0, 0.0), new PidController(0.0, 0.0, 0.0)); // start position is (0|0) & PID values for rotation
         navi.setSpeedNormal(1);
-        navi.setSpeedSneak(0.2);
+        navi.setSpeedSneak(0.6);
+        navi.setSpeedDrehen(0.3);
         navi.setAccelerationProfile(new AccelerationProfile(50, 0)); // create an acceleration profile for better location resolution
         navi.setRotationAccuracy(1.5); // in Grad
         navi.setDrivingAccuracy(3.0); // in cm

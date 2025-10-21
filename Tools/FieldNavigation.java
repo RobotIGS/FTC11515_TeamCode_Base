@@ -17,6 +17,7 @@ public class FieldNavigation {
     public boolean drive_gegensteuern; // flag for storing the current gegensteuern mode
     public double speed_normal;
     public double speed_sneak;
+    public double speed_drehen;
     private boolean is_driving_to_position;
     private boolean keeprotation;
     private Position2D current_position;
@@ -46,6 +47,7 @@ public class FieldNavigation {
         this.accProfile = null;
         this.speed_normal = 1.0;
         this.speed_sneak = 0.1;
+        this.speed_drehen = 0.5;
         this.keeprotation = true;
         this.drive_sneak = true;
         this.drive_gegensteuern = true;
@@ -53,6 +55,10 @@ public class FieldNavigation {
 
     public void setSpeedSneak(double speed_sneak) {
         this.speed_sneak = speed_sneak;
+    }
+
+    public void setSpeedDrehen(double speed_drehen) {
+        this.speed_drehen = speed_drehen;
     }
 
     public boolean isDrivingToPosition() {
