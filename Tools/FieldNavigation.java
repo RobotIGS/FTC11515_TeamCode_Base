@@ -38,16 +38,13 @@ public class FieldNavigation {
         this.current_position = current_position;
         this.current_rotation = new Rotation(0.0);
         this.target_rotation = new Rotation(0.0);
-        this.rotation_accuracy = 2.0;
         this.target_position = current_position;
         this.distance = new Position2D();
-        this.driving_accuracy = 3.0;
         this.velocity = new Velocity();
+
         this.rotationPidController = pidController;
         this.accProfile = null;
-        this.speed_normal = 1.0;
-        this.speed_sneak = 0.1;
-        this.speed_drehen = 0.5;
+
         this.keeprotation = true;
         this.drive_sneak = true;
         this.drive_gegensteuern = true;

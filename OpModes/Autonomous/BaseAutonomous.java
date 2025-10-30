@@ -16,6 +16,16 @@ public abstract class BaseAutonomous extends LinearOpMode {
         return true;
     }
 
+    public void driving_update() {
+        while (opModeIsActive() && hwMap.navi.isDrivingToPosition()) {
+            hwMap.robot.step();
+            telemetry.addLine(hwMap.navi.debug());
+            telemetry.addLine(hwMap.chassis.debug());
+            telemetry.addLine(hwMap.navi.getAccProfile().debug());
+            telemetry.update();
+        }
+    }
+
     /**
      * this gets executed when pressing the init button on the phone / driver hub
      */

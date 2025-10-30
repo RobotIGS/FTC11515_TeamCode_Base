@@ -10,25 +10,13 @@ public class AutonomeQuadrat extends BaseAutonomous {
 
     @Override
     public void run() {
-        hwMap.robot.navi.setKeepRotation(true);
-
         for (int i = 0; i < 4; i++) {
             hwMap.robot.drive(new Position2D(100, 0));
-            schleife();
+            driving_update();
             sleep(500);
             hwMap.robot.rotate(90);
-            schleife();
+            driving_update();
             sleep(500);
-        }
-    }
-
-    void schleife() {
-        while (opModeIsActive() && hwMap.navi.isDrivingToPosition()) {
-            hwMap.robot.step();
-            telemetry.addLine(hwMap.navi.debug());
-            telemetry.addLine(hwMap.chassis.debug());
-            telemetry.addLine(hwMap.navi.getAccProfile().debug());
-            telemetry.update();
         }
     }
 }

@@ -37,12 +37,12 @@ public class Gegensteuern {
 
         if (Math.abs(steuer_neu) < 0.02 && steuer_alt != 0) {
             bremszeit_ende = System.currentTimeMillis() + bremszeit;
-        } else {
+        } else if (steuer_neu != 0 && steuer_alt != 0) {
             bremszeit_ende = System.currentTimeMillis();
         }
 
         if (bremszeit_ende > System.currentTimeMillis()) {
-            endwert = - Math.max(Math.min(2 * durchschnitt, 1), -1);
+            endwert = -Math.max(Math.min(durchschnitt, 1), -1); // negativ, weil entgegen des Durchschnitts
         }
         return endwert;
     }
