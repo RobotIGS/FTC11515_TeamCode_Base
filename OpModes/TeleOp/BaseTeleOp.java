@@ -2,10 +2,16 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.HwMap;
+import org.firstinspires.ftc.teamcode.Tools.HwMap;
 
 public abstract class BaseTeleOp extends LinearOpMode {
     protected HwMap hwMap; // hardware map
+
+    public void loop_wait(int time_in_ms) {
+        long start = System.currentTimeMillis();
+        while ((System.currentTimeMillis() - start) < time_in_ms && opModeIsActive()) {
+        }
+    }
 
     /**
      * this gets executed when pressing the init button on the phone / driver hub

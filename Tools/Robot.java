@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
 import org.firstinspires.ftc.teamcode.Tools.Chassis.Chassis;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 
 public class Robot {
     public FieldNavigation navi;

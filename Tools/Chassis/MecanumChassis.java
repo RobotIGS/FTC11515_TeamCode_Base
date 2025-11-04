@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Velocity;
 
 /**
  * Robot:
@@ -44,9 +44,6 @@ public class MecanumChassis extends ChassisBase {
         // allow sideways motion
         capabilities.setDriveSideways(true);
 
-        // lx und ly sind geometrische Parameter des Mecanum-Chassis, die den Abstand zwischen den Radachsen und dem Mittelpunkt des Roboters festlegen.
-        // lx: Der seitliche Abstand (in der X-Richtung) von der Mitte des Roboters zu jedem Rad; oft als halbe Distanz zwischen Vorder- und Hinterachse angegeben.
-        // ly: Der Abstand in Fahrtrichtung (Y-Richtung) von der Mitte des Roboters zu jedem Rad; meist halbe Distanz zwischen linker und rechter Seite des Chassis.
         this.lx = lx;
         this.ly = ly;
     }
@@ -64,7 +61,7 @@ public class MecanumChassis extends ChassisBase {
             );
         }
 
-        // normalize the values ( in [-1.0;1.0])
+        // normalize the values [-1.0; 1.0]
         double vm = Math.max(Math.max(Math.abs(wheelSpeeds[0]), Math.abs(wheelSpeeds[1])),
                 Math.max(Math.abs(wheelSpeeds[2]), Math.abs(wheelSpeeds[3])));
         wheelSpeeds[0] *= velocity.getAbsolute() / vm;
@@ -75,6 +72,10 @@ public class MecanumChassis extends ChassisBase {
         // change rotation direction of the right motors
         wheelSpeeds[1] *= -1;
         wheelSpeeds[3] *= -1;
+
+        // change rotation direction of the back motors
+        wheelSpeeds[2] *= -1;
+        wheelSpeeds[3] *= -1;
     }
 
     @Override
@@ -84,7 +85,12 @@ public class MecanumChassis extends ChassisBase {
         double dx = 0;
         double dy = 0;
 
+        // change rotation direction of the right motors
         deltaWheelMotorSteps[1] *= -1;
+        deltaWheelMotorSteps[3] *= -1;
+
+        // change rotation direction of the back motors
+        deltaWheelMotorSteps[2] *= -1;
         deltaWheelMotorSteps[3] *= -1;
 
         // calculate steps

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Tools;
+package org.firstinspires.ftc.teamcode.Tools.Steuerung;
 
 import android.annotation.SuppressLint;
 
@@ -19,7 +19,7 @@ public class Gegensteuern {
         this.richtung = richtung;
     }
 
-    public double gegensteuern(boolean geg, double steuer_alt, double steuer_neu) {
+    public double calculate(boolean geg, double steuer_alt, double steuer_neu) {
         if (!geg) {
             return steuer_neu;
         }

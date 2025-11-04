@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Tools.DTypes;
+package org.firstinspires.ftc.teamcode.Tools.Datatypes;
 
 public class Position2D {
     private double x;

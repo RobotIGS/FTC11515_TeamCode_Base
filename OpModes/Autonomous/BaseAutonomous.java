@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.HwMap;
+import org.firstinspires.ftc.teamcode.Tools.HwMap;
 
 public abstract class BaseAutonomous extends LinearOpMode {
     protected HwMap hwMap; // hardware map
@@ -16,13 +16,19 @@ public abstract class BaseAutonomous extends LinearOpMode {
         return true;
     }
 
-    public void driving_update() {
+    public void loop_driving_update() {
         while (opModeIsActive() && hwMap.navi.isDrivingToPosition()) {
             hwMap.robot.step();
             telemetry.addLine(hwMap.navi.debug());
             telemetry.addLine(hwMap.chassis.debug());
             telemetry.addLine(hwMap.navi.getAccProfile().debug());
             telemetry.update();
+        }
+    }
+
+    public void loop_wait(int time_in_ms) {
+        long start = System.currentTimeMillis();
+        while ((System.currentTimeMillis() - start) < time_in_ms && opModeIsActive()) {
         }
     }
 

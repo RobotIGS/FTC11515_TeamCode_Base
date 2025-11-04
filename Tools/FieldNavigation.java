@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode.Tools;
 import android.annotation.SuppressLint;
 
 import org.firstinspires.ftc.teamcode.Tools.Chassis.ChassisCapabilities;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Rotation;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Velocity;
+import org.firstinspires.ftc.teamcode.Tools.Steuerung.AccelerationProfile;
+import org.firstinspires.ftc.teamcode.Tools.Steuerung.PidController;
 
 public class FieldNavigation {
     private final Rotation current_rotation;
@@ -48,14 +50,6 @@ public class FieldNavigation {
         this.keeprotation = true;
         this.drive_sneak = true;
         this.drive_gegensteuern = true;
-    }
-
-    public void setSpeedSneak(double speed_sneak) {
-        this.speed_sneak = speed_sneak;
-    }
-
-    public void setSpeedDrehen(double speed_drehen) {
-        this.speed_drehen = speed_drehen;
     }
 
     public boolean isDrivingToPosition() {
@@ -156,6 +150,14 @@ public class FieldNavigation {
      */
     public void setSpeedNormal(double velFactor) {
         this.speed_normal = Math.min(1, Math.abs(velFactor));
+    }
+
+    public void setSpeedSneak(double speed_sneak) {
+        this.speed_sneak = speed_sneak;
+    }
+
+    public void setSpeedDrehen(double speed_drehen) {
+        this.speed_drehen = speed_drehen;
     }
 
     /**

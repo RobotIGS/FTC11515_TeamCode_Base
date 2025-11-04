@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.Tools;
+package org.firstinspires.ftc.teamcode.Tools.Steuerung;
 
 public class PidController {
+    public double integral;
+    public double last_error;
+    public double pid_value;
     double k_p;
     double k_i;
     double k_d;
-    double integral;
-    double last_error;
-    double pid_value;
 
     /**
      * create a PID controller (see WIKIPEDIA PID controller)

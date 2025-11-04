@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.Tools;
+package org.firstinspires.ftc.teamcode.Tools.Steuerung;
 
 import android.annotation.SuppressLint;
 
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 
 public class AccelerationProfile {
     protected Position2D endPosition;

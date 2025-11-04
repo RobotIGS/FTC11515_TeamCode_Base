@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Velocity;
 
 /**
  * every Chassis needs to implement this interface

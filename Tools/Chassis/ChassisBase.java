@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Rotation;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Velocity;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Rotation;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Velocity;
 
 public abstract class ChassisBase implements Chassis {
     private final DcMotor[] wheelMotors;

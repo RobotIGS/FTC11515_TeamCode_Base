@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Tools;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -6,13 +6,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Tools.AccelerationProfile;
 import org.firstinspires.ftc.teamcode.Tools.Chassis.Chassis;
 import org.firstinspires.ftc.teamcode.Tools.Chassis.MecanumChassis;
-import org.firstinspires.ftc.teamcode.Tools.DTypes.Position2D;
-import org.firstinspires.ftc.teamcode.Tools.FieldNavigation;
-import org.firstinspires.ftc.teamcode.Tools.PidController;
-import org.firstinspires.ftc.teamcode.Tools.Robot;
+import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
+import org.firstinspires.ftc.teamcode.Tools.Steuerung.AccelerationProfile;
+import org.firstinspires.ftc.teamcode.Tools.Steuerung.PidController;
 
 public class HwMap {
     /* PLACE YOUR CONSTANT VALUES DOWN BELOW*/
@@ -30,7 +28,7 @@ public class HwMap {
 
     public CRServo s_unten;
     public CRServo s_oben;
-    public Servo s_stop;
+    public Servo s_kick;
 
     /* END SECTION */
 
@@ -45,7 +43,7 @@ public class HwMap {
         navi = new FieldNavigation(new Position2D(0.0, 0.0), new PidController(0.0, 0.0, 0.0)); // start position is (0|0) & PID values for rotation
         navi.setSpeedNormal(0.6);
         navi.setSpeedSneak(0.3);
-        navi.setSpeedDrehen(0.1);
+        navi.setSpeedDrehen(0.4);
         navi.setAccelerationProfile(new AccelerationProfile(50, 0)); // create an acceleration profile for better location resolution
         navi.setRotationAccuracy(1.5); // in Grad
         navi.setDrivingAccuracy(3.0); // in cm
@@ -62,7 +60,7 @@ public class HwMap {
 
         s_unten = hardwareMap.get(CRServo.class, "s_unten");
         s_oben = hardwareMap.get(CRServo.class, "s_oben");
-        s_stop = hardwareMap.get(Servo.class, "s_stop");
+        s_kick = hardwareMap.get(Servo.class, "s_stop");
         /* END SECTION */
     }
 }
