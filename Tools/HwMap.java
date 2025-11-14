@@ -19,8 +19,14 @@ public class HwMap {
     public FieldNavigation navi;
     public Chassis chassis;
 
-    /* PLACE YOUR HARDWARE INTERFACES DOWN BELOW */
+    // season
+    public double schussgeschwindigkeit = 0.7;
+    public double s_kick_kurzposition = 0.65;
+    public double s_kick_dauerposition = 0.23;
+    public double aufnehm_geschwindigkeit = -0.05;
+
     /* END SECTION */
+    /* PLACE YOUR HARDWARE INTERFACES DOWN BELOW */
     public DcMotor m_schiessen_l;
     public DcMotor m_schiessen_r;
     public DcMotor m_aufnehmen;

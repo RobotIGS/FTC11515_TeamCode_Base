@@ -18,9 +18,6 @@ public class FullControl extends BaseTeleOp {
     private boolean s_oben = false;
     private int phase_aufsammeln = 0;
     private int phase_loswerden = 0;
-    private double schussgeschwindigkeit = 0.7;
-    private double s_kick_kurzposition = 0.65;
-    private double s_kick_dauerposition = 0.23;
     /* END SECTION */
 
     @Override
@@ -72,7 +69,7 @@ public class FullControl extends BaseTeleOp {
         /* ADD TELEMETRY FOR DRIVER DOWN BELOW */
         telemetry.addData("SNEAK", hwMap.navi.drive_sneak);
         telemetry.addData("GEGENSTEUERN", hwMap.navi.drive_gegensteuern);
-        telemetry.addData("SCHUSS GESCHW", schussgeschwindigkeit);
+        telemetry.addData("SCHUSS GESCHW", hwMap.schussgeschwindigkeit);
         telemetry.addLine();
         telemetry.addLine(gegensteuern_X.debug());
         telemetry.addLine(gegensteuern_Y.debug());
@@ -84,12 +81,12 @@ public class FullControl extends BaseTeleOp {
 
     void season() {
         if (gamepad2.right_bumper) {
-            schussgeschwindigkeit = Math.min(1.0, schussgeschwindigkeit + 0.1);
+            hwMap.schussgeschwindigkeit = Math.min(1.0, hwMap.schussgeschwindigkeit + 0.1);
             while ((gamepad2.right_bumper) && opModeIsActive()) {
             }
         }
-        if (gamepad2.left_bumper && schussgeschwindigkeit > 0.4) {
-            schussgeschwindigkeit = Math.max(0.0, schussgeschwindigkeit - 0.1);
+        if (gamepad2.left_bumper && hwMap.schussgeschwindigkeit > 0.4) {
+            hwMap.schussgeschwindigkeit = Math.max(0.0, hwMap.schussgeschwindigkeit - 0.1);
             while ((gamepad2.left_bumper) && opModeIsActive()) {
             }
         }
@@ -98,8 +95,8 @@ public class FullControl extends BaseTeleOp {
         if (gamepad2.a) {
             m_schiessen = !m_schiessen;
             if (m_schiessen) {
-                hwMap.m_schiessen_l.setPower(-schussgeschwindigkeit);
-                hwMap.m_schiessen_r.setPower(schussgeschwindigkeit);
+                hwMap.m_schiessen_l.setPower(-hwMap.schussgeschwindigkeit);
+                hwMap.m_schiessen_r.setPower(hwMap.schussgeschwindigkeit);
             } else {
                 hwMap.m_schiessen_l.setPower(0);
                 hwMap.m_schiessen_r.setPower(0);
@@ -155,12 +152,12 @@ public class FullControl extends BaseTeleOp {
         }
         // servo kick
         if (gamepad2.left_trigger != 0) {
-            hwMap.s_kick.setPosition(s_kick_kurzposition);
+            hwMap.s_kick.setPosition(hwMap.s_kick_kurzposition);
             while (gamepad2.left_trigger != 0 && opModeIsActive()) {
             }
-        } else if (hwMap.s_kick.getPosition() == s_kick_kurzposition) {
+        } else if (hwMap.s_kick.getPosition() == hwMap.s_kick_kurzposition) {
             loop_wait(250);
-            hwMap.s_kick.setPosition(s_kick_dauerposition);
+            hwMap.s_kick.setPosition(hwMap.s_kick_dauerposition);
         }
 
         // one-klick aufsammeln
@@ -176,18 +173,16 @@ public class FullControl extends BaseTeleOp {
             } else if (phase_aufsammeln == 2) {
                 hwMap.s_oben.setPower(0);
             } else if (phase_aufsammeln == 3) {
-                hwMap.s_oben.setPower(0);
                 hwMap.s_unten.setPower(0);
             } else if (phase_aufsammeln == 0) {
+                hwMap.s_unten.setPower(1);
+                hwMap.s_oben.setPower(1);
                 hwMap.m_aufnehmen.setPower(-1);
                 loop_wait(50);
                 hwMap.m_aufnehmen.setPower(0);
-                hwMap.s_unten.setPower(1);
-                hwMap.s_oben.setPower(1);
                 loop_wait(500);
                 hwMap.s_oben.setPower(0);
                 hwMap.s_unten.setPower(0);
-                hwMap.m_aufnehmen.setPower(0);
             }
             while ((gamepad2.dpad_down) && opModeIsActive()) {
             }
@@ -200,8 +195,8 @@ public class FullControl extends BaseTeleOp {
                 phase_loswerden = 0;
             }
             if (phase_loswerden == 1) {
-                hwMap.m_schiessen_l.setPower(-schussgeschwindigkeit);
-                hwMap.m_schiessen_r.setPower(schussgeschwindigkeit);
+                hwMap.m_schiessen_l.setPower(-hwMap.schussgeschwindigkeit);
+                hwMap.m_schiessen_r.setPower(hwMap.schussgeschwindigkeit);
                 loop_wait(2000);
                 hwMap.m_aufnehmen.setPower(1);
                 hwMap.s_unten.setPower(-1);
@@ -218,10 +213,12 @@ public class FullControl extends BaseTeleOp {
                 hwMap.m_aufnehmen.setPower(0);
                 hwMap.s_unten.setPower(0);
                 hwMap.s_oben.setPower(0);
+                hwMap.m_schiessen_l.setPower(-hwMap.schussgeschwindigkeit * 0.8); // letzter Ball braucht weniger Kraft
+                hwMap.m_schiessen_r.setPower(hwMap.schussgeschwindigkeit * 0.8);
             } else if (phase_loswerden == 3) {
-                hwMap.s_kick.setPosition(s_kick_kurzposition);
+                hwMap.s_kick.setPosition(hwMap.s_kick_kurzposition);
                 loop_wait(1000);
-                hwMap.s_kick.setPosition(s_kick_dauerposition);
+                hwMap.s_kick.setPosition(hwMap.s_kick_dauerposition);
                 hwMap.m_schiessen_l.setPower(0);
                 hwMap.m_schiessen_r.setPower(0);
                 hwMap.s_oben.setPower(0);

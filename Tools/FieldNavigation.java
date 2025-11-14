@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Tools.Steuerung.AccelerationProfile;
 import org.firstinspires.ftc.teamcode.Tools.Steuerung.PidController;
 
 public class FieldNavigation {
+    public final static double plattenlänge = 365.75 / 6;
     private final Rotation current_rotation;
     private final Rotation target_rotation;
     private final Velocity velocity;

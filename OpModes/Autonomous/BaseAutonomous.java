@@ -5,16 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Tools.HwMap;
 
 public abstract class BaseAutonomous extends LinearOpMode {
-    protected HwMap hwMap; // hardware map
-
-    /**
-     * get the alliance color
-     *
-     * @return return if the alliance color is red
-     */
-    public boolean isRed() {
-        return true;
-    }
+    public boolean isRed = true;
+    protected HwMap hwMap;
 
     public void loop_driving_update() {
         while (opModeIsActive() && hwMap.navi.isDrivingToPosition()) {
@@ -57,7 +49,7 @@ public abstract class BaseAutonomous extends LinearOpMode {
     }
 
     /**
-     * this internal methode is used to run initialize and run
+     * this internal methode is used to run the OpMode
      */
     public void runOpMode() {
         initialize();
