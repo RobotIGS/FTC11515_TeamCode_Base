@@ -62,8 +62,7 @@ public class MecanumChassis extends ChassisBase {
         }
 
         // normalize the values [-1.0; 1.0]
-        double vm = Math.max(Math.max(Math.abs(wheelSpeeds[0]), Math.abs(wheelSpeeds[1])),
-                Math.max(Math.abs(wheelSpeeds[2]), Math.abs(wheelSpeeds[3])));
+        double vm = Math.max(Math.max(Math.abs(wheelSpeeds[0]), Math.abs(wheelSpeeds[1])), Math.max(Math.abs(wheelSpeeds[2]), Math.abs(wheelSpeeds[3])));
         wheelSpeeds[0] *= velocity.getAbsolute() / vm;
         wheelSpeeds[1] *= velocity.getAbsolute() / vm;
         wheelSpeeds[2] *= velocity.getAbsolute() / vm;

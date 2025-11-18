@@ -23,7 +23,6 @@ public abstract class ChassisBase implements Chassis {
     protected Velocity velocity;
     protected Position2D drivenDistance;
     protected double[] wheelSpeeds;
-    protected double[] wheelSpeedsFactors;
     protected int[] deltaWheelMotorSteps;
     protected ChassisCapabilities capabilities;
     private double rotation_offset;
@@ -44,7 +43,6 @@ public abstract class ChassisBase implements Chassis {
         this.drivenDistance = new Position2D();
         this.wheelMotors = new DcMotor[numWheels];
         this.wheelSpeeds = new double[numWheels];
-        this.wheelSpeedsFactors = new double[numWheels];
         this.wheelMotorSteps = new int[numWheels];
         this.deltaWheelMotorSteps = new int[numWheels];
     }
@@ -61,7 +59,6 @@ public abstract class ChassisBase implements Chassis {
 
         for (int i = 0; i < this.wheelMotors.length; i++) {
             wheelSpeeds[i] = 0.0;
-            wheelSpeedsFactors[i] = 1.0;
             wheelMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             wheelMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             wheelMotorSteps[i] = wheelMotors[i].getCurrentPosition();
@@ -74,14 +71,9 @@ public abstract class ChassisBase implements Chassis {
         setRotation(0.0);
     }
 
-    public void setWheelVelocityFactor(int wheelIndex, double factor) {
-        if (wheelIndex > 0 && wheelIndex < wheelSpeedsFactors.length)
-            wheelSpeedsFactors[wheelIndex] = factor;
-    }
-
     private void setMotorSpeeds() {
         for (int i = 0; i < wheelMotors.length; i++) {
-            wheelMotors[i].setPower(wheelSpeeds[i] * wheelSpeedsFactors[i]);
+            wheelMotors[i].setPower(wheelSpeeds[i]);
         }
     }
 
@@ -119,6 +111,21 @@ public abstract class ChassisBase implements Chassis {
         return capabilities;
     }
 
+    private float getRawRotation() {
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        return (float) orientation.getYaw(AngleUnit.DEGREES);
+    }
+
+    private void calculateRotation() {
+        rotation.set(getRawRotation() + rotation_offset);
+    }
+
+    public void step() {
+        calculateRotation();
+        setMotorSpeeds();
+        updateMotorSteps();
+    }
+
     @SuppressLint("DefaultLocale")
     public String debug() {
         String ret = "--- Chassis Debug ---\n";
@@ -133,20 +140,5 @@ public abstract class ChassisBase implements Chassis {
         }
 
         return ret;
-    }
-
-    private float getRawRotation() {
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        return (float) orientation.getYaw(AngleUnit.DEGREES);
-    }
-
-    private void calculateRotation() {
-        rotation.set(getRawRotation() + rotation_offset);
-    }
-
-    public void step() {
-        calculateRotation();
-        setMotorSpeeds();
-        updateMotorSteps();
     }
 }

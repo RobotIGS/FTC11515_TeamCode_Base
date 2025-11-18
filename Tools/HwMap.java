@@ -24,7 +24,6 @@ public class HwMap {
     public double s_kick_kurzposition = 0.65;
     public double s_kick_dauerposition = 0.23;
     public double aufnehm_geschwindigkeit = -0.05;
-    public double letzter_ball_faktor = 1;
 
     /* END SECTION */
     /* PLACE YOUR HARDWARE INTERFACES DOWN BELOW */

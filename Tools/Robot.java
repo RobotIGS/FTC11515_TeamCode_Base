@@ -15,21 +15,21 @@ public class Robot {
         this.navi.setChassisCapabilities(chassis.getCapabilities());
     }
 
-    public void drive(Position2D d, boolean rel) {
+    public void drive_to_pos(Position2D d, boolean rel) {
         navi.rotationPidController.reset(); // reset pid controller before usage
         if (rel)
-            navi.drive_rel(d);
+            navi.setTargetPosition_rel(d);
         else
-            navi.drive_to_pos(d);
+            navi.setTargetPosition_abs(d);
     }
 
-    public void drive(Position2D d) {
-        drive(d, true);
+    public void drive_to_pos(Position2D d) {
+        drive_to_pos(d, true);
     }
 
     public void rotate(float rotation, boolean rel) {
         navi.setTargetRotation(rotation, rel);
-        drive(new Position2D(0.0, 0.0));
+        drive_to_pos(new Position2D(0.0, 0.0)); // überschreibt Zielposition
     }
 
     public void rotate(float rotation) {

@@ -21,7 +21,6 @@ public abstract class ZwischenAutoBase extends BaseAutonomous {
 
     public void aufnehmen() {
         hwMap.navi.setSpeed(hwMap.aufnehm_geschwindigkeit, 0, 0);
-
         hwMap.m_aufnehmen.setPower(1);
         hwMap.s_unten.setPower(-1);
         hwMap.s_oben.setPower(-1);
@@ -30,7 +29,7 @@ public abstract class ZwischenAutoBase extends BaseAutonomous {
         loop_wait(500);
         hwMap.s_unten.setPower(0); // zweiter Ball drin
         loop_wait(500);
-        hwMap.s_unten.setPower(1); // dritter Ball drehen + zurückdrehen
+        hwMap.s_unten.setPower(1); // dritter Ball drin + zurückdrehen
         hwMap.s_oben.setPower(1);
         hwMap.m_aufnehmen.setPower(-1);
         loop_wait(50);
@@ -38,7 +37,6 @@ public abstract class ZwischenAutoBase extends BaseAutonomous {
         loop_wait(500);
         hwMap.s_oben.setPower(0);
         hwMap.s_unten.setPower(0);
-
         hwMap.navi.setSpeed(0, 0, 0);
     }
 }

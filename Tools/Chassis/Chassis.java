@@ -17,14 +17,6 @@ public interface Chassis {
     void populateMotorArray(HardwareMap hw_map);
 
     /**
-     * set a velocity factor for the given wheel (~ software gearbox ; this enables the usage of different motors)
-     *
-     * @param wheelIndex the index of the wheel
-     * @param factor     the velocity factor
-     */
-    void setWheelVelocityFactor(int wheelIndex, double factor);
-
-    /**
      * set the wheel rotation velocities accordingly to the given velocity
      *
      * @param velocity the chassis velocity

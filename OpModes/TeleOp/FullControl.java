@@ -228,8 +228,8 @@ public class FullControl extends BaseTeleOp {
                 hwMap.m_aufnehmen.setPower(0);
                 hwMap.s_unten.setPower(0);
                 hwMap.s_oben.setPower(0);
-                hwMap.m_schiessen_l.setPower(-hwMap.schussgeschwindigkeit * hwMap.letzter_ball_faktor); // letzter Ball braucht weniger Kraft
-                hwMap.m_schiessen_r.setPower(hwMap.schussgeschwindigkeit * hwMap.letzter_ball_faktor);
+                hwMap.m_schiessen_l.setPower(-hwMap.schussgeschwindigkeit);
+                hwMap.m_schiessen_r.setPower(hwMap.schussgeschwindigkeit);
             } else if (phase_loswerden == 3) {
                 hwMap.s_kick.setPosition(hwMap.s_kick_kurzposition);
                 loop_wait(1000);
