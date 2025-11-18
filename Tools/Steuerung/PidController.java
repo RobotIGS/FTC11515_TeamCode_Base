@@ -9,7 +9,7 @@ public class PidController {
     double k_d;
 
     /**
-     * create a PID controller (see WIKIPEDIA PID controller)
+     * create a PID controller
      *
      * @param p proportional factor
      * @param i integral factor
@@ -73,7 +73,7 @@ public class PidController {
     public double step(double error) {
         last_error = error; // remember the last error for later use
         pid_value = P(error) + I(error) + D(error); // sum up the three parts
-        if (pid_value == 0) {
+        if (k_p == 0) {
             return error;
         } else {
             return Math.max(-1.0, Math.min(1.0, pid_value));

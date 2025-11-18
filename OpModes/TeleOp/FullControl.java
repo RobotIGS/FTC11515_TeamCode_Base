@@ -37,7 +37,14 @@ public class FullControl extends BaseTeleOp {
 
     @Override
     public void runLoop() {
-        /* DRIVING */
+        driving();
+        season();
+        hwMap.robot.step();
+        telemetry();
+    }
+
+    @Override
+    public void driving () {
         if (gamepad1.left_bumper) {
             hwMap.navi.drive_sneak = !hwMap.navi.drive_sneak;
             while ((gamepad1.left_bumper) && opModeIsActive()) {
@@ -53,42 +60,50 @@ public class FullControl extends BaseTeleOp {
         double vy = gamepad1.left_stick_x * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
         double vz = (gamepad1.left_trigger - gamepad1.right_trigger) * hwMap.navi.speed_drehen * (hwMap.navi.drive_sneak ? 0.75 : 1);
 
-        hwMap.robot.setSpeed(
+        hwMap.navi.setSpeed(
                 gegensteuern_X.calculate(hwMap.navi.drive_gegensteuern, alt_vx, vx),
                 gegensteuern_Y.calculate(hwMap.navi.drive_gegensteuern, alt_vy, vy),
                 vz);
 
         alt_vx = vx;
         alt_vy = vy;
+    }
 
-        season();
-
-        /* UPDATE THE ROBOT */
-        hwMap.robot.step();
-
-        /* ADD TELEMETRY FOR DRIVER DOWN BELOW */
+    @Override
+    public void telemetry() {
         telemetry.addData("SNEAK", hwMap.navi.drive_sneak);
         telemetry.addData("GEGENSTEUERN", hwMap.navi.drive_gegensteuern);
         telemetry.addData("SCHUSS GESCHW", hwMap.schussgeschwindigkeit);
         telemetry.addLine();
+        telemetry.addLine(hwMap.navi.debug());
+        telemetry.addLine(hwMap.chassis.debug());
         telemetry.addLine(gegensteuern_X.debug());
         telemetry.addLine(gegensteuern_Y.debug());
-        telemetry.addLine(hwMap.chassis.debug());
-        telemetry.addLine(hwMap.navi.debug());
         telemetry.update();
-        /* END SECTION */
     }
 
-    void season() {
+    @Override
+    public void season() {
+        // Schussgeschwindigkeit
         if (gamepad2.right_bumper) {
-            hwMap.schussgeschwindigkeit = Math.min(1.0, hwMap.schussgeschwindigkeit + 0.1);
+            hwMap.schussgeschwindigkeit = Math.min(1.0, hwMap.schussgeschwindigkeit + 0.05);
             while ((gamepad2.right_bumper) && opModeIsActive()) {
             }
         }
-        if (gamepad2.left_bumper && hwMap.schussgeschwindigkeit > 0.4) {
-            hwMap.schussgeschwindigkeit = Math.max(0.0, hwMap.schussgeschwindigkeit - 0.1);
+        if (gamepad2.left_bumper) {
+            hwMap.schussgeschwindigkeit = Math.max(0.4, hwMap.schussgeschwindigkeit - 0.05);
             while ((gamepad2.left_bumper) && opModeIsActive()) {
             }
+        }
+
+        // Help
+        if (gamepad2.right_trigger != 0) {
+            hwMap.m_schiessen_l.setPower(1);
+            hwMap.m_schiessen_r.setPower(-1);
+            while (gamepad2.right_trigger != 0 && opModeIsActive()) {
+            }
+            hwMap.m_schiessen_l.setPower(0);
+            hwMap.m_schiessen_r.setPower(0);
         }
 
         // motor schiessen
@@ -209,12 +224,12 @@ public class FullControl extends BaseTeleOp {
                 hwMap.m_aufnehmen.setPower(1);
                 hwMap.s_unten.setPower(-1);
                 hwMap.s_oben.setPower(-1);
-                loop_wait(1300);
+                loop_wait(2000);
                 hwMap.m_aufnehmen.setPower(0);
                 hwMap.s_unten.setPower(0);
                 hwMap.s_oben.setPower(0);
-                hwMap.m_schiessen_l.setPower(-hwMap.schussgeschwindigkeit * 0.8); // letzter Ball braucht weniger Kraft
-                hwMap.m_schiessen_r.setPower(hwMap.schussgeschwindigkeit * 0.8);
+                hwMap.m_schiessen_l.setPower(-hwMap.schussgeschwindigkeit * hwMap.letzter_ball_faktor); // letzter Ball braucht weniger Kraft
+                hwMap.m_schiessen_r.setPower(hwMap.schussgeschwindigkeit * hwMap.letzter_ball_faktor);
             } else if (phase_loswerden == 3) {
                 hwMap.s_kick.setPosition(hwMap.s_kick_kurzposition);
                 loop_wait(1000);

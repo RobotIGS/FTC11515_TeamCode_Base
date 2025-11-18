@@ -86,11 +86,11 @@ public class AccelerationProfile {
     @SuppressLint("DefaultLocale")
     public String debug() {
         String ret = "--- Acceleration Profile Debug ---\n";
-        ret += String.format("value : %+.4f\n", (accelerationFactor));
-        ret += String.format("distance : %+.4f\n", (distance));
-        ret += String.format("distanceToSTART : %+.4f\n", (distanceToStart));
-        ret += String.format("distanceToEND : %+.4f\n", (distanceToEnd));
-        ret += String.format("time : %d\n", (System.currentTimeMillis() - startTime));
+        ret += String.format("value: %+.4f\n", (accelerationFactor));
+        ret += String.format("distance: %+.4f\n", (distance));
+        ret += String.format("distanceToSTART: %+.4f\n", (distanceToStart));
+        ret += String.format("distanceToEND: %+.4f\n", (distanceToEnd));
+        ret += String.format("time: %d\n", (System.currentTimeMillis() - startTime));
         return ret;
     }
 }

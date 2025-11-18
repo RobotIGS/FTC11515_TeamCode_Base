@@ -29,8 +29,7 @@ public abstract class BaseAutonomous extends LinearOpMode {
      */
     public void initialize() {
         // initialize the hardware map
-        hwMap = new HwMap();
-        hwMap.initialize(hardwareMap);
+        hwMap = new HwMap(hardwareMap);
 
         /* OVERWRITE VALUES SET BY hwMap.initialize() */
         /* END SECTION */

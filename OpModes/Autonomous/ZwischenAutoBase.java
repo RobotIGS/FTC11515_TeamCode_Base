@@ -8,11 +8,9 @@ public abstract class ZwischenAutoBase extends BaseAutonomous {
         hwMap.m_aufnehmen.setPower(1);
         hwMap.s_unten.setPower(-1);
         hwMap.s_oben.setPower(-1);
-        loop_wait(2000);
-        hwMap.m_schiessen_l.setPower(-hwMap.schussgeschwindigkeit * 0.8); // letzter Ball braucht weniger Kraft
-        hwMap.m_schiessen_r.setPower(hwMap.schussgeschwindigkeit * 0.8);
+        loop_wait(8000);
         hwMap.s_kick.setPosition(hwMap.s_kick_kurzposition);
-        loop_wait(1000);
+        loop_wait(3000);
         hwMap.s_kick.setPosition(hwMap.s_kick_dauerposition);
         hwMap.m_schiessen_l.setPower(0);
         hwMap.m_schiessen_r.setPower(0);
@@ -22,6 +20,8 @@ public abstract class ZwischenAutoBase extends BaseAutonomous {
     }
 
     public void aufnehmen() {
+        hwMap.navi.setSpeed(hwMap.aufnehm_geschwindigkeit, 0, 0);
+
         hwMap.m_aufnehmen.setPower(1);
         hwMap.s_unten.setPower(-1);
         hwMap.s_oben.setPower(-1);
@@ -38,5 +38,7 @@ public abstract class ZwischenAutoBase extends BaseAutonomous {
         loop_wait(500);
         hwMap.s_oben.setPower(0);
         hwMap.s_unten.setPower(0);
+
+        hwMap.navi.setSpeed(0, 0, 0);
     }
 }

@@ -10,40 +10,35 @@ public abstract class BaseTeleOp extends LinearOpMode {
     public void loop_wait(int time_in_ms) {
         long start = System.currentTimeMillis();
         while ((System.currentTimeMillis() - start) < time_in_ms && opModeIsActive()) {
+            driving();
+            hwMap.robot.step();
+            telemetry();
         }
     }
 
-    /**
-     * this gets executed when pressing the init button on the phone / driver hub
-     */
-    public void initialize() {
+    public void driving() {}
+
+    public void season() {}
+
+    public void telemetry() {}
+
+    public void initialize() { // this gets executed when pressing the init button on the driver hub
         // initialize the hardware map
-        hwMap = new HwMap();
-        hwMap.initialize(hardwareMap);
+        hwMap = new HwMap(hardwareMap);
 
         /* OVERWRITE VALUES SET BY hwMap.initialize() DOWN BELOW */
         /* END SECTION */
     }
 
-    /**
-     * this gets executed once when play button is pressed on the phone / driver hub
-     */
-    public abstract void runOnce();
+    public abstract void runOnce(); // this gets executed once when play button is pressed on the driver hub
 
-    /**
-     * this gets executed in a loop when the play button is pressed on the phone / driver hub
-     */
-    public abstract void runLoop();
+    public abstract void runLoop(); // this gets executed in a loop when the play button is pressed on the driver hub
 
-    /**
-     * this gets executed after the loop was stopped
-     */
-    public void end() {
+    public void end() { // this gets executed after the loop was stopped
         hwMap.robot.stop();
     }
 
-    /* this internal methode is used to run initialize and run */
-    public void runOpMode() {
+    public void runOpMode() { // this internal methode is used to run initialize and run
         initialize();
         waitForStart();
         runOnce();

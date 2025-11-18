@@ -19,7 +19,7 @@ public class ControllerTest extends BaseTeleOp {
                 gamepad1.left_bumper || gamepad1.right_bumper ||
                 gamepad1.left_stick_x != 0 || gamepad1.left_stick_y != 0 ||
                 gamepad1.right_stick_x != 0 || gamepad1.right_stick_y != 0) { // vorwärts
-            hwMap.robot.setSpeed(
+            hwMap.navi.setSpeed(
                     1,
                     0,
                     0);

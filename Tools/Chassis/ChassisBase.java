@@ -17,22 +17,17 @@ public abstract class ChassisBase implements Chassis {
     private final DcMotor[] wheelMotors;
     private final int[] wheelMotorSteps;
     private final Rotation rotation;
-    // Encoder Steps pro Rotation eines Fahrmotors
+    public IMU imu;
     protected double driving_encoder_steps_per_rotation;
-    protected IMU imu;
     protected RevHubOrientationOnRobot hubOrientationOnRobot;
     protected Velocity velocity;
     protected Position2D drivenDistance;
     protected double[] wheelSpeeds;
     protected double[] wheelSpeedsFactors;
     protected int[] deltaWheelMotorSteps;
-    // set default capabilities for any chassis
     protected ChassisCapabilities capabilities;
     private double rotation_offset;
 
-    /**
-     * create chassis
-     */
     public ChassisBase(int numWheels, RevHubOrientationOnRobot huborientation) {
         this.capabilities = new ChassisCapabilities();
 
@@ -58,10 +53,13 @@ public abstract class ChassisBase implements Chassis {
         this.driving_encoder_steps_per_rotation = driving_encoder_steps_per_rotation;
     }
 
-    @SuppressLint("DefaultLocale")
     public void populateMotorArray(HardwareMap hw_map) {
+        wheelMotors[0] = hw_map.get(DcMotor.class, "front_left_motor");
+        wheelMotors[1] = hw_map.get(DcMotor.class, "front_right_motor");
+        wheelMotors[2] = hw_map.get(DcMotor.class, "back_left_motor");
+        wheelMotors[3] = hw_map.get(DcMotor.class, "back_right_motor");
+
         for (int i = 0; i < this.wheelMotors.length; i++) {
-            wheelMotors[i] = hw_map.get(DcMotor.class, String.format("wheelMotor_%d", i));
             wheelSpeeds[i] = 0.0;
             wheelSpeedsFactors[i] = 1.0;
             wheelMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -72,7 +70,8 @@ public abstract class ChassisBase implements Chassis {
 
         imu = hw_map.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(this.hubOrientationOnRobot));
-        setRotation(0.0f);
+        imu.resetYaw();
+        setRotation(0.0);
     }
 
     public void setWheelVelocityFactor(int wheelIndex, double factor) {
@@ -124,14 +123,13 @@ public abstract class ChassisBase implements Chassis {
     public String debug() {
         String ret = "--- Chassis Debug ---\n";
         if (velocity != null)
-            ret += String.format("velocity : vx=%+1.2f vy=%+1.2f wz=%+1.2f\n", velocity.getVX(), velocity.getVY(), velocity.getWZ());
+            ret += String.format("velocity: vx=%+1.2f vy=%+1.2f wz=%+1.2f\n", velocity.getVX(), velocity.getVY(), velocity.getWZ());
         if (drivenDistance != null)
-            ret += String.format("drivenDistance : x=%+2.2f y=%+2.2f\n", drivenDistance.getX(), drivenDistance.getY());
-        ret += String.format("rotation : %+3.2f\n", getRotation());
+            ret += String.format("driven distance: x=%+2.2f y=%+2.2f\n", drivenDistance.getX(), drivenDistance.getY());
 
         // add wheel debug
         for (int i = 0; i < wheelMotors.length; i++) {
-            ret += String.format("Wheel %d : v=%+1.2f  steps=%+5d  delta steps=%+3d\n", i, wheelSpeeds[i], wheelMotors[i].getCurrentPosition(), deltaWheelMotorSteps[i]);
+            ret += String.format("Wheel %d: v=%+1.2f  steps=%+5d  delta steps=%+3d\n", i, wheelSpeeds[i], wheelMotors[i].getCurrentPosition(), deltaWheelMotorSteps[i]);
         }
 
         return ret;
