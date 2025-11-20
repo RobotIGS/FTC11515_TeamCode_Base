@@ -8,22 +8,6 @@ public abstract class BaseAutonomous extends LinearOpMode {
     public boolean isRed = true;
     protected HwMap hwMap;
 
-    public void loop_driving_update() {
-        while (opModeIsActive() && hwMap.navi.isDrivingToPosition()) {
-            hwMap.robot.step();
-            telemetry.addLine(hwMap.navi.debug());
-            telemetry.addLine(hwMap.chassis.debug());
-            telemetry.addLine(hwMap.navi.getAccProfile().debug());
-            telemetry.update();
-        }
-    }
-
-    public void loop_wait(int time_in_ms) {
-        long start = System.currentTimeMillis();
-        while ((System.currentTimeMillis() - start) < time_in_ms && opModeIsActive()) {
-        }
-    }
-
     /**
      * this gets executed when pressing the init button on the phone / driver hub
      */
@@ -55,5 +39,21 @@ public abstract class BaseAutonomous extends LinearOpMode {
         waitForStart();
         run();
         end();
+    }
+
+    public void loop_wait(int time_in_ms) {
+        long start = System.currentTimeMillis();
+        while ((System.currentTimeMillis() - start) < time_in_ms && opModeIsActive()) {
+        }
+    }
+
+    public void loop_while_driving() {
+        while (opModeIsActive() && hwMap.navi.isDrivingToPosition()) {
+            hwMap.robot.step();
+            telemetry.addLine(hwMap.navi.debug());
+            telemetry.addLine(hwMap.chassis.debug());
+            telemetry.addLine(hwMap.navi.getAccProfile().debug());
+            telemetry.update();
+        }
     }
 }

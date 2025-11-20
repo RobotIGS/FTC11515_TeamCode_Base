@@ -16,7 +16,7 @@ public class AutoLosfahrenVorne extends BaseAutonomous {
     @Override
     public void run() {
         hwMap.robot.drive_to_pos(new Position2D(20, 0));
-        loop_driving_update();
+        loop_while_driving();
         loop_wait(10000);
     }
 }

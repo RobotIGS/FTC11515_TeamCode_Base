@@ -7,15 +7,6 @@ import org.firstinspires.ftc.teamcode.Tools.HwMap;
 public abstract class BaseTeleOp extends LinearOpMode {
     protected HwMap hwMap; // hardware map
 
-    public void loop_wait(int time_in_ms) {
-        long start = System.currentTimeMillis();
-        while ((System.currentTimeMillis() - start) < time_in_ms && opModeIsActive()) {
-            driving();
-            hwMap.robot.step();
-            telemetry();
-        }
-    }
-
     public void driving() {}
 
     public void season() {}
@@ -45,5 +36,20 @@ public abstract class BaseTeleOp extends LinearOpMode {
         while (opModeIsActive())
             runLoop();
         end();
+    }
+
+    public void loop_wait(int time_in_ms) {
+        long start = System.currentTimeMillis();
+        while ((System.currentTimeMillis() - start) < time_in_ms && opModeIsActive()) {
+            driving();
+            hwMap.robot.step();
+            telemetry();
+        }
+    }
+
+    public void loop_while_driving() {
+        while (opModeIsActive() && hwMap.navi.isDrivingToPosition()) {
+            hwMap.robot.step();
+        }
     }
 }

@@ -24,6 +24,12 @@ public class PidController {
         this.pid_value = 0;
     }
 
+    public void change_values(double p, double i, double d) {
+        this.k_p = p;
+        this.k_i = i;
+        this.k_d = d;
+    }
+
     /**
      * calculate the proportional part
      *
