@@ -57,6 +57,12 @@ public class MotorServoTest extends BaseTeleOp {
         }
 
 
+        // information
+        telemetry.addLine("left stick y: motor power");
+        telemetry.addLine("right stick y: crservo power");
+        telemetry.addLine("b: motor 2 aktivieren");
+        telemetry.addLine("dpad up/ down: servo");
+
         // motor information
         telemetry.addLine("motor information:");
         telemetry.addData("Speed", Math.abs(gamepad1.left_stick_y));

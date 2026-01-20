@@ -27,13 +27,11 @@ public class HwMap {
 
     /* END SECTION */
     /* PLACE YOUR HARDWARE INTERFACES DOWN BELOW */
-    public DcMotor m_schiessen_l;
-    public DcMotor m_schiessen_r;
+    public DcMotor m_schiessen;
+    public DcMotor m_boden;
     public DcMotor m_aufnehmen;
     public DcMotor m_hoch;
 
-    public CRServo s_unten;
-    public CRServo s_oben;
     public Servo s_kick;
 
     /* END SECTION */
@@ -58,13 +56,11 @@ public class HwMap {
         robot = new Robot(navi, chassis);
 
         /* INITIALIZE YOUR HARDWARE DOWN BELOW */
-        m_schiessen_l = hardwareMap.get(DcMotor.class, "schiessen_l");
-        m_schiessen_r = hardwareMap.get(DcMotor.class, "schiessen_r");
+        m_schiessen = hardwareMap.get(DcMotor.class, "schiessen");
         m_aufnehmen = hardwareMap.get(DcMotor.class, "aufnehmen");
+        m_boden = hardwareMap.get(DcMotor.class, "boden");
         m_hoch = hardwareMap.get(DcMotor.class, "hoch");
 
-        s_unten = hardwareMap.get(CRServo.class, "s_unten");
-        s_oben = hardwareMap.get(CRServo.class, "s_oben");
         s_kick = hardwareMap.get(Servo.class, "s_stop");
         /* END SECTION */
     }

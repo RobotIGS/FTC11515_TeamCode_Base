@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.teamcode.Tools.Steuerung.Gegensteuern;
 
 @TeleOp(name = "FullControl", group = "FTC")
@@ -98,23 +97,19 @@ public class FullControl extends BaseTeleOp {
 
         // Help
         if (gamepad2.right_trigger != 0) {
-            hwMap.m_schiessen_l.setPower(1);
-            hwMap.m_schiessen_r.setPower(-1);
+            hwMap.m_schiessen.setPower(1);
             while (gamepad2.right_trigger != 0 && opModeIsActive()) {
             }
-            hwMap.m_schiessen_l.setPower(0);
-            hwMap.m_schiessen_r.setPower(0);
+            hwMap.m_schiessen.setPower(0);
         }
 
         // motor schiessen
         if (gamepad2.a) {
             m_schiessen = !m_schiessen;
             if (m_schiessen) {
-                hwMap.m_schiessen_l.setPower(-hwMap.schussgeschwindigkeit);
-                hwMap.m_schiessen_r.setPower(hwMap.schussgeschwindigkeit);
+                hwMap.m_schiessen.setPower(hwMap.schussgeschwindigkeit);
             } else {
-                hwMap.m_schiessen_l.setPower(0);
-                hwMap.m_schiessen_r.setPower(0);
+                hwMap.m_schiessen.setPower(0);
             }
             while ((gamepad2.a) && opModeIsActive()) {
             }
@@ -123,7 +118,7 @@ public class FullControl extends BaseTeleOp {
         if (gamepad2.b) {
             m_aufnehmen = !m_aufnehmen;
             if (m_aufnehmen) {
-                hwMap.m_aufnehmen.setPower(1);
+                hwMap.m_aufnehmen.setPower(hwMap.aufnehm_geschwindigkeit);
             } else {
                 hwMap.m_aufnehmen.setPower(0);
             }
@@ -143,28 +138,6 @@ public class FullControl extends BaseTeleOp {
             hwMap.m_hoch.setPower(0);
         }
 
-        // servo unten
-        if (gamepad2.x) {
-            s_unten = !s_unten;
-            if (s_unten) {
-                hwMap.s_unten.setPower(-1);
-            } else {
-                hwMap.s_unten.setPower(0);
-            }
-            while ((gamepad2.x) && opModeIsActive()) {
-            }
-        }
-        // servo oben
-        if (gamepad2.y) {
-            s_oben = !s_oben;
-            if (s_oben) {
-                hwMap.s_oben.setPower(-1);
-            } else {
-                hwMap.s_oben.setPower(0);
-            }
-            while ((gamepad2.y) && opModeIsActive()) {
-            }
-        }
         // servo kick
         if (gamepad2.left_trigger != 0) {
             hwMap.s_kick.setPosition(hwMap.s_kick_kurzposition);
@@ -178,26 +151,15 @@ public class FullControl extends BaseTeleOp {
         // one-klick aufsammeln
         if (gamepad2.dpad_down) {
             phase_aufsammeln++;
-            if (phase_aufsammeln > 3) {
+            if (phase_aufsammeln > 1) {
                 phase_aufsammeln = 0;
             }
             if (phase_aufsammeln == 1) {
                 hwMap.m_aufnehmen.setPower(1);
-                hwMap.s_unten.setPower(-1);
-                hwMap.s_oben.setPower(-1);
-            } else if (phase_aufsammeln == 2) {
-                hwMap.s_oben.setPower(0);
-            } else if (phase_aufsammeln == 3) {
-                hwMap.s_unten.setPower(0);
+                hwMap.m_boden.setPower(1);
             } else if (phase_aufsammeln == 0) {
-                hwMap.s_unten.setPower(1);
-                hwMap.s_oben.setPower(1);
-                hwMap.m_aufnehmen.setPower(-1);
-                loop_wait(50);
                 hwMap.m_aufnehmen.setPower(0);
-                loop_wait(500);
-                hwMap.s_oben.setPower(0);
-                hwMap.s_unten.setPower(0);
+                hwMap.m_boden.setPower(0);
             }
             while ((gamepad2.dpad_down) && opModeIsActive()) {
             }
@@ -210,34 +172,21 @@ public class FullControl extends BaseTeleOp {
                 phase_loswerden = 0;
             }
             if (phase_loswerden == 1) {
-                hwMap.m_schiessen_l.setPower(-hwMap.schussgeschwindigkeit);
-                hwMap.m_schiessen_r.setPower(hwMap.schussgeschwindigkeit);
+                hwMap.m_schiessen.setPower(-hwMap.schussgeschwindigkeit);
                 loop_wait(2000);
                 hwMap.m_aufnehmen.setPower(1);
-                hwMap.s_unten.setPower(-1);
-                hwMap.s_oben.setPower(-1);
                 loop_wait(1300);
                 hwMap.m_aufnehmen.setPower(0);
-                hwMap.s_unten.setPower(0);
-                hwMap.s_oben.setPower(0);
             } else if (phase_loswerden == 2) {
                 hwMap.m_aufnehmen.setPower(1);
-                hwMap.s_unten.setPower(-1);
-                hwMap.s_oben.setPower(-1);
                 loop_wait(2000);
                 hwMap.m_aufnehmen.setPower(0);
-                hwMap.s_unten.setPower(0);
-                hwMap.s_oben.setPower(0);
-                hwMap.m_schiessen_l.setPower(-hwMap.schussgeschwindigkeit);
-                hwMap.m_schiessen_r.setPower(hwMap.schussgeschwindigkeit);
+                hwMap.m_schiessen.setPower(-hwMap.schussgeschwindigkeit);
             } else if (phase_loswerden == 3) {
                 hwMap.s_kick.setPosition(hwMap.s_kick_kurzposition);
                 loop_wait(1000);
                 hwMap.s_kick.setPosition(hwMap.s_kick_dauerposition);
-                hwMap.m_schiessen_l.setPower(0);
-                hwMap.m_schiessen_r.setPower(0);
-                hwMap.s_oben.setPower(0);
-                hwMap.s_unten.setPower(0);
+                hwMap.m_schiessen.setPower(0);
                 hwMap.m_aufnehmen.setPower(0);
             }
             while ((gamepad2.dpad_up) && opModeIsActive()) {
