@@ -6,9 +6,9 @@ public abstract class ZwischenAutoBase extends BaseAutonomous {
         loop_wait(2000);
         hwMap.m_aufnehmen.setPower(1);
         loop_wait(8000);
-        hwMap.s_kick.setPosition(hwMap.s_kick_kurzposition);
+        hwMap.s_kick_seite.setPosition(hwMap.s_kick_kurzposition);
         loop_wait(3000);
-        hwMap.s_kick.setPosition(hwMap.s_kick_dauerposition);
+        hwMap.s_kick_seite.setPosition(hwMap.s_kick_dauerposition);
         hwMap.m_schiessen.setPower(0);
         hwMap.m_aufnehmen.setPower(0);
     }

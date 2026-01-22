@@ -23,7 +23,7 @@ public class HwMap {
     public double schussgeschwindigkeit = 0.7;
     public double s_kick_kurzposition = 0.65;
     public double s_kick_dauerposition = 0.23;
-    public double aufnehm_geschwindigkeit = -0.05;
+    public double aufnehm_geschwindigkeit = -1.0;
 
     /* END SECTION */
     /* PLACE YOUR HARDWARE INTERFACES DOWN BELOW */
@@ -32,7 +32,9 @@ public class HwMap {
     public DcMotor m_aufnehmen;
     public DcMotor m_hoch;
 
-    public Servo s_kick;
+    public Servo s_kick_seite;
+    public Servo s_kick_boden;
+    public CRServo crs_rad;
 
     /* END SECTION */
 
@@ -61,7 +63,9 @@ public class HwMap {
         m_boden = hardwareMap.get(DcMotor.class, "boden");
         m_hoch = hardwareMap.get(DcMotor.class, "hoch");
 
-        s_kick = hardwareMap.get(Servo.class, "s_stop");
+        s_kick_boden = hardwareMap.get(Servo.class, "s_boden");
+        s_kick_seite = hardwareMap.get(Servo.class, "seite");
+        crs_rad = hardwareMap.get(CRServo.class, "rad");
         /* END SECTION */
     }
 }
