@@ -13,8 +13,6 @@ public class FullControl extends BaseTeleOp {
     // SEASON
     private boolean m_aufnehmen = false;
     private boolean m_schiessen = false;
-    private boolean s_unten = false;
-    private boolean s_oben = false;
     private int phase_aufsammeln = 0;
     private int phase_loswerden = 0;
     /* END SECTION */
