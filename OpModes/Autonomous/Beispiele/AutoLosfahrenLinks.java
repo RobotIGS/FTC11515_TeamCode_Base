@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.OpModes.Autonomous.BaseAutonomous;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 
-@Autonomous(name = "Auto Losfahren")
+@Autonomous(name = "Losfahren Links")
 public class AutoLosfahrenLinks extends BaseAutonomous {
     @Override
     public void initialize() {

@@ -73,8 +73,8 @@ public class MecanumChassis extends ChassisBase {
         wheelSpeeds[3] *= -1;
 
         // change rotation direction of the back motors
-        wheelSpeeds[2] *= -1;
-        wheelSpeeds[3] *= -1;
+//        wheelSpeeds[2] *= -1;
+//        wheelSpeeds[3] *= -1;
     }
 
     @Override
@@ -89,8 +89,8 @@ public class MecanumChassis extends ChassisBase {
         deltaWheelMotorSteps[3] *= -1;
 
         // change rotation direction of the back motors
-        deltaWheelMotorSteps[2] *= -1;
-        deltaWheelMotorSteps[3] *= -1;
+//        deltaWheelMotorSteps[2] *= -1;
+//        deltaWheelMotorSteps[3] *= -1;
 
         // calculate steps
         for (int i = 0; i < 4; i++) {

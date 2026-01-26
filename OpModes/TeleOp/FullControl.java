@@ -53,7 +53,7 @@ public class FullControl extends BaseTeleOp {
             }
         }
 
-        double vx = -gamepad1.left_stick_y * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
+        double vx = gamepad1.left_stick_y * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
         double vy = gamepad1.left_stick_x * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
         double vz = (gamepad1.left_trigger - gamepad1.right_trigger) * hwMap.navi.speed_drehen * (hwMap.navi.drive_sneak ? 0.75 : 1);
 
@@ -71,6 +71,7 @@ public class FullControl extends BaseTeleOp {
         telemetry.addData("SNEAK", hwMap.navi.drive_sneak);
         telemetry.addData("GEGENSTEUERN", hwMap.navi.drive_gegensteuern);
         telemetry.addData("SCHUSS GESCHW", hwMap.schussgeschwindigkeit);
+        telemetry.addData("boden", hwMap.s_kick_boden.getPosition());
         telemetry.addLine();
         telemetry.addLine(hwMap.navi.debug());
         telemetry.addLine(hwMap.chassis.debug());
@@ -117,49 +118,37 @@ public class FullControl extends BaseTeleOp {
         }
         // motor hoch
         if (gamepad2.dpad_right) {
-            hwMap.m_hoch.setPower(1);
+            hwMap.m_hoch.setPower(hwMap.m_hoch.getPower() == 0 ? 1 : 0);
             while ((gamepad2.dpad_right) && opModeIsActive()) {
             }
-            hwMap.m_hoch.setPower(0);
-        } else if (gamepad2.dpad_left) {
-            hwMap.m_hoch.setPower(-1);
-            while ((gamepad2.dpad_left) && opModeIsActive()) {
-            }
-            hwMap.m_hoch.setPower(0);
         }
         // motor boden
-        if (gamepad2.dpad_up) {
-            hwMap.m_boden.setPower(1);
-            while ((gamepad2.dpad_up) && opModeIsActive()) {
+        if (gamepad2.dpad_left) {
+            hwMap.m_boden.setPower(hwMap.m_boden.getPower() == 0 ? -1 : 0);
+            while ((gamepad2.dpad_left) && opModeIsActive()) {
             }
-            hwMap.m_boden.setPower(0);
-        } else if (gamepad2.dpad_down) {
-            hwMap.m_boden.setPower(-1);
-            while ((gamepad2.dpad_down) && opModeIsActive()) {
-            }
-            hwMap.m_boden.setPower(0);
         }
 
         // servo kick seite
         if (gamepad2.left_trigger != 0) {
-            hwMap.s_kick_seite.setPosition(hwMap.s_kick_seite.getPosition() + 0.001);
+            hwMap.s_kick_seite.setPosition(hwMap.s_kick_seite.getPosition() + 0.05);
             while (gamepad2.left_trigger != 0 && opModeIsActive()) {
             }
         }
         if (gamepad2.right_trigger != 0) {
-            hwMap.s_kick_seite.setPosition(hwMap.s_kick_seite.getPosition() - 0.001);
+            hwMap.s_kick_seite.setPosition(hwMap.s_kick_seite.getPosition() - 0.05);
             while (gamepad2.right_trigger != 0 && opModeIsActive()) {
             }
         }
 
         // servo kick boden
         if (gamepad2.left_bumper) {
-            hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden.getPosition() + 0.001);
+            hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden.getPosition() + 0.05);
             while (gamepad2.left_bumper && opModeIsActive()) {
             }
         }
         if (gamepad2.right_bumper) {
-            hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden.getPosition() - 0.001);
+            hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden.getPosition() - 0.05);
             while (gamepad2.right_bumper && opModeIsActive()) {
             }
         }

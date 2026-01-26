@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.OpModes.Autonomous.BaseAutonomous;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 
-@Autonomous(name = "Auto Quadrat")
+@Autonomous(name = "Quadrat")
 public class AutoQuadrat extends BaseAutonomous {
     @Override
     public void run() {

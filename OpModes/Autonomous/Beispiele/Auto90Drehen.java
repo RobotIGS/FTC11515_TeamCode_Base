@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.OpModes.Autonomous.BaseAutonomous;
 
-@Autonomous(name = "Auto 90 Drehen")
+@Autonomous(name = "90 Drehen")
 public class Auto90Drehen extends BaseAutonomous {
     @Override
     public void run() {
