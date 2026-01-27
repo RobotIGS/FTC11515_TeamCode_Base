@@ -11,8 +11,6 @@ public class FullControl extends BaseTeleOp {
     double alt_vx;
     double alt_vy;
     // SEASON
-    private boolean m_aufnehmen = false;
-    private boolean m_schiessen = false;
     private int phase_aufsammeln = 0;
     private int phase_loswerden = 0;
     /* END SECTION */
@@ -70,7 +68,7 @@ public class FullControl extends BaseTeleOp {
     public void telemetry() {
         telemetry.addData("SNEAK", hwMap.navi.drive_sneak);
         telemetry.addData("GEGENSTEUERN", hwMap.navi.drive_gegensteuern);
-        telemetry.addData("SCHUSS GESCHW", hwMap.schussgeschwindigkeit);
+        telemetry.addData("SCHUSS GESCHW", hwMap.gesch_schuss);
         telemetry.addData("boden", hwMap.s_kick_boden.getPosition());
         telemetry.addLine();
         telemetry.addLine(hwMap.navi.debug());
@@ -83,54 +81,55 @@ public class FullControl extends BaseTeleOp {
     @Override
     public void season() {
         // Schussgeschwindigkeit
-        if (false) {
-            hwMap.schussgeschwindigkeit = Math.min(1.0, hwMap.schussgeschwindigkeit + 0.05);
+        if (gamepad1.right_bumper) {
+            hwMap.gesch_schuss = Math.min(1.0, hwMap.gesch_schuss + 0.05);
             while ((gamepad2.right_bumper) && opModeIsActive()) {
             }
         }
-        if (false) {
-            hwMap.schussgeschwindigkeit = Math.max(0.4, hwMap.schussgeschwindigkeit - 0.05);
+        if (gamepad1.left_bumper) {
+            hwMap.gesch_schuss = Math.max(0.4, hwMap.gesch_schuss - 0.05);
             while ((gamepad2.left_bumper) && opModeIsActive()) {
             }
         }
 
-        // motor schiessen
-        if (gamepad2.a) {
-            m_schiessen = !m_schiessen;
-            if (m_schiessen) {
-                hwMap.m_schiessen.setPower(hwMap.schussgeschwindigkeit);
-            } else {
-                hwMap.m_schiessen.setPower(0);
-            }
-            while ((gamepad2.a) && opModeIsActive()) {
-            }
-        }
         // motor aufnehmen
         if (gamepad2.b) {
-            m_aufnehmen = !m_aufnehmen;
-            if (m_aufnehmen) {
-                hwMap.m_aufnehmen.setPower(hwMap.aufnehm_geschwindigkeit);
+            if (hwMap.m_aufnehmen.getPower() == 0) {
+                hwMap.m_aufnehmen.setPower(hwMap.gesch_aufnehmen);
             } else {
                 hwMap.m_aufnehmen.setPower(0);
             }
             while ((gamepad2.b) && opModeIsActive()) {
             }
         }
-        // motor hoch
-        if (gamepad2.dpad_right) {
-            hwMap.m_hoch.setPower(hwMap.m_hoch.getPower() == 0 ? 1 : 0);
-            while ((gamepad2.dpad_right) && opModeIsActive()) {
+
+        // motor schiessen
+        if (gamepad2.a) {
+            if (hwMap.m_schiessen.getPower() == 0) {
+                hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
+            } else {
+                hwMap.m_schiessen.setPower(0);
+            }
+            while ((gamepad2.a) && opModeIsActive()) {
             }
         }
-        // motor boden
-        if (gamepad2.dpad_left) {
+
+        // motor hoch
+        if (gamepad2.x) {
+            hwMap.m_hoch.setPower(hwMap.m_hoch.getPower() == 0 ? 1 : 0);
+            while ((gamepad2.x) && opModeIsActive()) {
+            }
+        }
+        // motor boden + transport servo
+        if (gamepad2.y) {
             hwMap.m_boden.setPower(hwMap.m_boden.getPower() == 0 ? -1 : 0);
-            while ((gamepad2.dpad_left) && opModeIsActive()) {
+            hwMap.crs_rad.setPower(hwMap.crs_rad.getPower() == 0 ? -1 : 0);
+            while ((gamepad2.y) && opModeIsActive()) {
             }
         }
 
         // servo kick seite
-        if (gamepad2.left_trigger != 0) {
+        if (gamepad2.dpad_down) {
             hwMap.s_kick_seite.setPosition(hwMap.s_kick_seite.getPosition() + 0.05);
             while (gamepad2.left_trigger != 0 && opModeIsActive()) {
             }
@@ -141,37 +140,23 @@ public class FullControl extends BaseTeleOp {
             }
         }
 
-        // servo kick boden
-        if (gamepad2.left_bumper) {
-            hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden.getPosition() + 0.05);
-            while (gamepad2.left_bumper && opModeIsActive()) {
-            }
-        }
-        if (gamepad2.right_bumper) {
-            hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden.getPosition() - 0.05);
-            while (gamepad2.right_bumper && opModeIsActive()) {
-            }
-        }
-
-        // cr servo rad
-        if (gamepad2.x) {
-            if (hwMap.crs_rad.getPower() != 0) {
-                hwMap.crs_rad.setPower(0);
-            } else {
-                hwMap.crs_rad.setPower(1);
-            }
-            while (gamepad2.x && opModeIsActive()) {}
+        // servo kick seite
+        if (gamepad2.dpad_down) {
+            hwMap.s_kick_seite.setPosition(hwMap.s_kick_seite_kurzposition);
+            loop_wait(250);
+            hwMap.s_kick_seite.setPosition(hwMap.s_kick_seite_dauerposition);
+            while (gamepad2.dpad_down && opModeIsActive()) {}
         }
 
         // servo kick boden
-//        if (gamepad2.right_trigger != 0) {
-//            hwMap.s_kick_boden.setPosition(hwMap.s_kick_kurzposition);
-//            while (gamepad2.right_trigger != 0 && opModeIsActive()) {
-//            }
-//        } else if (hwMap.s_kick_boden.getPosition() == hwMap.s_kick_kurzposition) {
-//            loop_wait(250);
-//            hwMap.s_kick_boden.setPosition(hwMap.s_kick_dauerposition);
-//        }
+        if (gamepad2.dpad_up) {
+            hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden_kurzposition);
+            while (gamepad2.dpad_up && opModeIsActive()) {
+            }
+        } else if (hwMap.s_kick_boden.getPosition() == hwMap.s_kick_boden_kurzposition) {
+            loop_wait(250);
+            hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden_dauerposition);
+        }
 
 
 
@@ -194,30 +179,44 @@ public class FullControl extends BaseTeleOp {
         }
 
         // one-klick schiessen
-        if (false) {
+        if (gamepad2.right_trigger != 0) {
+//
+            hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
+            loop_wait(2000);
+            hwMap.m_hoch.setPower(1);
+            loop_wait(1300);
+            hwMap.m_boden.setPower(1);
+            hwMap.crs_rad.setPower(1);
+            loop_wait(5000);
+            hwMap.m_schiessen.setPower(0);
+            hwMap.m_hoch.setPower(0);
+            hwMap.m_boden.setPower(0);
+            hwMap.crs_rad.setPower(0);
+
+            while ((gamepad2.right_trigger != 0) && opModeIsActive()) {
+            }
+
             phase_loswerden++;
             if (phase_loswerden > 3) {
                 phase_loswerden = 0;
             }
             if (phase_loswerden == 1) {
-                hwMap.m_schiessen.setPower(-hwMap.schussgeschwindigkeit);
+                hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
                 loop_wait(2000);
-                hwMap.m_aufnehmen.setPower(1);
+                hwMap.m_boden.setPower(1);
                 loop_wait(1300);
                 hwMap.m_aufnehmen.setPower(0);
             } else if (phase_loswerden == 2) {
                 hwMap.m_aufnehmen.setPower(1);
                 loop_wait(2000);
                 hwMap.m_aufnehmen.setPower(0);
-                hwMap.m_schiessen.setPower(-hwMap.schussgeschwindigkeit);
+                hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
             } else if (phase_loswerden == 3) {
-                hwMap.s_kick_seite.setPosition(hwMap.s_kick_kurzposition);
+                hwMap.s_kick_seite.setPosition(hwMap.s_kick_boden_kurzposition);
                 loop_wait(1000);
-                hwMap.s_kick_seite.setPosition(hwMap.s_kick_dauerposition);
+                hwMap.s_kick_seite.setPosition(hwMap.s_kick_boden_dauerposition);
                 hwMap.m_schiessen.setPower(0);
                 hwMap.m_aufnehmen.setPower(0);
-            }
-            while ((gamepad2.dpad_up) && opModeIsActive()) {
             }
         }
     }
