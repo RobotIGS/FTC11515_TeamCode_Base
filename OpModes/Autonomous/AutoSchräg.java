@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 public class AutoSchräg extends ZwischenAutoBase {
     @Override
     public void run() {
-        hwMap.robot.drive_to_pos(new Position2D(-plattenlänge, 0));
+        hwMap.robot.drive_to_pos(new Position2D(plattenlänge, 0));
         loop_while_driving();
         schiessen();
 

@@ -22,10 +22,11 @@ public class HwMap {
     // season
     public double gesch_schuss = 0.7;
     public double gesch_aufnehmen = -1.0;
-    public double s_kick_boden_kurzposition = 0;
-    public double s_kick_boden_dauerposition = 0;
-    public double s_kick_seite_kurzposition = 0.65;
-    public double s_kick_seite_dauerposition = 0.23;
+    public double s_kick_boden_kurzposition = 0.9;
+    public double s_kick_boden_dauerposition = 0.6;
+
+    public double s_kick_seite_kurzposition = 0.7;
+    public double s_kick_seite_dauerposition = 0.15;
 
 
     /* END SECTION */
