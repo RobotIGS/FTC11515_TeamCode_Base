@@ -13,19 +13,15 @@ public class AutoGerade extends ZwischenAutoBase {
         loop_while_driving();
         schiessen();
 
-        hwMap.robot.rotate(isRed ? 130 : -130);
+        hwMap.robot.rotate(isRed ? -70 : 70);
         loop_while_driving();
-        hwMap.robot.drive_to_pos(new Position2D(2 * plattenlänge * (isRed ? -1 : 1), 0));
-        loop_while_driving();
-        hwMap.robot.drive_to_pos(new Position2D(0, -5));
+        hwMap.robot.drive_to_pos(new Position2D(0, plattenlänge * (isRed ? 1 : -1)));
         loop_while_driving();
         aufnehmen();
 
-        hwMap.robot.drive_to_pos(new Position2D(41, 0));
+        hwMap.robot.drive_to_pos(new Position2D(-plattenlänge, plattenlänge * (isRed ? -1 : 1)));
         loop_while_driving();
-        hwMap.robot.rotate(isRed ? -130 : 130);
-        loop_while_driving();
-        hwMap.robot.drive_to_pos(new Position2D(2 * plattenlänge * (isRed ? 1 : -1), 0));
+        hwMap.robot.rotate(isRed ? 70 : -70);
         loop_while_driving();
         schiessen();
     }

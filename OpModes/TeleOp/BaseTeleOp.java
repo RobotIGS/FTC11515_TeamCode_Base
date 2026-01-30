@@ -7,11 +7,14 @@ import org.firstinspires.ftc.teamcode.Tools.HwMap;
 public abstract class BaseTeleOp extends LinearOpMode {
     protected HwMap hwMap; // hardware map
 
-    public void driving() {}
+    public void driving() {
+    }
 
-    public void season() {}
+    public void season() {
+    }
 
-    public void telemetry() {}
+    public void telemetry() {
+    }
 
     public void initialize() { // this gets executed when pressing the init button on the driver hub
         // initialize the hardware map

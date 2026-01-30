@@ -158,7 +158,7 @@ public class FieldNavigation {
                             && Math.abs(rotation_error.get()) <= rotation_accuracy))
                 stop();
 
-            // if sideways is allowed : just drive in the direction and rotate
+                // if sideways is allowed : just drive in the direction and rotate
             else if (chassisCapabilities.getDriveSideways()) {
                 velocity.set(
                         distance.getX() * velFactor,

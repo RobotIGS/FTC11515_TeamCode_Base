@@ -18,11 +18,12 @@ public class PIDKonfigurator extends BaseTeleOp {
 
 
     @Override
-    public void runOnce() {}
+    public void runOnce() {
+    }
 
     @Override
     public void runLoop() {
-        if(gamepad1.x) {
+        if (gamepad1.x) {
             hwMap.robot.rotate(180);
             loop_while_driving();
         }
