@@ -9,10 +9,12 @@ public abstract class ZwischenAutoBase extends BaseAutonomous {
         hwMap.m_hoch.setPower(0);
         loop_wait(2000);
 
+        hwMap.s_kick_seite.setPosition(hwMap.s_kick_seite_kurzposition);
         hwMap.m_hoch.setPower(1);
         hwMap.m_boden.setPower(-1);
         hwMap.crs_rad.setPower(1);
         loop_wait(1300);
+        hwMap.s_kick_seite.setPosition(hwMap.s_kick_seite_dauerposition);
         hwMap.m_hoch.setPower(0);
         loop_wait(2000);
 

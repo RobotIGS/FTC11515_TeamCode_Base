@@ -23,7 +23,7 @@ public class HwMap {
     public double gesch_schuss = 0.7;
     public double gesch_aufnehmen = -1.0;
     public double s_kick_boden_kurzposition = 0.9;
-    public double s_kick_boden_dauerposition = 0.6;
+    public double s_kick_boden_dauerposition = 0.55;
 
     public double s_kick_seite_kurzposition = 0.7;
     public double s_kick_seite_dauerposition = 0.15;
@@ -47,14 +47,16 @@ public class HwMap {
         chassis = new MecanumChassis(1, 1, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
         chassis.populateMotorArray(hardwareMap); // uses hardwareMap.get(...) to get motor interfaces as defined in the used chassis class
         chassis.setRotation(0.0); // set start rotation
-        chassis.setDrivingEncoderStepsPerRotation(384.5); // 435 RPM: 384.5 & 223 RPM: 751.8
+        chassis.setDrivingEncoderStepsPerRotation(384.5); // 435 RPM: 384.5 & 223 RPM: 751.8 & RPM: 1425.1
 
         // field navigation
         navi = new FieldNavigation(new Position2D(0.0, 0.0), new PidController(0.0, 0.0, 0.0));
+        navi.setKeepRotation(false);
         navi.setSpeedNormal(0.6);
         navi.setSpeedSneak(0.3);
         navi.setSpeedDrehen(0.4);
-        navi.setAccelerationProfile(new AccelerationProfile(50, 0)); // create an acceleration profile for better location resolution
+        navi.setSpeedAuto(0.5);
+        navi.setAccelerationProfile(new AccelerationProfile(100, 0)); // create an acceleration profile for better location resolution
         navi.setRotationAccuracy(2.0); // in Grad
         navi.setDrivingAccuracy(2.0); // in cm
 

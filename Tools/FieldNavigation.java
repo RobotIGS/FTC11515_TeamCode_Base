@@ -22,6 +22,7 @@ public class FieldNavigation {
     public double speed_normal;
     public double speed_sneak;
     public double speed_drehen;
+    public double speed_auto;
     private boolean is_driving_to_position;
     private boolean drive_keeprotation;
     private Position2D target_position;
@@ -44,7 +45,6 @@ public class FieldNavigation {
         this.rotationPidController = pidController;
         this.accProfile = null;
 
-        this.drive_keeprotation = true;
         this.drive_sneak = true;
         this.drive_gegensteuern = true;
     }
@@ -114,6 +114,10 @@ public class FieldNavigation {
         this.speed_drehen = Math.max(0, Math.min(1, speed_drehen)); // factor [0-1]
     }
 
+    public void setSpeedAuto(double speed_auto) {
+        this.speed_auto = Math.max(0, Math.min(1, speed_auto)); // factor [0-1]
+    }
+
     public void setKeepRotation(boolean keep_rotation) {
         this.drive_keeprotation = keep_rotation;
     }
@@ -146,7 +150,7 @@ public class FieldNavigation {
             rotation_error.add(-current_rotation.get());
 
             // setting the velocity for the chassis
-            double velFactor = this.accProfile != null ? this.accProfile.step(this.current_position) * this.speed_normal : this.speed_normal;
+            double velFactor = this.accProfile != null ? this.accProfile.step(this.current_position) * this.speed_auto : this.speed_auto;
 
             // calculate velocity for the chassis
             Position2D distance = this.distance.getNormalization();

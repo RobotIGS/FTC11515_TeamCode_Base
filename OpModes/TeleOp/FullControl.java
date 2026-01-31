@@ -52,9 +52,9 @@ public class FullControl extends BaseTeleOp {
             }
         }
 
-        double vx = -gamepad1.left_stick_y * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
-        double vy = gamepad1.left_stick_x * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
-        double vz = (gamepad1.left_trigger - gamepad1.right_trigger) * hwMap.navi.speed_drehen * (hwMap.navi.drive_sneak ? 0.75 : 1);
+        double vx = gamepad1.left_stick_y * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
+        double vy = -gamepad1.left_stick_x * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
+        double vz = (gamepad1.right_trigger - gamepad1.left_trigger) * hwMap.navi.speed_drehen * (hwMap.navi.drive_sneak ? 0.75 : 1);
 
         hwMap.navi.setSpeed(
                 gegensteuern_X.calculate(hwMap.navi.drive_gegensteuern, alt_vx, vx),
@@ -70,8 +70,8 @@ public class FullControl extends BaseTeleOp {
         telemetry.addData("SNEAK", hwMap.navi.drive_sneak);
         telemetry.addData("GEGENSTEUERN", hwMap.navi.drive_gegensteuern);
         telemetry.addData("SCHUSS GESCHW", hwMap.gesch_schuss);
-        telemetry.addData("boden", hwMap.s_kick_boden.getPosition());
-        telemetry.addData("seite", hwMap.s_kick_seite.getPosition());
+        telemetry.addData("phase aufsammeln", phase_aufsammeln);
+        telemetry.addData("phase loswerden", phase_loswerden);
         telemetry.addLine();
         telemetry.addLine(hwMap.navi.debug());
         telemetry.addLine(hwMap.chassis.debug());
@@ -83,12 +83,12 @@ public class FullControl extends BaseTeleOp {
     @Override
     public void season() {
         // Schussgeschwindigkeit
-        if (gamepad1.right_bumper) {
+        if (gamepad2.right_bumper) {
             hwMap.gesch_schuss = Math.min(1.0, hwMap.gesch_schuss + 0.05);
             while ((gamepad2.right_bumper) && opModeIsActive()) {
             }
         }
-        if (gamepad1.left_bumper) {
+        if (gamepad2.left_bumper) {
             hwMap.gesch_schuss = Math.max(0.4, hwMap.gesch_schuss - 0.05);
             while ((gamepad2.left_bumper) && opModeIsActive()) {
             }
@@ -171,7 +171,7 @@ public class FullControl extends BaseTeleOp {
 
 
         // one-klick aufsammeln
-        if (gamepad1.left_trigger_pressed) {
+        if (gamepad2.left_trigger_pressed) {
             phase_aufsammeln++;
             if (phase_aufsammeln > 3) {
                 phase_aufsammeln = 0;
@@ -207,11 +207,11 @@ public class FullControl extends BaseTeleOp {
                 hwMap.m_hoch.setPower(1);
                 hwMap.m_boden.setPower(-1);
                 hwMap.crs_rad.setPower(1);
-                loop_wait(1300);
+                loop_wait(800);
                 hwMap.m_hoch.setPower(0);
             } else if (phase_loswerden == 3) {
                 hwMap.m_hoch.setPower(1);
-                loop_wait(1300);
+                loop_wait(2000);
                 hwMap.m_schiessen.setPower(0);
                 hwMap.m_hoch.setPower(0);
                 hwMap.m_boden.setPower(0);
