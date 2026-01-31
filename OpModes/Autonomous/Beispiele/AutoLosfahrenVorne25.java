@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.OpModes.Autonomous.BaseAutonomous;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 
-@Autonomous(name = "Losfahren Vorne")
-public class AutoLosfahrenVorne extends BaseAutonomous {
+@Autonomous(name = "Losfahren Vorne nach 25")
+public class AutoLosfahrenVorne25 extends BaseAutonomous {
     @Override
     public void initialize() {
         super.initialize();
@@ -15,6 +15,7 @@ public class AutoLosfahrenVorne extends BaseAutonomous {
 
     @Override
     public void run() {
+        loop_wait(25000);
         hwMap.robot.drive_to_pos(new Position2D(-100, 0));
         loop_while_driving();
     }

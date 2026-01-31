@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp.Beispiele;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BaseTeleOp;
 
-//@TeleOp(name = "Tennisball", group = "FTC")
+@Disabled
+@TeleOp(name = "Tennisball", group = "FTC")
 public class Tennisball extends BaseTeleOp {
     public DcMotor motor_schuss_L;
     public DcMotor motor_schuss_R;

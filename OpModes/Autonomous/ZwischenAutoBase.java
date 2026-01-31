@@ -18,12 +18,17 @@ public abstract class ZwischenAutoBase extends BaseAutonomous {
         hwMap.m_hoch.setPower(0);
         loop_wait(2000);
 
+        hwMap.m_aufnehmen.setPower(hwMap.gesch_aufnehmen);
+        hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden_kurzposition);
         hwMap.m_hoch.setPower(1);
-        loop_wait(1300);
+        loop_wait(10000);
+        hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden_dauerposition);
         hwMap.m_schiessen.setPower(0);
         hwMap.m_hoch.setPower(0);
         hwMap.m_boden.setPower(0);
         hwMap.crs_rad.setPower(0);
+        hwMap.m_aufnehmen.setPower(0);
+        loop_wait(500);
     }
 
     public void aufnehmen() {

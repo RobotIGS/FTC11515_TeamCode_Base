@@ -10,6 +10,8 @@ public class AutoSchräg extends ZwischenAutoBase {
         hwMap.robot.drive_to_pos(new Position2D(2 * plattenlänge, 0));
         loop_while_driving();
         schiessen();
+        hwMap.robot.drive_to_pos(new Position2D(-1.8 * plattenlänge, 0));
+        loop_while_driving();
 
         if (false) {
             hwMap.robot.rotate(isRed ? -70 : 70);

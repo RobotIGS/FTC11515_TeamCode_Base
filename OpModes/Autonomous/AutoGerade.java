@@ -7,22 +7,22 @@ import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 public class AutoGerade extends ZwischenAutoBase {
     @Override
     public void run() {
-        hwMap.robot.drive_to_pos(new Position2D(4 * plattenlänge, plattenlänge * (isRed ? 1 : -1)));
-        loop_while_driving();
-        hwMap.robot.rotate(isRed ? -20 : 20);
+        hwMap.robot.drive_to_pos(new Position2D(-4 * plattenlänge, -100));
         loop_while_driving();
         schiessen();
 
-        hwMap.robot.rotate(isRed ? -70 : 70);
-        loop_while_driving();
-        hwMap.robot.drive_to_pos(new Position2D(0, plattenlänge * (isRed ? 1 : -1)));
-        loop_while_driving();
-        aufnehmen();
+        if (false) {
+            hwMap.robot.rotate(isRed ? -70 : 70);
+            loop_while_driving();
+            hwMap.robot.drive_to_pos(new Position2D(0, plattenlänge * (isRed ? 1 : -1)));
+            loop_while_driving();
+            aufnehmen();
 
-        hwMap.robot.drive_to_pos(new Position2D(-plattenlänge, plattenlänge * (isRed ? -1 : 1)));
-        loop_while_driving();
-        hwMap.robot.rotate(isRed ? 70 : -70);
-        loop_while_driving();
-        schiessen();
+            hwMap.robot.drive_to_pos(new Position2D(-plattenlänge, plattenlänge * (isRed ? -1 : 1)));
+            loop_while_driving();
+            hwMap.robot.rotate(isRed ? 70 : -70);
+            loop_while_driving();
+            schiessen();
+        }
     }
 }
