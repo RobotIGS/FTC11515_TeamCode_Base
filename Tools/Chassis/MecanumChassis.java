@@ -1,23 +1,16 @@
 package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Velocity;
-
-/**
- * Robot:
- * W0+----+W1
- * |        |
- * |        |
- * W2+----+W3
- */
 
 public class MecanumChassis extends ChassisBase {
     private final double WHEELDIAMETER = 10.4; // wheel diameter in centimeters
     private final double ONE_OVER_R = 1 / (WHEELDIAMETER / 2);
     private int lx = 1;
     private int ly = 1;
+
+    // TODO: richtig, dass die matrixen schon hier berechnet werden
 
     // based on https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
     private final double[][] forwardMatrix = {
@@ -26,10 +19,15 @@ public class MecanumChassis extends ChassisBase {
             {+1, +1, -(lx + ly)},
             {+1, -1, +(lx + ly)}
     };
+
+    // TODO: stimmt diese matrix
     private final double[][] backwardMatrix = {
             {+1, +1, +1, +1},
             {-1, +1, +1, -1},
-            {(double) -1 / (lx + ly), (double) 1 / (lx + ly), (double) -1 / (lx + ly), (double) 1 / (lx + ly)}
+            {(double) -1 / (lx + ly),
+                    (double) 1 / (lx + ly),
+                    (double) -1 / (lx + ly),
+                    (double) 1 / (lx + ly)}
     };
 
     /**

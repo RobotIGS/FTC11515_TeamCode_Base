@@ -25,7 +25,7 @@ public abstract class ChassisBase implements Chassis {
     protected double[] wheelSpeeds;
     protected int[] deltaWheelMotorSteps;
     protected ChassisCapabilities capabilities;
-    private double rotation_offset;
+    private double start_rotation;
 
     public ChassisBase(int numWheels, RevHubOrientationOnRobot huborientation) {
         this.capabilities = new ChassisCapabilities();
@@ -34,7 +34,7 @@ public abstract class ChassisBase implements Chassis {
         this.capabilities.setGetRotation(true);
         this.capabilities.setRotate(true);
         this.hubOrientationOnRobot = huborientation;
-        this.rotation_offset = 0;
+        this.start_rotation = 0;
         this.rotation = new Rotation(0.0);
 
         // drive stuff
@@ -68,7 +68,6 @@ public abstract class ChassisBase implements Chassis {
         imu = hw_map.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(this.hubOrientationOnRobot));
         imu.resetYaw();
-        setRotation(0.0);
     }
 
     private void setMotorSpeeds() {
@@ -103,21 +102,20 @@ public abstract class ChassisBase implements Chassis {
         return rotation.get();
     }
 
-    public void setRotation(double rotation) {
-        rotation_offset = -getRawRotation() + rotation;
+    public void setStartRotation(double start_rotation) {
+        this.start_rotation = -getRawRotation() + start_rotation;
     }
 
     public ChassisCapabilities getCapabilities() {
         return capabilities;
     }
 
-    private float getRawRotation() {
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        return (float) orientation.getYaw(AngleUnit.DEGREES);
+    private double getRawRotation() {
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
 
     private void calculateRotation() {
-        rotation.set(getRawRotation() + rotation_offset);
+        rotation.set(getRawRotation() + start_rotation);
     }
 
     public void step() {

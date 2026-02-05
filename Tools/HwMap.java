@@ -46,7 +46,7 @@ public class HwMap {
         // chassis
         chassis = new MecanumChassis(1, 1, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
         chassis.populateMotorArray(hardwareMap); // uses hardwareMap.get(...) to get motor interfaces as defined in the used chassis class
-        chassis.setRotation(0.0); // set start rotation
+        chassis.setStartRotation(0.0); // set start rotation
         chassis.setDrivingEncoderStepsPerRotation(384.5); // 435 RPM: 384.5 & 223 RPM: 751.8 & RPM: 1425.1
 
         // field navigation

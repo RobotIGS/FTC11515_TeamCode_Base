@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
-// TODO javadoc
-
 public class ChassisCapabilities {
     private boolean rotate;
     private boolean drive_forward;

@@ -16,7 +16,6 @@ public class Robot {
     }
 
     public void drive_to_pos(Position2D d, boolean rel) {
-        navi.rotationPidController.reset(); // reset pid controller before usage
         if (rel)
             navi.setTargetPosition_rel(d);
         else
@@ -27,12 +26,12 @@ public class Robot {
         drive_to_pos(d, true);
     }
 
-    public void rotate(float rotation, boolean rel) {
+    public void rotate(double rotation, boolean rel) {
         navi.setTargetRotation(rotation, rel);
-        drive_to_pos(new Position2D(0.0, 0.0)); // überschreibt Zielposition
+        drive_to_pos(navi.getTargetPosition());
     }
 
-    public void rotate(float rotation) {
+    public void rotate(double rotation) {
         rotate(rotation, true);
     }
 

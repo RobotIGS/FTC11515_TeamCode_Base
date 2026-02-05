@@ -42,7 +42,7 @@ public interface Chassis {
      *
      * @param rotation the rotation in [0;360]
      */
-    void setRotation(double rotation);
+    void setStartRotation(double rotation);
 
     /**
      * get the capabilities of the chassis

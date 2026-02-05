@@ -17,8 +17,8 @@ public class FieldNavigation {
     private final Position2D current_position;
     public PidController rotationPidController;
     public Position2D distance;
-    public boolean drive_sneak; // flag for storing the current speed mode
-    public boolean drive_gegensteuern; // flag for storing the current gegensteuern mode
+    public boolean drive_sneak;
+    public boolean drive_gegensteuern;
     public double speed_normal;
     public double speed_sneak;
     public double speed_drehen;
@@ -89,12 +89,15 @@ public class FieldNavigation {
         setTargetPosition_abs(d);
     }
 
+    public Position2D getTargetPosition() {
+        return target_position;
+    }
+
     public void setCurrentRotation(double rot) {
         current_rotation.set(rot);
     }
 
     public void setTargetRotation(double rotation, boolean relative) {
-        this.rotationPidController.reset(); // reset pid controller before usage
         if (relative) {
             target_rotation.add(rotation);
         } else {
@@ -132,7 +135,7 @@ public class FieldNavigation {
         this.velocity.set(vx, vy, wz);
         // vx forward speed (+ => forward)
         // vy sideways speed (+ => left)
-        // wz rotation speed (+ => turn left)
+        // wz rotation speed (+ => turn left => mathematisch positiv)
     }
 
     public void stop() {
@@ -159,20 +162,18 @@ public class FieldNavigation {
             // test if in range of the target position (reached)
             if ((Math.abs(this.distance.getAbsolute()) <= this.driving_accuracy && !drive_keeprotation) ||
                     (Math.abs(this.distance.getAbsolute()) <= this.driving_accuracy && drive_keeprotation
-                            && Math.abs(rotation_error.get()) <= rotation_accuracy))
+                            && Math.abs(rotation_error.get()) <= rotation_accuracy)) {
+                setTargetPosition_abs(current_position);
                 stop();
 
-                // if sideways is allowed : just drive in the direction and rotate
-            else if (chassisCapabilities.getDriveSideways()) {
+            } else if (chassisCapabilities.getDriveSideways()) { // if sideways is allowed: just drive in the direction and rotate
                 velocity.set(
                         distance.getX() * velFactor,
                         distance.getY() * velFactor,
                         drive_keeprotation ? rotationPidController.step(rotation_error.get() / 180) : 0.0
                 );
             }
-
-            // just drive forward in the direction and rotate to the target
-            else if (chassisCapabilities.getRotate()) {
+            else if (chassisCapabilities.getRotate()) { // just drive forward in the direction and rotate to the target
                 if (this.distance.getAbsolute() > this.driving_accuracy) {
                     rotation_error.set(Math.toDegrees(Math.asin(distance.getY())));
                     if (distance.getX() < 0) {
@@ -192,7 +193,7 @@ public class FieldNavigation {
     @SuppressLint("DefaultLocale")
     public String debug() {
         String ret = "--- FieldNavigation Debug ---\n";
-        ret += String.format("position: x=%+3.1f y=%+3.1f rot=%+3.1f\n", current_position.getX(), current_position.getY(), current_rotation.get());
+        ret += String.format("position: x=%+3.1f y=%+3.1f\n", current_position.getX(), current_position.getY());
         ret += String.format("velocity: x=%+1.2f y=%+1.2f wz=%+1.2f\n", velocity.getVX(), velocity.getVY(), velocity.getWZ());
         if (this.is_driving_to_position) {
             ret += "driving pos: True\n";
