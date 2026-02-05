@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.Tools.Chassis.Chassis;
 import org.firstinspires.ftc.teamcode.Tools.Chassis.MecanumChassis;
@@ -18,8 +19,9 @@ public class HwMap {
     public Robot robot;
     public FieldNavigation navi;
     public Chassis chassis;
+    public VoltageSensor batteryVoltageSensor;
 
-    // season
+    /* PLACE YOUR HARDWARE INTERFACES AND VALUES DOWN BELOW */
     public double gesch_schuss = 0.7;
     public double gesch_aufnehmen = -1.0;
     public double s_kick_boden_kurzposition = 0.9;
@@ -28,9 +30,6 @@ public class HwMap {
     public double s_kick_seite_kurzposition = 0.7;
     public double s_kick_seite_dauerposition = 0.15;
 
-
-    /* END SECTION */
-    /* PLACE YOUR HARDWARE INTERFACES DOWN BELOW */
     public DcMotor m_schiessen;
     public DcMotor m_boden;
     public DcMotor m_aufnehmen;
@@ -39,7 +38,6 @@ public class HwMap {
     public Servo s_kick_seite;
     public Servo s_kick_boden;
     public CRServo crs_rad;
-
     /* END SECTION */
 
     public HwMap(HardwareMap hardwareMap) {
@@ -62,6 +60,9 @@ public class HwMap {
 
         // get robot api object
         robot = new Robot(navi, chassis);
+
+        // Stromspannung
+        batteryVoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         /* INITIALIZE YOUR HARDWARE DOWN BELOW */
         m_schiessen = hardwareMap.get(DcMotor.class, "schiessen");

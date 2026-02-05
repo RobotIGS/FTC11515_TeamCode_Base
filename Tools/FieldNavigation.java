@@ -172,8 +172,7 @@ public class FieldNavigation {
                         distance.getY() * velFactor,
                         drive_keeprotation ? rotationPidController.step(rotation_error.get() / 180) : 0.0
                 );
-            }
-            else if (chassisCapabilities.getRotate()) { // just drive forward in the direction and rotate to the target
+            } else if (chassisCapabilities.getRotate()) { // just drive forward in the direction and rotate to the target
                 if (this.distance.getAbsolute() > this.driving_accuracy) {
                     rotation_error.set(Math.toDegrees(Math.asin(distance.getY())));
                     if (distance.getX() < 0) {
