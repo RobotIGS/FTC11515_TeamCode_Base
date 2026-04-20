@@ -204,12 +204,14 @@ public class FullControl extends BaseTeleOp {
                 loop_wait(1300);
                 hwMap.m_hoch.setPower(0);
             } else if (phase_loswerden == 2) {
+                hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
                 hwMap.m_hoch.setPower(1);
                 hwMap.m_boden.setPower(-1);
                 hwMap.crs_rad.setPower(1);
                 loop_wait(800);
                 hwMap.m_hoch.setPower(0);
             } else if (phase_loswerden == 3) {
+                hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
                 hwMap.m_hoch.setPower(1);
                 loop_wait(2000);
                 hwMap.m_schiessen.setPower(0);
