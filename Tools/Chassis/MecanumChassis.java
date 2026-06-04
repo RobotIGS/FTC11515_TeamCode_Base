@@ -61,14 +61,6 @@ public class MecanumChassis extends ChassisBase {
         wheelSpeeds[1] *= velocity.getAbsolute() / vm;
         wheelSpeeds[2] *= velocity.getAbsolute() / vm;
         wheelSpeeds[3] *= velocity.getAbsolute() / vm;
-
-        // change rotation direction of the right motors
-        wheelSpeeds[1] *= -1;
-        wheelSpeeds[3] *= -1;
-
-        // change rotation direction of the back motors
-//        wheelSpeeds[2] *= -1;
-//        wheelSpeeds[3] *= -1;
     }
 
     @Override
@@ -77,14 +69,6 @@ public class MecanumChassis extends ChassisBase {
 
         double dx = 0;
         double dy = 0;
-
-        // change rotation direction of the right motors
-        deltaWheelMotorSteps[1] *= -1;
-        deltaWheelMotorSteps[3] *= -1;
-
-        // change rotation direction of the back motors
-//        deltaWheelMotorSteps[2] *= -1;
-//        deltaWheelMotorSteps[3] *= -1;
 
         // calculate steps
         for (int i = 0; i < 4; i++) {

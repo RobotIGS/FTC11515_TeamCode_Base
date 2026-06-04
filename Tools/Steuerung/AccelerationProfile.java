@@ -9,10 +9,10 @@ public class AccelerationProfile {
     protected Position2D startPosition;
     protected Long startTime;
 
-    protected double accelerationDistance;
+    protected double deaccelerationDistance;
     protected double accelerationTime;
 
-    protected double accelerationFactor;
+    protected double factor;
     protected double distance;
     protected double distanceToStart;
     protected double distanceToEnd;
@@ -23,70 +23,45 @@ public class AccelerationProfile {
      * @param deaccelerationDistance_in_cm the distance after which the acceleration profile has reached 100%
      */
     public AccelerationProfile(double deaccelerationDistance_in_cm, double accelerationTime_in_s) {
-        this.accelerationDistance = Math.abs(deaccelerationDistance_in_cm);
+        this.deaccelerationDistance = Math.abs(deaccelerationDistance_in_cm);
         this.accelerationTime = (long) accelerationTime_in_s * 1000;
         this.startTime = System.currentTimeMillis();
     }
 
-    /**
-     * start the acceleration profile for a distance
-     *
-     * @param start the start position
-     * @param end   the end position
-     */
     public void start(Position2D start, Position2D end) {
         this.startPosition = start.copy();
         this.endPosition = end.copy();
         this.startTime = System.currentTimeMillis();
     }
 
-    /**
-     * get the velocity factor of the acceleration profile
-     *
-     * @param position The current position
-     * @return the velocity factor in the range [0-1]
-     */
     public double step(Position2D position) {
-        Position2D target;
+        distanceToEnd = position.copy().subtract(this.endPosition).getAbsolute();
+        distanceToStart = position.copy().subtract(this.startPosition).getAbsolute();
 
-        // calculate distance between end position and current position
-        target = this.endPosition.copy();
-        target.subtract(position);
-        distanceToEnd = Math.abs(target.getAbsolute());
+        // Berechne Brems-Faktor (1 -> 0)
+        double decelFactor = distanceToEnd / deaccelerationDistance;
 
-        // calculate distance between start position and current position
-        target = position.copy();
-        target.subtract(this.startPosition);
-        distanceToStart = Math.abs(target.getAbsolute());
-
-        // deceleration
-        if (distanceToStart > distanceToEnd) {
-            accelerationFactor = distanceToEnd / accelerationDistance;
-        }
-        // acceleration
-        else {
-            if (accelerationTime > 0) {
-                double x = (System.currentTimeMillis() - startTime) / accelerationTime;
-                accelerationFactor = (x < 1) ? -x * (x - 2) : 1.0; // calculate the parabola only for x smaller 1
-            } else {
-                accelerationFactor = 1.0;
-            }
+        // Berechne Anfahr-Faktor (0 -> 1)
+        double accelFactor = 1.0;
+        if (accelerationTime > 0) {
+            double timeProgress = (double) (System.currentTimeMillis() - startTime) / accelerationTime;
+            accelFactor = (timeProgress < 1) ? -timeProgress * (timeProgress - 2) : 1.0;
         }
 
-        // keep factor in domain
-        accelerationFactor = Math.min(Math.abs(accelerationFactor), 1);
-
-        return accelerationFactor;
+        // Der kleinste Faktor gewinnt (Trapez-Profil)
+        factor = Math.min(Math.min(accelFactor, decelFactor), 1.0);
+        return Math.max(0.1, factor); // Nie ganz auf 0 fallen, damit er das Ziel erreicht
     }
 
+
     public double get() {
-        return accelerationFactor;
+        return factor;
     }
 
     @SuppressLint("DefaultLocale")
     public String debug() {
         String ret = "--- Acceleration Profile Debug ---\n";
-        ret += String.format("value: %+.4f\n", (accelerationFactor));
+        ret += String.format("value: %+.4f\n", (factor));
         ret += String.format("distance: %+.4f\n", (distance));
         ret += String.format("distanceToSTART: %+.4f\n", (distanceToStart));
         ret += String.format("distanceToEND: %+.4f\n", (distanceToEnd));

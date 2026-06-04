@@ -15,21 +15,20 @@ public class Position2D {
         this.y = y;
     }
 
-    /**
-     * create position object in origin
-     */
     public Position2D() {
         this(0.0, 0.0);
     }
 
-    public void add(Position2D pos) {
+    public Position2D add(Position2D pos) {
         this.x += pos.x;
         this.y += pos.y;
+        return new Position2D(this.x, this.y);
     }
 
-    public void subtract(Position2D pos) {
+    public Position2D subtract(Position2D pos) {
         this.x -= pos.x;
         this.y -= pos.y;
+        return new Position2D(this.x, this.y);
     }
 
     /**
@@ -118,21 +117,11 @@ public class Position2D {
      * @return normalized copy
      */
     public Position2D getNormalization() {
-        // null vector
+        double abs = getAbsolute();
+
         if (this.x == 0.0 && this.y == 0.0)
             return copy();
 
-            // one dim
-        else if (this.x == 0.0)
-            return new Position2D(0.0, this.y > 0 ? 1.0 : -1.0);
-        else if (this.y == 0.0)
-            return new Position2D(this.x > 0 ? 1.0 : -1.0, 0.0);
-
-        // normalize
-        double alpha = Math.atan(this.y / this.x);
-        return new Position2D(
-                (this.x / Math.abs(this.x)) * Math.cos(alpha),
-                (this.x / Math.abs(this.x)) * Math.sin(alpha)
-        );
+        return new Position2D((this.x / abs), (this.y / abs));
     }
 }

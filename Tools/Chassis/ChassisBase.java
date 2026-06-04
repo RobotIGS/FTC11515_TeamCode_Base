@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -63,6 +64,12 @@ public abstract class ChassisBase implements Chassis {
             wheelMotorSteps[i] = wheelMotors[i].getCurrentPosition();
             deltaWheelMotorSteps[i] = wheelMotorSteps[i];
         }
+
+        // Motor Richtungen festelegen
+        wheelMotors[0].setDirection(DcMotorSimple.Direction.REVERSE);
+        wheelMotors[1].setDirection(DcMotorSimple.Direction.FORWARD);
+        wheelMotors[2].setDirection(DcMotorSimple.Direction.FORWARD);
+        wheelMotors[3].setDirection(DcMotorSimple.Direction.REVERSE);
 
         imu = hw_map.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(this.hubOrientationOnRobot));

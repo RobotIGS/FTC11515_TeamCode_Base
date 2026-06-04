@@ -22,10 +22,10 @@ public class NormalChassis extends ChassisBase {
 
     @Override
     public void setVelocity(Velocity velocity) {
-        wheelSpeeds[0] = -velocity.getVX() - velocity.getWZ();
+        wheelSpeeds[0] = velocity.getVX() - velocity.getWZ();
         wheelSpeeds[1] = velocity.getVX() - velocity.getWZ();
         wheelSpeeds[2] = velocity.getVX() - velocity.getWZ();
-        wheelSpeeds[3] = -velocity.getVX() - velocity.getWZ();
+        wheelSpeeds[3] = velocity.getVX() - velocity.getWZ();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class NormalChassis extends ChassisBase {
         super.step();
 
         // calculate driven steps
-        double dx = -deltaWheelMotorSteps[0] + deltaWheelMotorSteps[1] + deltaWheelMotorSteps[2] - deltaWheelMotorSteps[3];
+        double dx = deltaWheelMotorSteps[0] + deltaWheelMotorSteps[1] + deltaWheelMotorSteps[2] + deltaWheelMotorSteps[3];
 
         dx /= 4;
 

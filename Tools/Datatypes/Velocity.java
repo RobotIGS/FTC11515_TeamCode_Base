@@ -18,9 +18,6 @@ public class Velocity {
         this.wz = wz;
     }
 
-    /**
-     * create velocity object (v = 0)
-     */
     public Velocity() {
         this(0.0, 0.0, 0.0);
     }
@@ -37,56 +34,29 @@ public class Velocity {
         this.wz -= vel.wz;
     }
 
-    /**
-     * get x velocity
-     *
-     * @return x velocity
-     */
     public double getVX() {
         return vx;
     }
 
-    /**
-     * set x velocity
-     *
-     * @param vx x velocity
-     */
     public void setVX(double vx) {
         this.vx = vx;
     }
 
-    /**
-     * get y velocity
-     *
-     * @return y velocity
-     */
+
     public double getVY() {
         return vy;
     }
 
-    /**
-     * set y velocity
-     *
-     * @param vy y velocity
-     */
     public void setVY(double vy) {
-        this.vx = vy;
+        this.vy = vy;
     }
 
-    /**
-     * get rotation
-     *
-     * @return rotation
-     */
+
     public double getWZ() {
         return wz;
     }
 
-    /**
-     * set rotation
-     *
-     * @param wz rotation
-     */
+
     public void setWZ(double wz) {
         this.wz = wz;
     }
@@ -97,29 +67,16 @@ public class Velocity {
         this.wz = wz;
     }
 
-    /**
-     * return absolute value
-     *
-     * @return get absolute velocity
-     */
     public double getAbsolute() {
         return Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2) + Math.pow(wz, 2));
     }
 
-    /**
-     * copy velocity object
-     *
-     * @return copy of object
-     */
+
     public Velocity copy() {
         return new Velocity(this.vx, this.vy, this.wz);
     }
 
-    /**
-     * normalize velocity
-     *
-     * @return normalized copy
-     */
+
     public Velocity getNormalization() {
         double new_wz;
         double alpha;
@@ -128,16 +85,12 @@ public class Velocity {
         new_wz = Math.max(-1.0, Math.min(1.0, wz));
 
         // null vector (vx,vy)
-        if (vx == 0.0 && vy == 0.0) return new Velocity(0.0, 0.0, new_wz);
-
-            // one dim
-        else if (vx == 0.0)
-            return new Velocity(0.0, 1.0, new_wz);
-        else if (vy == 0.0)
-            return new Velocity(1.0, 0.0, new_wz);
+        if (vx == 0.0 && vy == 0.0){
+            return new Velocity(0.0, 0.0, new_wz);
+        }
 
         // normalize
-        alpha = Math.atan(vy / vx);
+        alpha = Math.atan2(vy, vx);
         return new Velocity(Math.cos(alpha), Math.sin(alpha), new_wz);
     }
 }

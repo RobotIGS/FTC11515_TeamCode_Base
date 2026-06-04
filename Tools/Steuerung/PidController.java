@@ -77,8 +77,8 @@ public class PidController {
      * @return output of the PID controller
      */
     public double step(double error) {
-        last_error = error; // remember the last error for later use
         pid_value = P(error) + I(error) + D(error); // sum up the three parts
+        last_error = error; // remember the last error for later use
         if (k_p == 0) {
             return error;
         } else {

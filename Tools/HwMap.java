@@ -54,7 +54,7 @@ public class HwMap {
         navi.setSpeedSneak(0.3);
         navi.setSpeedDrehen(0.4);
         navi.setSpeedAuto(0.5);
-        navi.setAccelerationProfile(new AccelerationProfile(100, 0)); // create an acceleration profile for better location resolution
+        navi.setAccelerationProfile(new AccelerationProfile(25, 0)); // create an acceleration profile for better location resolution
         navi.setRotationAccuracy(2.0); // in Grad
         navi.setDrivingAccuracy(2.0); // in cm
 
