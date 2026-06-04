@@ -12,10 +12,10 @@ public class AutoQuadrat extends BaseAutonomous {
         super.run();
 
         for (int i = 0; i < 4; i++) {
-            hwMap.robot.drive_to_pos(new Position2D(100, 0));
+            hwMap.robot.drive_to_pos(new Position2D(100, 0), true);
             loop_while_driving();
             loop_wait(500);
-            hwMap.robot.rotate(90);
+            hwMap.robot.rotate(90, true);
             loop_while_driving();
             loop_wait(500);
         }

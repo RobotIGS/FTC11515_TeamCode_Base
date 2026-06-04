@@ -10,8 +10,7 @@ public class Auto90Drehen extends BaseAutonomous {
     public void run() {
         super.run();
 
-        hwMap.robot.rotate(90);
+        hwMap.robot.rotate(90, true);
         loop_while_driving();
-        loop_wait(10000);
     }
 }

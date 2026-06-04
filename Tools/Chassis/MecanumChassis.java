@@ -83,7 +83,7 @@ public class MecanumChassis extends ChassisBase {
 
         // calculate distance
         dx *= 2 * Math.PI * (WHEELDIAMETER / 2);
-        dy *= -2 * Math.PI * (WHEELDIAMETER / 2);
+        dy *= 2 * Math.PI * (WHEELDIAMETER / 2);
 
         drivenDistance.set(dx, dy);
     }

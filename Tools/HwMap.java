@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Tools.Chassis.Chassis;
 import org.firstinspires.ftc.teamcode.Tools.Chassis.MecanumChassis;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.Steuerung.AccelerationProfile;
+import org.firstinspires.ftc.teamcode.Tools.Steuerung.FieldNavigation;
 import org.firstinspires.ftc.teamcode.Tools.Steuerung.PidController;
 
 public class HwMap {
@@ -45,23 +46,27 @@ public class HwMap {
         // Typical FTC robot size: ~45cm x 45cm. 
         // lx: sideways distance from center to wheel (e.g. 18cm)
         // ly: forward distance from center to wheel (e.g. 15cm)
-        chassis = new MecanumChassis(17, 17, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
+
+        // vx forward speed (+ => forward)
+        // vy sideways speed (+ => left)
+        // wz rotation speed (+ => turn left => mathematisch positiv)
+
+        chassis = new MecanumChassis(17, 17, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
         chassis.populateMotorArray(hardwareMap); // uses hardwareMap.get(...) to get motor interfaces as defined in the used chassis class
         chassis.setStartRotation(0.0); // set start rotation
         chassis.setDrivingEncoderStepsPerRotation(384.5); // 435RPM: 384.5 & 223RPM: 751.8
 
         // field navigation
-        navi = new FieldNavigation(new Position2D(0.0, 0.0), new PidController(0.005, 0.0, 0.001));
+        navi = new FieldNavigation(new Position2D(0.0, 0.0), new PidController(0.02, 0.0, 0.001));
         navi.setKeepRotation(true);
         navi.setSpeedNormal(0.5);
         navi.setSpeedSneak(0.3);
         navi.setSpeedDrehen(1.0);
-        navi.setSpeedAuto(0.5);
-        navi.setAccelerationProfile(new AccelerationProfile(25, 0)); // create an acceleration profile for better location resolution
+        navi.setSpeedAuto(0.2);
+        navi.setAccelerationProfile(new AccelerationProfile(25, 1)); // create an acceleration profile for better location resolution
         navi.setRotationAccuracy(2.0); // in Grad
         navi.setDrivingAccuracy(2.0); // in cm
 
-        // get robot api object
         robot = new Robot(navi, chassis);
 
         // Stromspannung

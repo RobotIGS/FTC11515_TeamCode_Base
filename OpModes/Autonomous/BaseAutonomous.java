@@ -20,6 +20,9 @@ public abstract class BaseAutonomous extends LinearOpMode {
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
+        for (LynxModule hub : allHubs) {
+            hub.clearBulkCache();
+        }
 
         hwMap = new HwMap(hardwareMap);
     }
@@ -31,6 +34,7 @@ public abstract class BaseAutonomous extends LinearOpMode {
         for (LynxModule hub : allHubs) {
             hub.clearBulkCache();
         }
+
     }
 
     /**

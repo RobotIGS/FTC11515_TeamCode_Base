@@ -25,7 +25,7 @@ public class PIDKonfigurator extends BaseTeleOp {
     @Override
     public void runLoop() {
         if (isButtonPressed("gp1_x", gamepad1.x)) {
-            hwMap.robot.rotate(180);
+            hwMap.robot.rotate(180, true);
         }
 
         if (isButtonPressed("gp1_y", gamepad1.y)) {

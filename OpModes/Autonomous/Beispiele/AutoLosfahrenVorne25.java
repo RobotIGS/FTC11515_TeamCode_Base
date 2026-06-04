@@ -18,7 +18,7 @@ public class AutoLosfahrenVorne25 extends BaseAutonomous {
         super.run();
 
         loop_wait(25000);
-        hwMap.robot.drive_to_pos(new Position2D(-100, 0));
+        hwMap.robot.drive_to_pos(new Position2D(50, 0), true);
         loop_while_driving();
     }
 }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Tools;
+package org.firstinspires.ftc.teamcode.Tools.Steuerung;
 
 import android.annotation.SuppressLint;
 
@@ -6,8 +6,6 @@ import org.firstinspires.ftc.teamcode.Tools.Chassis.ChassisCapabilities;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Velocity;
-import org.firstinspires.ftc.teamcode.Tools.Steuerung.AccelerationProfile;
-import org.firstinspires.ftc.teamcode.Tools.Steuerung.PidController;
 
 public class FieldNavigation {
     public final static double PLATTENLAENGE = 365.75 / 6;
@@ -77,18 +75,18 @@ public class FieldNavigation {
         this.chassisCapabilities = capabilities;
     }
 
-    public void setTargetPosition_abs(Position2D p) {
-        this.is_driving_to_position = true;
-        this.target_position = p;
-        if (this.accProfile != null) {
-            this.accProfile.start(this.current_position, this.target_position); // start the acceleration profile
+    public void setTargetPosition(Position2D p, boolean rel) {
+        if (rel) {
+            p.rotate(this.current_rotation.get());
+            p.add(this.current_position);
+            setTargetPosition(p, false);
+        } else {
+            this.is_driving_to_position = true;
+            this.target_position = p;
+            if (this.accProfile != null) {
+                this.accProfile.start(this.current_position, this.target_position); // start the acceleration profile
+            }
         }
-    }
-
-    public void setTargetPosition_rel(Position2D d) {
-        d.rotate(this.current_rotation.get());
-        d.add(this.current_position);
-        setTargetPosition_abs(d);
     }
 
     public Position2D getTargetPosition() {
@@ -136,9 +134,6 @@ public class FieldNavigation {
     public void setSpeed(double vx, double vy, double wz) {
         is_driving_to_position = false;
         this.velocity.set(vx, vy, wz);
-        // vx forward speed (+ => forward)
-        // vy sideways speed (+ => left)
-        // wz rotation speed (+ => turn left => mathematisch positiv)
     }
 
     public void stop() {
@@ -204,8 +199,8 @@ public class FieldNavigation {
             ret += "driving pos: False\n";
         }
 
-        ret += String.format("\ncurrent rotation: %+1.5f\n", current_rotation.get());
-        ret += String.format("target rotation: %+1.5f\n", target_rotation.get());
+        ret += String.format("cur rotation: %+1.5f\n", current_rotation.get());
+        ret += String.format("tar rotation: %+1.5f\n", target_rotation.get());
         ret += String.format("pid: pid=%+1.5f int=%+1.5f la_er=%+1.5f\n", rotationPidController.pid_value, rotationPidController.integral, rotationPidController.last_error);
         return ret;
     }

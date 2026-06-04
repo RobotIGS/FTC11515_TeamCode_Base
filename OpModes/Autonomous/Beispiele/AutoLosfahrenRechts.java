@@ -17,8 +17,7 @@ public class AutoLosfahrenRechts extends BaseAutonomous {
     public void run() {
         super.run();
 
-        hwMap.robot.drive_to_pos(new Position2D(0, 20));
+        hwMap.robot.drive_to_pos(new Position2D(0, -25), true);
         loop_while_driving();
-        loop_wait(10000);
     }
 }
