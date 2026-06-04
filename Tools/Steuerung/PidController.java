@@ -4,9 +4,10 @@ public class PidController {
     public double integral;
     public double last_error;
     public double pid_value;
-    double k_p;
-    double k_i;
-    double k_d;
+    public double k_p;
+    public double k_i;
+    public double k_d;
+    private long last_time;
 
     /**
      * create a PID controller
@@ -22,6 +23,7 @@ public class PidController {
         this.integral = 0;
         this.last_error = 0;
         this.pid_value = 0;
+        this.last_time = 0;
     }
 
     public void change_values(double p, double i, double d) {
@@ -31,43 +33,13 @@ public class PidController {
     }
 
     /**
-     * calculate the proportional part
-     *
-     * @param error the error
-     * @return proportional part
-     */
-    private double P(double error) {
-        return k_p * error;
-    }
-
-    /**
-     * calculate and integrate the integral part
-     *
-     * @param error the error
-     * @return integral part
-     */
-    private double I(double error) {
-        integral += k_i * error;
-        return integral;
-    }
-
-    /**
-     * calculate the derivative part
-     *
-     * @param error the error
-     * @return derivative part
-     */
-    private double D(double error) {
-        return k_d * (error - last_error);
-    }
-
-    /**
      * reset PID controller
      */
     public void reset() {
         integral = 0.0;
         last_error = 0.0;
         pid_value = 0.0;
+        last_time = 0;
     }
 
     /**
@@ -77,13 +49,26 @@ public class PidController {
      * @return output of the PID controller
      */
     public double step(double error) {
-        pid_value = P(error) + I(error) + D(error); // sum up the three parts
-        last_error = error; // remember the last error for later use
-        if (k_p == 0) {
-            return error;
-        } else {
-            return Math.max(-1.0, Math.min(1.0, pid_value));
+        long current_time = System.currentTimeMillis();
+        double dt = (last_time == 0) ? 0 : (current_time - last_time) / 1000.0;
+        last_time = current_time;
+
+        // P part
+        double p_part = k_p * error;
+
+        // I part (with dt)
+        integral += k_i * error * dt;
+        integral = Math.max(-1.0, Math.min(1.0, integral)); // Anti-Windup
+
+        // D part (with dt)
+        double d_part = 0;
+        if (dt > 0) {
+            d_part = k_d * (error - last_error) / dt;
         }
+
+        pid_value = p_part + integral + d_part;
+        last_error = error; // remember the last error for later use
+        return Math.max(-1.0, Math.min(1.0, pid_value));
     }
 }
 

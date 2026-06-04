@@ -17,10 +17,11 @@ public class MotorServoTest extends BaseTeleOp {
     public Servo servo2;
     public CRServo crservo1;
 
-    boolean zwei_motoren = false;
+    boolean twoMotors = false;
 
     @Override
     public void initialize() {
+        super.initialize();
         motor1 = hardwareMap.get(DcMotor.class, "motor1");
         motor2 = hardwareMap.get(DcMotor.class, "motor2");
         servo1 = hardwareMap.get(Servo.class, "servo1");
@@ -36,31 +37,29 @@ public class MotorServoTest extends BaseTeleOp {
     public void runLoop() {
         motor1.setPower(gamepad1.left_stick_y);
 
-        if (zwei_motoren) {
+        if (twoMotors) {
             motor2.setPower(gamepad1.left_stick_y);
         }
 
-        if (gamepad1.b) {
-            zwei_motoren = !zwei_motoren;
-            while (gamepad1.b) {
-            }
+        if (isButtonPressed("gp1_b", gamepad1.b)) {
+            twoMotors = !twoMotors;
         }
 
         crservo1.setPower(gamepad1.right_stick_y);
 
         if (gamepad1.dpad_down) {
             servo1.setPosition(servo1.getPosition() - 0.001);
-            servo2.setPosition(servo1.getPosition() - 0.001);
+            servo2.setPosition(servo2.getPosition() - 0.001);
         } else if (gamepad1.dpad_up) {
             servo1.setPosition(servo1.getPosition() + 0.001);
-            servo2.setPosition(servo1.getPosition() + 0.001);
+            servo2.setPosition(servo2.getPosition() + 0.001);
         }
 
 
         // information
         telemetry.addLine("left stick y: motor power");
         telemetry.addLine("right stick y: crservo power");
-        telemetry.addLine("b: motor 2 aktivieren");
+        telemetry.addLine("b: toggle motor 2");
         telemetry.addLine("dpad up/ down: servo");
 
         // motor information

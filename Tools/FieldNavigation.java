@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Tools.Steuerung.AccelerationProfile;
 import org.firstinspires.ftc.teamcode.Tools.Steuerung.PidController;
 
 public class FieldNavigation {
-    public final static double plattenlänge = 365.75 / 6;
+    public final static double PLATTENLAENGE = 365.75 / 6;
     private final Rotation current_rotation;
     private final Rotation target_rotation;
     private final Velocity velocity;
@@ -80,7 +80,9 @@ public class FieldNavigation {
     public void setTargetPosition_abs(Position2D p) {
         this.is_driving_to_position = true;
         this.target_position = p;
-        this.accProfile.start(this.current_position, this.target_position); // start the acceleration profile
+        if (this.accProfile != null) {
+            this.accProfile.start(this.current_position, this.target_position); // start the acceleration profile
+        }
     }
 
     public void setTargetPosition_rel(Position2D d) {
@@ -126,8 +128,9 @@ public class FieldNavigation {
     }
 
     public void addDrivenDistance(Position2D d) {
-        d.rotate(current_rotation.get());
-        current_position.add(d);
+        Position2D d_rotated = d.copy();
+        d_rotated.rotate(current_rotation.get());
+        current_position.add(d_rotated);
     }
 
     public void setSpeed(double vx, double vy, double wz) {
@@ -163,7 +166,6 @@ public class FieldNavigation {
             if ((Math.abs(this.distance.getAbsolute()) <= this.driving_accuracy && !drive_keeprotation) ||
                     (Math.abs(this.distance.getAbsolute()) <= this.driving_accuracy && drive_keeprotation
                             && Math.abs(rotation_error.get()) <= rotation_accuracy)) {
-                setTargetPosition_abs(current_position);
                 stop();
 
             } else if (chassisCapabilities.getDriveSideways()) { // if sideways is allowed: just drive in the direction and rotate

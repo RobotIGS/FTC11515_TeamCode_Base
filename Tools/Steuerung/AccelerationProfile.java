@@ -24,7 +24,7 @@ public class AccelerationProfile {
      */
     public AccelerationProfile(double deaccelerationDistance_in_cm, double accelerationTime_in_s) {
         this.deaccelerationDistance = Math.abs(deaccelerationDistance_in_cm);
-        this.accelerationTime = (long) accelerationTime_in_s * 1000;
+        this.accelerationTime = (long) (accelerationTime_in_s * 1000);
         this.startTime = System.currentTimeMillis();
     }
 
@@ -35,6 +35,10 @@ public class AccelerationProfile {
     }
 
     public double step(Position2D position) {
+        if (this.endPosition == null || this.startPosition == null) {
+            return 1.0;
+        }
+
         distanceToEnd = position.copy().subtract(this.endPosition).getAbsolute();
         distanceToStart = position.copy().subtract(this.startPosition).getAbsolute();
 

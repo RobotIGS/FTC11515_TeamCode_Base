@@ -22,13 +22,13 @@ public class Position2D {
     public Position2D add(Position2D pos) {
         this.x += pos.x;
         this.y += pos.y;
-        return new Position2D(this.x, this.y);
+        return this;
     }
 
     public Position2D subtract(Position2D pos) {
         this.x -= pos.x;
         this.y -= pos.y;
-        return new Position2D(this.x, this.y);
+        return this;
     }
 
     /**
@@ -99,7 +99,7 @@ public class Position2D {
      * @return get absolute distance
      */
     public double getAbsolute() {
-        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+        return Math.hypot(this.x, this.y);
     }
 
     /**

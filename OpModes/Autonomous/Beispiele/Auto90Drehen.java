@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.OpModes.Autonomous.BaseAutonomous;
 public class Auto90Drehen extends BaseAutonomous {
     @Override
     public void run() {
+        super.run();
+
         hwMap.robot.rotate(90);
         loop_while_driving();
         loop_wait(10000);

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Tools.Chassis;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
-import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Velocity;
 
 /**
@@ -23,9 +22,9 @@ public class NormalChassis extends ChassisBase {
     @Override
     public void setVelocity(Velocity velocity) {
         wheelSpeeds[0] = velocity.getVX() - velocity.getWZ();
-        wheelSpeeds[1] = velocity.getVX() - velocity.getWZ();
+        wheelSpeeds[1] = velocity.getVX() + velocity.getWZ();
         wheelSpeeds[2] = velocity.getVX() - velocity.getWZ();
-        wheelSpeeds[3] = velocity.getVX() - velocity.getWZ();
+        wheelSpeeds[3] = velocity.getVX() + velocity.getWZ();
     }
 
     @Override
@@ -43,6 +42,6 @@ public class NormalChassis extends ChassisBase {
         // calculate distance
         dx *= 2 * Math.PI * (WHEELDIAMETER / 2);
 
-        drivenDistance = new Position2D(dx, 0.0);
+        drivenDistance.set(dx, 0.0);
     }
 }

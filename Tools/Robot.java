@@ -28,7 +28,7 @@ public class Robot {
 
     public void rotate(double rotation, boolean rel) {
         navi.setTargetRotation(rotation, rel);
-        drive_to_pos(navi.getTargetPosition());
+        drive_to_pos(navi.getTargetPosition().copy(), false);
     }
 
     public void rotate(double rotation) {

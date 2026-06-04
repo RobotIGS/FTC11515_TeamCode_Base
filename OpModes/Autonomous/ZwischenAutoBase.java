@@ -1,6 +1,11 @@
 package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 
 public abstract class ZwischenAutoBase extends BaseAutonomous {
+
+    public void run() {
+        super.run();
+    }
+
     public void schiessen() {
         hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
         loop_wait(2000);

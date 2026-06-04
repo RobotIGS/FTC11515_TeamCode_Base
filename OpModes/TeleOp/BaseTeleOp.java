@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Tools.HwMap;
 
+import java.util.List;
+
 public abstract class BaseTeleOp extends LinearOpMode {
+    List<LynxModule> allHubs;
+
     protected HwMap hwMap; // hardware map
 
     public void driving() {
@@ -17,11 +22,12 @@ public abstract class BaseTeleOp extends LinearOpMode {
     }
 
     public void initialize() { // this gets executed when pressing the init button on the driver hub
-        // initialize the hardware map
-        hwMap = new HwMap(hardwareMap);
+        allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
 
-        /* OVERWRITE VALUES SET BY hwMap.initialize() DOWN BELOW */
-        /* END SECTION */
+        hwMap = new HwMap(hardwareMap);
     }
 
     public abstract void runOnce(); // this gets executed once when play button is pressed on the driver hub
@@ -36,8 +42,12 @@ public abstract class BaseTeleOp extends LinearOpMode {
         initialize();
         waitForStart();
         runOnce();
-        while (opModeIsActive())
+        while (opModeIsActive()) {
+            for (LynxModule hub : allHubs) {
+                hub.clearBulkCache();
+            }
             runLoop();
+        }
         end();
     }
 
@@ -50,9 +60,11 @@ public abstract class BaseTeleOp extends LinearOpMode {
         }
     }
 
-    public void loop_while_driving() {
-        while (opModeIsActive() && hwMap.navi.isDrivingToPosition()) {
-            hwMap.robot.step();
-        }
+    private java.util.Map<String, Boolean> buttonStates = new java.util.HashMap<>();
+
+    protected boolean isButtonPressed(String buttonId, boolean isPressed) {
+        boolean wasPressed = Boolean.TRUE.equals(buttonStates.getOrDefault(buttonId, false));
+        buttonStates.put(buttonId, isPressed);
+        return isPressed && !wasPressed;
     }
 }

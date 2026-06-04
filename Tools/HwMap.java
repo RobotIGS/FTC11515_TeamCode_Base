@@ -42,17 +42,20 @@ public class HwMap {
 
     public HwMap(HardwareMap hardwareMap) {
         // chassis
-        chassis = new MecanumChassis(1, 1, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
+        // Typical FTC robot size: ~45cm x 45cm. 
+        // lx: sideways distance from center to wheel (e.g. 18cm)
+        // ly: forward distance from center to wheel (e.g. 15cm)
+        chassis = new MecanumChassis(17, 17, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
         chassis.populateMotorArray(hardwareMap); // uses hardwareMap.get(...) to get motor interfaces as defined in the used chassis class
         chassis.setStartRotation(0.0); // set start rotation
-        chassis.setDrivingEncoderStepsPerRotation(384.5); // 435 RPM: 384.5 & 223 RPM: 751.8 & RPM: 1425.1
+        chassis.setDrivingEncoderStepsPerRotation(384.5); // 435RPM: 384.5 & 223RPM: 751.8
 
         // field navigation
-        navi = new FieldNavigation(new Position2D(0.0, 0.0), new PidController(0.0, 0.0, 0.0));
-        navi.setKeepRotation(false);
-        navi.setSpeedNormal(0.6);
+        navi = new FieldNavigation(new Position2D(0.0, 0.0), new PidController(0.005, 0.0, 0.001));
+        navi.setKeepRotation(true);
+        navi.setSpeedNormal(0.5);
         navi.setSpeedSneak(0.3);
-        navi.setSpeedDrehen(0.4);
+        navi.setSpeedDrehen(1.0);
         navi.setSpeedAuto(0.5);
         navi.setAccelerationProfile(new AccelerationProfile(25, 0)); // create an acceleration profile for better location resolution
         navi.setRotationAccuracy(2.0); // in Grad
@@ -62,7 +65,7 @@ public class HwMap {
         robot = new Robot(navi, chassis);
 
         // Stromspannung
-        batteryVoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().hasNext() ? hardwareMap.voltageSensor.iterator().next() : null;
 
         /* INITIALIZE YOUR HARDWARE DOWN BELOW */
         m_schiessen = hardwareMap.get(DcMotor.class, "schiessen");

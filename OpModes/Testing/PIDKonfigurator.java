@@ -3,17 +3,18 @@ package org.firstinspires.ftc.teamcode.OpModes.Testing;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BaseTeleOp;
-import org.firstinspires.ftc.teamcode.Tools.HwMap;
 
 @TeleOp(name = "PID Konfigurator", group = "TESTING")
 public class PIDKonfigurator extends BaseTeleOp {
-    protected HwMap hwMap;
     double[] pid_values = new double[3]; // p, i, d
     int selected = 0;
 
     @Override
     public void initialize() {
-        hwMap = new HwMap(hardwareMap);
+        super.initialize();
+        pid_values[0] = hwMap.navi.rotationPidController.k_p;
+        pid_values[1] = hwMap.navi.rotationPidController.k_i;
+        pid_values[2] = hwMap.navi.rotationPidController.k_d;
     }
 
 
@@ -23,12 +24,11 @@ public class PIDKonfigurator extends BaseTeleOp {
 
     @Override
     public void runLoop() {
-        if (gamepad1.x) {
+        if (isButtonPressed("gp1_x", gamepad1.x)) {
             hwMap.robot.rotate(180);
-            loop_while_driving();
         }
 
-        if (gamepad1.y) {
+        if (isButtonPressed("gp1_y", gamepad1.y)) {
             selected += 1;
             if (selected > 2) {
                 selected = 0;

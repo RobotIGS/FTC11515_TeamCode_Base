@@ -66,10 +66,10 @@ public abstract class ChassisBase implements Chassis {
         }
 
         // Motor Richtungen festelegen
-        wheelMotors[0].setDirection(DcMotorSimple.Direction.REVERSE);
-        wheelMotors[1].setDirection(DcMotorSimple.Direction.FORWARD);
-        wheelMotors[2].setDirection(DcMotorSimple.Direction.FORWARD);
-        wheelMotors[3].setDirection(DcMotorSimple.Direction.REVERSE);
+        wheelMotors[0].setDirection(DcMotorSimple.Direction.REVERSE); // FL
+        wheelMotors[1].setDirection(DcMotorSimple.Direction.FORWARD); // FR
+        wheelMotors[2].setDirection(DcMotorSimple.Direction.REVERSE); // BL
+        wheelMotors[3].setDirection(DcMotorSimple.Direction.FORWARD); // BR
 
         imu = hw_map.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(this.hubOrientationOnRobot));

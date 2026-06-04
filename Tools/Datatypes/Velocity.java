@@ -22,18 +22,6 @@ public class Velocity {
         this(0.0, 0.0, 0.0);
     }
 
-    public void add(Velocity vel) {
-        this.vx += vel.vx;
-        this.vy += vel.vy;
-        this.wz += vel.wz;
-    }
-
-    public void subtract(Velocity vel) {
-        this.vx -= vel.vx;
-        this.vy -= vel.vy;
-        this.wz -= vel.wz;
-    }
-
     public double getVX() {
         return vx;
     }
@@ -85,7 +73,7 @@ public class Velocity {
         new_wz = Math.max(-1.0, Math.min(1.0, wz));
 
         // null vector (vx,vy)
-        if (vx == 0.0 && vy == 0.0){
+        if (vx == 0.0 && vy == 0.0) {
             return new Velocity(0.0, 0.0, new_wz);
         }
 
