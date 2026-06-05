@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BaseTeleOp;
 
-@TeleOp(name = "PID Konfigurator", group = "TESTING")
-public class PIDKonfigurator extends BaseTeleOp {
+@TeleOp(name = "Test PID", group = "TESTING")
+public class TestPID extends BaseTeleOp {
     double[] pid_values = new double[3]; // p, i, d
     int selected = 0;
 

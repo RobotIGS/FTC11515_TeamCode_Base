@@ -9,9 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BaseTeleOp;
 
-@TeleOp(name = "Gyro Test", group = "TESTING")
-//@Disabled
-public class GyroTest extends BaseTeleOp {
+@TeleOp(name = "Test Gyro", group = "TESTING")
+public class TestGyro extends BaseTeleOp {
     private BNO055IMU imu;
 
     @Override

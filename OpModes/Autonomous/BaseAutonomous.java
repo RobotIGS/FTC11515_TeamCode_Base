@@ -19,8 +19,6 @@ public abstract class BaseAutonomous extends LinearOpMode {
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        }
-        for (LynxModule hub : allHubs) {
             hub.clearBulkCache();
         }
 

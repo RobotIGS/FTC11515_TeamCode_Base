@@ -25,12 +25,8 @@ public abstract class BaseTeleOp extends LinearOpMode {
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        }
-        for (LynxModule hub : allHubs) {
             hub.clearBulkCache();
         }
-
-        hwMap = new HwMap(hardwareMap);
     }
 
     public abstract void runOnce(); // this gets executed once when play button is pressed on the driver hub
@@ -63,7 +59,7 @@ public abstract class BaseTeleOp extends LinearOpMode {
         }
     }
 
-    private java.util.Map<String, Boolean> buttonStates = new java.util.HashMap<>();
+    private final java.util.Map<String, Boolean> buttonStates = new java.util.HashMap<>();
 
     protected boolean isButtonPressed(String buttonId, boolean isPressed) {
         boolean wasPressed = Boolean.TRUE.equals(buttonStates.getOrDefault(buttonId, false));

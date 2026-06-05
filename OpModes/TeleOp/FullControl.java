@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Tools.HwMap;
 import org.firstinspires.ftc.teamcode.Tools.Steuerung.Gegensteuern;
 
 @TeleOp(name = "FullControl", group = "FTC")
@@ -11,14 +12,24 @@ public class FullControl extends BaseTeleOp {
     Gegensteuern gegensteuern_Y = new Gegensteuern("Y");
     double alt_vx;
     double alt_vy;
+
     // SEASON
-    private int phase_aufsammeln = 0;
-    private int phase_loswerden = 0;
+    private enum AufsammelStatus {
+        AUS, VOLL_AN, RAD_AUS, BODEN_AUS
+    }
+
+    private enum SchussStatus {
+        AUS, AUFWAERMEN, ALLES_AN, STOPP
+    }
+
+    private AufsammelStatus aufsammelStatus = AufsammelStatus.AUS;
+    private SchussStatus schussStatus = SchussStatus.AUS;
     /* END SECTION */
 
     @Override
     public void initialize() {
         super.initialize();
+        hwMap = new HwMap(hardwareMap);
         /* ADD CODE WHICH IS RUN ONCE WHEN INIT IS PRESSED */
 
         /* END SECTION */
@@ -66,8 +77,8 @@ public class FullControl extends BaseTeleOp {
         telemetry.addData("SNEAK", hwMap.navi.drive_sneak);
         telemetry.addData("GEGENSTEUERN", hwMap.navi.drive_gegensteuern);
         telemetry.addData("SCHUSS GESCHW", hwMap.gesch_schuss);
-        telemetry.addData("phase aufsammeln", phase_aufsammeln);
-        telemetry.addData("phase loswerden", phase_loswerden);
+        telemetry.addData("Status Aufsammeln", aufsammelStatus);
+        telemetry.addData("Status Loswerden", schussStatus);
         telemetry.addLine();
         telemetry.addLine(hwMap.navi.debug());
         telemetry.addLine(hwMap.chassis.debug());
@@ -106,50 +117,60 @@ public class FullControl extends BaseTeleOp {
 
         // one-klick aufsammeln
         if (isButtonPressed("gp2_lt", gamepad2.left_trigger_pressed)) {
-            phase_aufsammeln++;
-            if (phase_aufsammeln > 3) {
-                phase_aufsammeln = 0;
-            }
-            if (phase_aufsammeln == 1) {
-                hwMap.m_aufnehmen.setPower(hwMap.gesch_aufnehmen);
-                hwMap.m_boden.setPower(-1);
-                hwMap.crs_rad.setPower(1);
-            } else if (phase_aufsammeln == 2) {
-                hwMap.crs_rad.setPower(0);
-            } else if (phase_aufsammeln == 3) {
-                hwMap.m_boden.setPower(0);
-            } else if (phase_aufsammeln == 0) {
-                hwMap.m_aufnehmen.setPower(0);
+            switch (aufsammelStatus) {
+                case AUS:
+                    aufsammelStatus = AufsammelStatus.VOLL_AN;
+                    hwMap.m_aufnehmen.setPower(hwMap.gesch_aufnehmen);
+                    hwMap.m_boden.setPower(-1);
+                    hwMap.crs_rad.setPower(1);
+                    break;
+                case VOLL_AN:
+                    aufsammelStatus = AufsammelStatus.RAD_AUS;
+                    hwMap.crs_rad.setPower(0);
+                    break;
+                case RAD_AUS:
+                    aufsammelStatus = AufsammelStatus.BODEN_AUS;
+                    hwMap.m_boden.setPower(0);
+                    break;
+                case BODEN_AUS:
+                    aufsammelStatus = AufsammelStatus.AUS;
+                    hwMap.m_aufnehmen.setPower(0);
+                    break;
             }
         }
 
         // one-klick schiessen
-        if (isButtonPressed("gp2_rt", gamepad2.right_trigger != 0)) {
-            phase_loswerden++;
-            if (phase_loswerden > 3) {
-                phase_loswerden = 1;
-            }
-            if (phase_loswerden == 1) {
-                hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
-                loop_wait(2000);
-                hwMap.m_hoch.setPower(1);
-                loop_wait(1300);
-                hwMap.m_hoch.setPower(0);
-            } else if (phase_loswerden == 2) {
-                hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
-                hwMap.m_hoch.setPower(1);
-                hwMap.m_boden.setPower(-1);
-                hwMap.crs_rad.setPower(1);
-                loop_wait(800);
-                hwMap.m_hoch.setPower(0);
-            } else if (phase_loswerden == 3) {
-                hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
-                hwMap.m_hoch.setPower(1);
-                loop_wait(2000);
-                hwMap.m_schiessen.setPower(0);
-                hwMap.m_hoch.setPower(0);
-                hwMap.m_boden.setPower(0);
-                hwMap.crs_rad.setPower(0);
+        if (isButtonPressed("gp2_rt", gamepad2.right_trigger_pressed)) {
+            switch (schussStatus) {
+                case AUS:
+                case STOPP: // Falls wir am Ende auf STOPP waren, fangen wir wieder bei AUFWAERMEN an
+                    schussStatus = SchussStatus.AUFWAERMEN;
+                    hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
+                    loop_wait(2000);
+                    hwMap.m_hoch.setPower(1);
+                    loop_wait(1300);
+                    hwMap.m_hoch.setPower(0);
+                    break;
+                case AUFWAERMEN:
+                    schussStatus = SchussStatus.ALLES_AN;
+                    hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
+                    hwMap.m_hoch.setPower(1);
+                    hwMap.m_boden.setPower(-1);
+                    hwMap.crs_rad.setPower(1);
+                    loop_wait(800);
+                    hwMap.m_hoch.setPower(0);
+                    break;
+                case ALLES_AN:
+                    schussStatus = SchussStatus.STOPP;
+                    hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
+                    hwMap.m_hoch.setPower(1);
+                    loop_wait(2000);
+                    hwMap.m_schiessen.setPower(0);
+                    hwMap.m_hoch.setPower(0);
+                    hwMap.m_boden.setPower(0);
+                    hwMap.crs_rad.setPower(0);
+                    schussStatus = SchussStatus.AUS;
+                    break;
             }
         }
     }

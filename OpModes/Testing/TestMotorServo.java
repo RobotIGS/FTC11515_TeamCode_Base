@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BaseTeleOp;
 
 
-@TeleOp(name = "Motor & Servo Test", group = "TESTING")
-public class MotorServoTest extends BaseTeleOp {
+@TeleOp(name = "Test Motor & Servo", group = "TESTING")
+public class TestMotorServo extends BaseTeleOp {
 
     public DcMotor motor1;
     public DcMotor motor2;
@@ -22,11 +22,14 @@ public class MotorServoTest extends BaseTeleOp {
     @Override
     public void initialize() {
         super.initialize();
-        motor1 = hardwareMap.get(DcMotor.class, "motor1");
-        motor2 = hardwareMap.get(DcMotor.class, "motor2");
-        servo1 = hardwareMap.get(Servo.class, "servo1");
-        servo2 = hardwareMap.get(Servo.class, "servo2");
-        crservo1 = hardwareMap.get(CRServo.class, "crservo");
+        try {
+            motor1 = hardwareMap.get(DcMotor.class, "motor1");
+            motor2 = hardwareMap.get(DcMotor.class, "motor2");
+            servo1 = hardwareMap.get(Servo.class, "servo1");
+            servo2 = hardwareMap.get(Servo.class, "servo2");
+            crservo1 = hardwareMap.get(CRServo.class, "crservo");
+        } catch (Exception ignored){
+        }
     }
 
     @Override

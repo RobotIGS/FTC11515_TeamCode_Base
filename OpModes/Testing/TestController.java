@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BaseTeleOp;
 
-@TeleOp(name = "Controller Test", group = "TESTING")
-public class ControllerTest extends BaseTeleOp {
+@TeleOp(name = "Test Controller", group = "TESTING")
+public class TestController extends BaseTeleOp {
     @Override
     public void runOnce() {
 

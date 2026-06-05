@@ -43,9 +43,9 @@ public class HwMap {
 
     public HwMap(HardwareMap hardwareMap) {
         // chassis
-        // Typical FTC robot size: ~45cm x 45cm. 
-        // lx: sideways distance from center to wheel (e.g. 18cm)
-        // ly: forward distance from center to wheel (e.g. 15cm)
+        // Typical FTC robot size: ~45cm x 45cm.
+        // lx: sideways distance from center to wheel
+        // ly: forward distance from center to wheel
 
         // vx forward speed (+ => forward)
         // vy sideways speed (+ => left)
@@ -72,15 +72,17 @@ public class HwMap {
         // Stromspannung
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().hasNext() ? hardwareMap.voltageSensor.iterator().next() : null;
 
-        /* INITIALIZE YOUR HARDWARE DOWN BELOW */
-        m_schiessen = hardwareMap.get(DcMotor.class, "schiessen");
-        m_aufnehmen = hardwareMap.get(DcMotor.class, "aufnehmen");
-        m_boden = hardwareMap.get(DcMotor.class, "boden");
-        m_hoch = hardwareMap.get(DcMotor.class, "hoch");
+        try {
+            /* INITIALIZE YOUR HARDWARE DOWN BELOW */
+            m_schiessen = hardwareMap.get(DcMotor.class, "schiessen");
+            m_aufnehmen = hardwareMap.get(DcMotor.class, "aufnehmen");
+            m_boden = hardwareMap.get(DcMotor.class, "boden");
+            m_hoch = hardwareMap.get(DcMotor.class, "hoch");
 
-        s_kick_boden = hardwareMap.get(Servo.class, "s_boden");
-        s_kick_seite = hardwareMap.get(Servo.class, "seite");
-        crs_rad = hardwareMap.get(CRServo.class, "rad");
-        /* END SECTION */
+            s_kick_boden = hardwareMap.get(Servo.class, "s_boden");
+            s_kick_seite = hardwareMap.get(Servo.class, "seite");
+            crs_rad = hardwareMap.get(CRServo.class, "rad");
+        } catch (Exception ignored) {
+        }
     }
 }
