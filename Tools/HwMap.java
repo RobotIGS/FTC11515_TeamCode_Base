@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Tools.Chassis.MecanumChassis;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.Steuerung.AccelerationProfile;
 import org.firstinspires.ftc.teamcode.Tools.Steuerung.FieldNavigation;
-import org.firstinspires.ftc.teamcode.Tools.Steuerung.PidController;
+import org.firstinspires.ftc.teamcode.Tools.Steuerung.PidRegler;
 
 public class HwMap {
     /* PLACE YOUR CONSTANT VALUES DOWN BELOW*/
@@ -57,7 +57,7 @@ public class HwMap {
         chassis.setDrivingEncoderStepsPerRotation(384.5); // 435RPM: 384.5 & 223RPM: 751.8
 
         // field navigation
-        navi = new FieldNavigation(new Position2D(0.0, 0.0), new PidController(0.02, 0.0, 0.001));
+        navi = new FieldNavigation(new Position2D(0.0, 0.0), new PidRegler(0.02, 0.0, 0.001));
         navi.setKeepRotation(true);
         navi.setSpeedNormal(0.5);
         navi.setSpeedSneak(0.3);

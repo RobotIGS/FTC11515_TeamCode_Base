@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Tools.Steuerung;
 
-public class PidController {
+public class PidReglerAlt {
     public double integral;
     public double last_error;
     public double pid_value;
@@ -16,7 +16,7 @@ public class PidController {
      * @param i integral factor
      * @param d derivative factor
      */
-    public PidController(double p, double i, double d) {
+    public PidReglerAlt(double p, double i, double d) {
         this.k_p = p;
         this.k_i = i;
         this.k_d = d;
@@ -49,6 +49,7 @@ public class PidController {
      * @return output of the PID controller
      */
     public double step(double error) {
+        error /= 180;
         long current_time = System.currentTimeMillis();
         double dt = (last_time == 0) ? 0 : (current_time - last_time) / 1000.0;
         last_time = current_time;

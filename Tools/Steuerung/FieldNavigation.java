@@ -13,7 +13,7 @@ public class FieldNavigation {
     private final Rotation target_rotation;
     private final Velocity velocity;
     private final Position2D current_position;
-    public PidController rotationPidController;
+    public PidRegler rotationPidRegler;
     public Position2D distance;
     public boolean drive_sneak;
     public boolean drive_gegensteuern;
@@ -29,7 +29,7 @@ public class FieldNavigation {
     private double rotation_accuracy;
     private ChassisCapabilities chassisCapabilities;
 
-    public FieldNavigation(Position2D current_position, PidController pidController) {
+    public FieldNavigation(Position2D current_position, PidRegler pidRegler) {
         this.is_driving_to_position = false;
         this.current_position = current_position;
         this.target_position = current_position;
@@ -40,7 +40,7 @@ public class FieldNavigation {
         this.distance = new Position2D();
         this.velocity = new Velocity();
 
-        this.rotationPidController = pidController;
+        this.rotationPidRegler = pidRegler;
         this.accProfile = null;
 
         this.drive_sneak = true;
@@ -167,7 +167,7 @@ public class FieldNavigation {
                 velocity.set(
                         distance.getX() * velFactor,
                         distance.getY() * velFactor,
-                        drive_keeprotation ? rotationPidController.step(rotation_error.get() / 180) : 0.0
+                        drive_keeprotation ? rotationPidRegler.step(rotation_error.get()) : 0.0
                 );
             } else if (chassisCapabilities.getRotate()) { // just drive forward in the direction and rotate to the target
                 if (this.distance.getAbsolute() > this.driving_accuracy) {
@@ -180,7 +180,7 @@ public class FieldNavigation {
                 velocity.set(
                         distance.getX() * velFactor,
                         0.0,
-                        rotationPidController.step(rotation_error.get() / 180)
+                        rotationPidRegler.step(rotation_error.get())
                 );
             }
         }
@@ -201,7 +201,7 @@ public class FieldNavigation {
 
         ret += String.format("cur rotation: %+1.5f\n", current_rotation.get());
         ret += String.format("tar rotation: %+1.5f\n", target_rotation.get());
-        ret += String.format("pid: pid=%+1.5f int=%+1.5f la_er=%+1.5f\n", rotationPidController.pid_value, rotationPidController.integral, rotationPidController.last_error);
+        ret += String.format("pid: pid=%+1.5f la_er=%+1.5f\n", rotationPidRegler.pidValue, rotationPidRegler.lastError);
         return ret;
     }
 }

@@ -12,9 +12,9 @@ public class TestPID extends BaseTeleOp {
     @Override
     public void initialize() {
         super.initialize();
-        pid_values[0] = hwMap.navi.rotationPidController.k_p;
-        pid_values[1] = hwMap.navi.rotationPidController.k_i;
-        pid_values[2] = hwMap.navi.rotationPidController.k_d;
+        pid_values[0] = hwMap.navi.rotationPidRegler.k_p;
+        pid_values[1] = hwMap.navi.rotationPidRegler.k_i;
+        pid_values[2] = hwMap.navi.rotationPidRegler.k_d;
     }
 
 
@@ -42,7 +42,7 @@ public class TestPID extends BaseTeleOp {
             pid_values[selected] = Math.max(0, pid_values[selected] - 0.001);
         }
 
-        hwMap.navi.rotationPidController.change_values(pid_values[0], pid_values[1], pid_values[2]);
+        hwMap.navi.rotationPidRegler.change_values(pid_values[0], pid_values[1], pid_values[2]);
 
         hwMap.robot.step();
         telemetry();
