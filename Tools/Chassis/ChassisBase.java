@@ -61,15 +61,15 @@ public abstract class ChassisBase implements Chassis {
             wheelSpeeds[i] = 0.0;
             wheelMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             wheelMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            wheelMotorSteps[i] = wheelMotors[i].getCurrentPosition();
-            deltaWheelMotorSteps[i] = wheelMotorSteps[i];
+            wheelMotorSteps[i] = 0;
+            deltaWheelMotorSteps[i] = 0;
         }
 
         // Motor Richtungen festelegen
         wheelMotors[0].setDirection(DcMotorSimple.Direction.REVERSE); // FL
         wheelMotors[1].setDirection(DcMotorSimple.Direction.FORWARD); // FR
-        wheelMotors[2].setDirection(DcMotorSimple.Direction.REVERSE); // BL
-        wheelMotors[3].setDirection(DcMotorSimple.Direction.FORWARD); // BR
+        wheelMotors[2].setDirection(DcMotorSimple.Direction.FORWARD); // BL
+        wheelMotors[3].setDirection(DcMotorSimple.Direction.REVERSE); // BR
 
         imu = hw_map.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(this.hubOrientationOnRobot));

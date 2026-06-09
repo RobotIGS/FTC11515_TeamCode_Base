@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.Tools.Steuerung;
 
 public class PidRegler {
-    private double kP;
-    private double kI;
-    private double kD;
+    public double kP;
+    public double kI;
+    public double kD;
 
-    double pidValue;
+    public double pidValue;
     private double errorSum = 0.0;
-    double lastError = 0.0;
+    public double lastError = 0.0;
     private long lastTime = 0;
 
     // Begrenzung für das I-Glied, um unkontrolliertes Aufschwingen zu verhindern (Anti-Windup)
@@ -36,6 +36,12 @@ public class PidRegler {
         lastTime = 0;
     }
 
+    public void changeValues(double p, double i, double d) {
+        this.kP = p;
+        this.kI = i;
+        this.kD = d;
+    }
+
     /**
      * Berechnet die Motorleistung basierend auf dem direkt übergebenen Fehler.
      * Diese Variante ist universell einsetzbar (auch für Distanzen, Lift-Systeme etc.).
@@ -44,6 +50,8 @@ public class PidRegler {
      * @return Motorleistung für die Korrektur (-1.0 bis 1.0)
      */
     public double step(double error) {
+        error /= 180;
+
         long currentTime = System.nanoTime();
         // Zeitunterschied in Sekunden (Präzision im Nanosekundenbereich)
         double dt = (lastTime == 0) ? 0 : (currentTime - lastTime) / 1e9;
@@ -69,12 +77,5 @@ public class PidRegler {
         pidValue = pPart + iPart + dPart;
         pidValue = Math.max(-1.0, Math.min(1.0, pidValue));
         return pidValue;
-    }
-
-    /**
-     * Setzt das maximale Limit für den Integral-Anteil (Anti-Windup).
-     */
-    public void setIntegralLimit(double limit) {
-
     }
 }

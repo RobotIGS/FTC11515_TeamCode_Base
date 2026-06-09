@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.OpModes.Testing;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BaseTeleOp;
+import org.firstinspires.ftc.teamcode.Tools.HwMap;
+
+import java.util.List;
 
 @TeleOp(name = "Test PID", group = "TESTING")
 public class TestPID extends BaseTeleOp {
@@ -12,9 +15,10 @@ public class TestPID extends BaseTeleOp {
     @Override
     public void initialize() {
         super.initialize();
-        pid_values[0] = hwMap.navi.rotationPidRegler.k_p;
-        pid_values[1] = hwMap.navi.rotationPidRegler.k_i;
-        pid_values[2] = hwMap.navi.rotationPidRegler.k_d;
+        hwMap = new HwMap(hardwareMap);
+        pid_values[0] = hwMap.navi.rotationPidRegler.kP;
+        pid_values[1] = hwMap.navi.rotationPidRegler.kI;
+        pid_values[2] = hwMap.navi.rotationPidRegler.kD;
     }
 
 
@@ -25,7 +29,8 @@ public class TestPID extends BaseTeleOp {
     @Override
     public void runLoop() {
         if (isButtonPressed("gp1_x", gamepad1.x)) {
-            hwMap.robot.rotate(180, true);
+            hwMap.navi.rotationPidRegler.reset();
+            hwMap.robot.rotate(90, true);
         }
 
         if (isButtonPressed("gp1_y", gamepad1.y)) {
@@ -35,14 +40,20 @@ public class TestPID extends BaseTeleOp {
             }
         }
 
-        if (gamepad2.right_bumper) {
+        if (isButtonPressed("gp1_lb", gamepad1.left_bumper)) {
+            pid_values[selected] = Math.min(1.0, pid_values[selected] + 0.0001);
+        }
+        if (isButtonPressed("gp1_rb", gamepad1.right_bumper)) {
+            pid_values[selected] = Math.max(0, pid_values[selected] - 0.0001);
+        }
+        if (isButtonPressed("gp1_lt", gamepad1.left_trigger_pressed)) {
             pid_values[selected] = Math.min(1.0, pid_values[selected] + 0.001);
         }
-        if (gamepad2.left_bumper) {
+        if (isButtonPressed("gp1_rt", gamepad1.right_trigger_pressed)) {
             pid_values[selected] = Math.max(0, pid_values[selected] - 0.001);
         }
 
-        hwMap.navi.rotationPidRegler.change_values(pid_values[0], pid_values[1], pid_values[2]);
+        hwMap.navi.rotationPidRegler.changeValues(pid_values[0], pid_values[1], pid_values[2]);
 
         hwMap.robot.step();
         telemetry();
@@ -50,9 +61,14 @@ public class TestPID extends BaseTeleOp {
 
     @Override
     public void telemetry() {
+        telemetry.addData("selected", new String[]{"p", "i", "d"}[selected]);
         telemetry.addData("p", pid_values[0]);
         telemetry.addData("i", pid_values[1]);
         telemetry.addData("d", pid_values[2]);
+        telemetry.addData("value:", hwMap.navi.rotationPidRegler.pidValue);
+        telemetry.addData("last error:", hwMap.navi.rotationPidRegler.lastError);
+        telemetry.addLine("\n" + hwMap.navi.debug());
+        telemetry.addLine(hwMap.chassis.debug());
         telemetry.update();
     }
 }

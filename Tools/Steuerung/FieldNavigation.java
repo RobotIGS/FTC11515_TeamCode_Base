@@ -32,7 +32,7 @@ public class FieldNavigation {
     public FieldNavigation(Position2D current_position, PidRegler pidRegler) {
         this.is_driving_to_position = false;
         this.current_position = current_position;
-        this.target_position = current_position;
+        this.target_position = current_position.copy();
 
         this.current_rotation = new Rotation(0.0);
         this.target_rotation = new Rotation(0.0);
@@ -98,6 +98,7 @@ public class FieldNavigation {
     }
 
     public void setTargetRotation(double rotation, boolean relative) {
+        rotationPidRegler.reset();
         if (relative) {
             target_rotation.add(rotation);
         } else {
@@ -147,8 +148,8 @@ public class FieldNavigation {
             this.distance.subtract(current_position);
 
             // calculate the error in the rotation
-            Rotation rotation_error = new Rotation(target_rotation.get());
-            rotation_error.add(-current_rotation.get());
+            Rotation rotation_error = new Rotation(current_rotation.get());
+            rotation_error.add(-target_rotation.get());
 
             // setting the velocity for the chassis
             double velFactor = this.accProfile != null ? this.accProfile.step(this.current_position) * this.speed_auto : this.speed_auto;
@@ -189,19 +190,15 @@ public class FieldNavigation {
     @SuppressLint("DefaultLocale")
     public String debug() {
         String ret = "--- FieldNavigation Debug ---\n";
-        ret += String.format("position: x=%+3.1f y=%+3.1f\n", current_position.getX(), current_position.getY());
+        ret += String.format("position: x=%+3.1f y=%+3.1f rot: %+1.2f\n", current_position.getX(), current_position.getY(), current_rotation.get());
         ret += String.format("velocity: x=%+1.2f y=%+1.2f wz=%+1.2f\n", velocity.getVX(), velocity.getVY(), velocity.getWZ());
         if (this.is_driving_to_position) {
             ret += "driving pos: True\n";
-            ret += String.format("   target pos: x=%+3.1f y=%+3.1f rot=%+3.1f\n", target_position.getX(), target_position.getY(), target_rotation.get());
+            ret += String.format("   target pos: x=%+3.1f y=%+3.1f rot=%+1.2f\n", target_position.getX(), target_position.getY(), target_rotation.get());
             ret += String.format("   distance: x=%+3.1f y=%+3.1f\n", this.distance.getX(), this.distance.getY());
         } else {
             ret += "driving pos: False\n";
         }
-
-        ret += String.format("cur rotation: %+1.5f\n", current_rotation.get());
-        ret += String.format("tar rotation: %+1.5f\n", target_rotation.get());
-        ret += String.format("pid: pid=%+1.5f la_er=%+1.5f\n", rotationPidRegler.pidValue, rotationPidRegler.lastError);
         return ret;
     }
 }
