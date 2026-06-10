@@ -7,27 +7,27 @@ public abstract class ZwischenAutoBase extends BaseAutonomous {
     }
 
     public void schiessen() {
-        hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
+        hwMap.m_schiessen.setPower(hwMap.geschSchuss);
         loop_wait(2000);
         hwMap.m_hoch.setPower(1);
         loop_wait(1300);
         hwMap.m_hoch.setPower(0);
         loop_wait(2000);
 
-        hwMap.s_kick_seite.setPosition(hwMap.s_kick_seite_kurzposition);
+        hwMap.s_kickSeite.setPosition(hwMap.s_kickSeiteKurzposition);
         hwMap.m_hoch.setPower(1);
         hwMap.m_boden.setPower(-1);
         hwMap.crs_rad.setPower(1);
         loop_wait(1300);
-        hwMap.s_kick_seite.setPosition(hwMap.s_kick_seite_dauerposition);
+        hwMap.s_kickSeite.setPosition(hwMap.s_kickSeiteDauerposition);
         hwMap.m_hoch.setPower(0);
         loop_wait(2000);
 
-        hwMap.m_aufnehmen.setPower(hwMap.gesch_aufnehmen);
-        hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden_kurzposition);
+        hwMap.m_aufnehmen.setPower(hwMap.geschAufnehmen);
+        hwMap.s_kickBoden.setPosition(hwMap.s_kickBodenKurzposition);
         hwMap.m_hoch.setPower(1);
         loop_wait(10000);
-        hwMap.s_kick_boden.setPosition(hwMap.s_kick_boden_dauerposition);
+        hwMap.s_kickBoden.setPosition(hwMap.s_kickBodenDauerposition);
         hwMap.m_schiessen.setPower(0);
         hwMap.m_hoch.setPower(0);
         hwMap.m_boden.setPower(0);
@@ -39,7 +39,7 @@ public abstract class ZwischenAutoBase extends BaseAutonomous {
     public void aufnehmen() {
         hwMap.navi.setSpeed(1, 0, 0);
 
-        hwMap.m_aufnehmen.setPower(hwMap.gesch_aufnehmen);
+        hwMap.m_aufnehmen.setPower(hwMap.geschAufnehmen);
         hwMap.m_boden.setPower(-1);
         hwMap.crs_rad.setPower(1);
         loop_wait(100);

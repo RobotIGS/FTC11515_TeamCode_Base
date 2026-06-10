@@ -21,7 +21,7 @@ public class Gegensteuern {
     private double durchschnitt = 0;
     private double basisBremsKraft = 0;
     private double endwert = 0;
-    private long bremszeit_ende = 0;
+    private long bremszeitEnde = 0;
 
     public Gegensteuern(String richtung) {
         this.richtung = richtung;
@@ -43,7 +43,7 @@ public class Gegensteuern {
         }
 
         if (!geg) {
-            bremszeit_ende = 0;
+            bremszeitEnde = 0;
             durchschnitt = steuer_neu; // Filter direkt auf Ziel setzen
             basisBremsKraft = 0;
             return steuer_neu;
@@ -56,23 +56,23 @@ public class Gegensteuern {
 
         if (absNeu > JOYSTICK_DEADZONE) {
             // Abbruch: Fahrer steuert wieder aktiv selbst
-            bremszeit_ende = 0;
+            bremszeitEnde = 0;
             basisBremsKraft = 0;
             endwert = steuer_neu;
-        } else if (Math.abs(steuer_alt) > JOYSTICK_DEADZONE && bremszeit_ende <= now) {
+        } else if (Math.abs(steuer_alt) > JOYSTICK_DEADZONE && bremszeitEnde <= now) {
             // Aktivierung: Stick wurde gerade losgelassen und Bremsung läuft noch nicht
             // Optimiert: durchschnitt * durchschnitt statt Math.pow()
             aktuelleBremsDauer = Math.round(MAX_BREMSZEIT * (durchschnitt * durchschnitt));
             if (aktuelleBremsDauer > 0) {
-                bremszeit_ende = now + aktuelleBremsDauer;
+                bremszeitEnde = now + aktuelleBremsDauer;
                 basisBremsKraft = durchschnitt;
             } else {
                 basisBremsKraft = 0;
             }
             endwert = steuer_neu;
-        } else if (now < bremszeit_ende) {
+        } else if (now < bremszeitEnde) {
             // Aktive Bremsrampe: Gegenkraft sinkt linear auf 0
-            final long restZeit = bremszeit_ende - now;
+            final long restZeit = bremszeitEnde - now;
             final double rampenFaktor = (double) restZeit / aktuelleBremsDauer;
 
             // Keine Begrenzung nötig, da 'basisBremsKraft' mathematisch nie [-1.0, 1.0] überschreiten kann
@@ -89,8 +89,8 @@ public class Gegensteuern {
     @SuppressLint("DefaultLocale")
     public String debug() {
         final long now = System.currentTimeMillis();
-        final boolean isBraking = now < bremszeit_ende;
-        final double rampenFaktor = isBraking ? (double) (bremszeit_ende - now) / aktuelleBremsDauer : 0.0;
+        final boolean isBraking = now < bremszeitEnde;
+        final double rampenFaktor = isBraking ? (double) (bremszeitEnde - now) / aktuelleBremsDauer : 0.0;
 
         return "--- Gegensteuern Debug " + this.richtung + " ---\n" +
                 String.format("Status       : %s\n", isBraking ? "bremsen" : "nicht aktiv") +

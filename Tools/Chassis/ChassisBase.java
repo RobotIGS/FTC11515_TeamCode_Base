@@ -14,80 +14,73 @@ import org.firstinspires.ftc.teamcode.Tools.Datatypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Velocity;
 
 public abstract class ChassisBase implements Chassis {
-    private final DcMotor[] wheelMotors;
-    private final int[] wheelMotorSteps;
+    private final DcMotor[] radMotoren;
+    private final int[] radMotorSchritte;
     private final Rotation rotation;
     public IMU imu;
-    protected double driving_encoder_steps_per_rotation;
-    protected RevHubOrientationOnRobot hubOrientationOnRobot;
-    protected Velocity velocity;
-    protected Position2D drivenDistance;
-    protected double[] wheelSpeeds;
-    protected int[] deltaWheelMotorSteps;
-    protected ChassisCapabilities capabilities;
-    private double start_rotation;
+    protected double fahrEncoderSchritteProUmdrehung;
+    protected RevHubOrientationOnRobot hubAusrichtungAmRobot;
+    protected Velocity geschwindigkeit;
+    protected Position2D gefahreneDistanz;
+    protected double[] radGeschwindigkeiten;
+    protected int[] deltaRadMotorSchritte;
+    private double startRotation;
 
-    public ChassisBase(int numWheels, RevHubOrientationOnRobot huborientation) {
-        this.capabilities = new ChassisCapabilities();
-
-        // rotation stuff
-        this.capabilities.setGetRotation(true);
-        this.capabilities.setRotate(true);
-        this.hubOrientationOnRobot = huborientation;
-        this.start_rotation = 0;
+    public ChassisBase(int anzahlRaeder, RevHubOrientationOnRobot hubAusrichtung) {
+        // Rotations-Einstellungen
+        this.hubAusrichtungAmRobot = hubAusrichtung;
+        this.startRotation = 0;
         this.rotation = new Rotation(0.0);
 
-        // drive stuff
-        this.capabilities.setGetDrivenDistance(true);
-        this.capabilities.setDriveForward(true);
-        this.drivenDistance = new Position2D();
-        this.wheelMotors = new DcMotor[numWheels];
-        this.wheelSpeeds = new double[numWheels];
-        this.wheelMotorSteps = new int[numWheels];
-        this.deltaWheelMotorSteps = new int[numWheels];
+        // Fahr-Einstellungen
+        this.gefahreneDistanz = new Position2D();
+        this.radMotoren = new DcMotor[anzahlRaeder];
+        this.radGeschwindigkeiten = new double[anzahlRaeder];
+        this.radMotorSchritte = new int[anzahlRaeder];
+        this.deltaRadMotorSchritte = new int[anzahlRaeder];
     }
 
-    public void setDrivingEncoderStepsPerRotation(double driving_encoder_steps_per_rotation) {
-        this.driving_encoder_steps_per_rotation = driving_encoder_steps_per_rotation;
+    public void setDrivingEncoderStepsPerRotation(double fahrEncoderSchritteProUmdrehung) {
+        this.fahrEncoderSchritteProUmdrehung = fahrEncoderSchritteProUmdrehung;
     }
 
-    public void populateMotorArray(HardwareMap hw_map) {
-        wheelMotors[0] = hw_map.get(DcMotor.class, "front_left_motor");
-        wheelMotors[1] = hw_map.get(DcMotor.class, "front_right_motor");
-        wheelMotors[2] = hw_map.get(DcMotor.class, "back_left_motor");
-        wheelMotors[3] = hw_map.get(DcMotor.class, "back_right_motor");
+    public void populateMotorArray(HardwareMap hwMap) {
+        radMotoren[0] = hwMap.get(DcMotor.class, "front_left_motor");
+        radMotoren[1] = hwMap.get(DcMotor.class, "front_right_motor");
+        radMotoren[2] = hwMap.get(DcMotor.class, "back_left_motor");
+        radMotoren[3] = hwMap.get(DcMotor.class, "back_right_motor");
 
-        for (int i = 0; i < this.wheelMotors.length; i++) {
-            wheelSpeeds[i] = 0.0;
-            wheelMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            wheelMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            wheelMotorSteps[i] = 0;
-            deltaWheelMotorSteps[i] = 0;
+        for (int i = 0; i < this.radMotoren.length; i++) {
+            radGeschwindigkeiten[i] = 0.0;
+            radMotoren[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            radMotoren[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            radMotorSchritte[i] = 0;
+            deltaRadMotorSchritte[i] = 0;
         }
 
         // Motor Richtungen festelegen
-        wheelMotors[0].setDirection(DcMotorSimple.Direction.REVERSE); // FL
-        wheelMotors[1].setDirection(DcMotorSimple.Direction.FORWARD); // FR
-        wheelMotors[2].setDirection(DcMotorSimple.Direction.FORWARD); // BL
-        wheelMotors[3].setDirection(DcMotorSimple.Direction.REVERSE); // BR
+        radMotoren[0].setDirection(DcMotorSimple.Direction.REVERSE); // FL
+        radMotoren[1].setDirection(DcMotorSimple.Direction.FORWARD); // FR
+        radMotoren[2].setDirection(DcMotorSimple.Direction.FORWARD); // BL
+        radMotoren[3].setDirection(DcMotorSimple.Direction.REVERSE); // BR
 
-        imu = hw_map.get(IMU.class, "imu");
-        imu.initialize(new IMU.Parameters(this.hubOrientationOnRobot));
+        imu = hwMap.get(IMU.class, "imu");
+        imu.initialize(new IMU.Parameters(this.hubAusrichtungAmRobot));
         imu.resetYaw();
     }
 
     private void setMotorSpeeds() {
-        for (int i = 0; i < wheelMotors.length; i++) {
-            wheelMotors[i].setPower(wheelSpeeds[i]);
+        for (int i = 0; i < radMotoren.length; i++) {
+            radMotoren[i].setPower(radGeschwindigkeiten[i]);
         }
     }
 
-    public void setVelocity(Velocity velocity) {
-        this.velocity = velocity;
+    public void setVelocity(Velocity geschwindigkeit) {
+        this.geschwindigkeit = geschwindigkeit;
     }
 
     public Position2D getDrivenDistance() {
-        return drivenDistance;
+        return gefahreneDistanz;
     }
 
     public void stopMotors() {
@@ -96,11 +89,11 @@ public abstract class ChassisBase implements Chassis {
     }
 
     private void updateMotorSteps() {
-        int steps;
-        for (int i = 0; i < deltaWheelMotorSteps.length; i++) {
-            steps = wheelMotors[i].getCurrentPosition();
-            deltaWheelMotorSteps[i] = steps - wheelMotorSteps[i];
-            wheelMotorSteps[i] = steps;
+        int schritte;
+        for (int i = 0; i < deltaRadMotorSchritte.length; i++) {
+            schritte = radMotoren[i].getCurrentPosition();
+            deltaRadMotorSchritte[i] = schritte - radMotorSchritte[i];
+            radMotorSchritte[i] = schritte;
         }
     }
 
@@ -108,12 +101,8 @@ public abstract class ChassisBase implements Chassis {
         return rotation.get();
     }
 
-    public void setStartRotation(double start_rotation) {
-        this.start_rotation = -getRawRotation() + start_rotation;
-    }
-
-    public ChassisCapabilities getCapabilities() {
-        return capabilities;
+    public void setStartRotation(double startRotation) {
+        this.startRotation = -getRawRotation() + startRotation;
     }
 
     private double getRawRotation() {
@@ -121,7 +110,7 @@ public abstract class ChassisBase implements Chassis {
     }
 
     private void calculateRotation() {
-        rotation.set(getRawRotation() + start_rotation);
+        rotation.set(getRawRotation() + startRotation);
     }
 
     public void step() {
@@ -133,14 +122,14 @@ public abstract class ChassisBase implements Chassis {
     @SuppressLint("DefaultLocale")
     public String debug() {
         String ret = "--- Chassis Debug ---\n";
-        if (velocity != null)
-            ret += String.format("velocity: vx=%+1.2f vy=%+1.2f wz=%+1.2f\n", velocity.getVX(), velocity.getVY(), velocity.getWZ());
-        if (drivenDistance != null)
-            ret += String.format("driven distance: x=%+2.2f y=%+2.2f\n", drivenDistance.getX(), drivenDistance.getY());
+        if (geschwindigkeit != null)
+            ret += String.format("Geschwindigkeit: vx=%+1.2f vy=%+1.2f wz=%+1.2f\n", geschwindigkeit.getVX(), geschwindigkeit.getVY(), geschwindigkeit.getWZ());
+        if (gefahreneDistanz != null)
+            ret += String.format("Gefahrene Distanz: x=%+2.2f y=%+2.2f\n", gefahreneDistanz.getX(), gefahreneDistanz.getY());
 
-        // add wheel debug
-        for (int i = 0; i < wheelMotors.length; i++) {
-            ret += String.format("Wheel %d: v=%+1.2f  steps=%+5d  delta steps=%+3d\n", i, wheelSpeeds[i], wheelMotors[i].getCurrentPosition(), deltaWheelMotorSteps[i]);
+        // Rad-Debug hinzufügen
+        for (int i = 0; i < radMotoren.length; i++) {
+            ret += String.format("Rad %d: v=%+1.2f  Schritte=%+5d  Delta Schritte=%+3d\n", i, radGeschwindigkeiten[i], radMotoren[i].getCurrentPosition(), deltaRadMotorSchritte[i]);
         }
 
         return ret;

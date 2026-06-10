@@ -6,67 +6,66 @@ import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Velocity;
 
 /**
- * every Chassis needs to implement this interface
+ * Jedes Chassis muss dieses Interface implementieren
  */
 public interface Chassis {
     /**
-     * get hardware interfaces
+     * Hardware-Interfaces initialisieren
      *
-     * @param hw_map the hw_map
+     * @param hwMap die Hardware-Map
      */
-    void populateMotorArray(HardwareMap hw_map);
+    void populateMotorArray(HardwareMap hwMap);
 
     /**
-     * set the wheel rotation velocities accordingly to the given velocity
+     * Setzt die Radgeschwindigkeiten entsprechend der gegebenen Geschwindigkeit
      *
-     * @param velocity the chassis velocity
+     * @param geschwindigkeit die Chassis-Geschwindigkeit
      */
-    void setVelocity(Velocity velocity);
+    void setVelocity(Velocity geschwindigkeit);
 
     /**
-     * get the driven distance when supported by the chassis
+     * Gibt die gefahrene Distanz zurück, falls vom Chassis unterstützt
      *
-     * @return delta in position since last step or (0|0)
+     * @return Differenz der Position seit dem letzten Schritt oder (0|0)
      */
     Position2D getDrivenDistance();
 
     /**
-     * get the rotation of the chassis on the filed if supported by the chassis
+     * Gibt die Rotation des Chassis auf dem Feld zurück, falls unterstützt
      *
-     * @return the rotation of the chassis or 0
+     * @return die Rotation des Chassis oder 0
      */
     double getRotation();
 
     /**
-     * set the rotation of the chassis on the field
+     * Setzt die Start-Rotation des Chassis auf dem Feld
      *
-     * @param rotation the rotation in [0;360]
+     * @param rotation die Rotation in [0;360]
      */
     void setStartRotation(double rotation);
 
-    /**
-     * get the capabilities of the chassis
-     *
-     * @return capabilities
-     */
-    ChassisCapabilities getCapabilities();
 
     /**
-     * stop all motor movements
+     * Stoppt alle Motorbewegungen
      */
     void stopMotors();
 
     /**
-     * get some debug infos for the chassis
+     * Gibt Debug-Informationen für das Chassis zurück
      *
-     * @return a string containing the debug infos
+     * @return ein String mit Debug-Infos
      */
     String debug();
 
     /**
-     * update states, recalculate rotation and distance driven/etc
+     * Aktualisiert Zustände, berechnet Rotation und gefahrene Distanz neu, etc.
      */
     void step();
 
-    void setDrivingEncoderStepsPerRotation(double driving_encoder_steps_per_rotation);
+    /**
+     * Setzt die Encoder-Schritte pro Umdrehung für das Fahren
+     *
+     * @param fahrEncoderSchritteProUmdrehung Schritte pro Umdrehung
+     */
+    void setDrivingEncoderStepsPerRotation(double fahrEncoderSchritteProUmdrehung);
 }

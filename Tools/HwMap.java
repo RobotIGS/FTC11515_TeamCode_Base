@@ -23,21 +23,21 @@ public class HwMap {
     public VoltageSensor batteryVoltageSensor;
 
     /* PLACE YOUR HARDWARE INTERFACES AND VALUES DOWN BELOW */
-    public double gesch_schuss = 0.7;
-    public double gesch_aufnehmen = -1.0;
-    public double s_kick_boden_kurzposition = 0.9;
-    public double s_kick_boden_dauerposition = 0.55;
+    public double geschSchuss = 0.7;
+    public double geschAufnehmen = -1.0;
+    public double s_kickBodenKurzposition = 0.9;
+    public double s_kickBodenDauerposition = 0.55;
 
-    public double s_kick_seite_kurzposition = 0.7;
-    public double s_kick_seite_dauerposition = 0.15;
+    public double s_kickSeiteKurzposition = 0.7;
+    public double s_kickSeiteDauerposition = 0.15;
 
     public DcMotor m_schiessen;
     public DcMotor m_boden;
     public DcMotor m_aufnehmen;
     public DcMotor m_hoch;
 
-    public Servo s_kick_seite;
-    public Servo s_kick_boden;
+    public Servo s_kickSeite;
+    public Servo s_kickBoden;
     public CRServo crs_rad;
     /* END SECTION */
 
@@ -63,9 +63,9 @@ public class HwMap {
         navi.setSpeedSneak(0.3);
         navi.setSpeedDrehen(1.0);
         navi.setSpeedAuto(0.2);
-        navi.setAccelerationProfile(new AccelerationProfile(25, 1)); // create an acceleration profile for better location resolution
-        navi.setRotationAccuracy(1.0); // in Grad
-        navi.setDrivingAccuracy(2.0); // in cm
+        navi.setAccelerationProfile(new AccelerationProfile(20, 1)); // create an acceleration profile for better location resolution
+        navi.setRotationAccuracy(0.5); // in Grad
+        navi.setDrivingAccuracy(1.0); // in cm
 
         robot = new Robot(navi, chassis);
 
@@ -79,8 +79,8 @@ public class HwMap {
             m_boden = hardwareMap.get(DcMotor.class, "boden");
             m_hoch = hardwareMap.get(DcMotor.class, "hoch");
 
-            s_kick_boden = hardwareMap.get(Servo.class, "s_boden");
-            s_kick_seite = hardwareMap.get(Servo.class, "seite");
+            s_kickBoden = hardwareMap.get(Servo.class, "s_boden");
+            s_kickSeite = hardwareMap.get(Servo.class, "seite");
             crs_rad = hardwareMap.get(CRServo.class, "rad");
         } catch (Exception ignored) {
         }

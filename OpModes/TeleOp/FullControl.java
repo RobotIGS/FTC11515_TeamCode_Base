@@ -8,10 +8,10 @@ import org.firstinspires.ftc.teamcode.Tools.Steuerung.Gegensteuern;
 @TeleOp(name = "FullControl", group = "FTC")
 public class FullControl extends BaseTeleOp {
     /* ADD VARIABLES ONLY USED IN FULL CONTROL */
-    Gegensteuern gegensteuern_X = new Gegensteuern("X");
-    Gegensteuern gegensteuern_Y = new Gegensteuern("Y");
-    double alt_vx;
-    double alt_vy;
+    Gegensteuern gegensteuernX = new Gegensteuern("X");
+    Gegensteuern gegensteuernY = new Gegensteuern("Y");
+    double altVx;
+    double altVy;
 
     // SEASON
     private enum AufsammelStatus {
@@ -53,37 +53,37 @@ public class FullControl extends BaseTeleOp {
     @Override
     public void driving() {
         if (isButtonPressed("gp1_lb", gamepad1.left_bumper)) {
-            hwMap.navi.drive_sneak = !hwMap.navi.drive_sneak;
+            hwMap.navi.driveSneak = !hwMap.navi.driveSneak;
         }
         if (isButtonPressed("gp1_rb", gamepad1.right_bumper)) {
-            hwMap.navi.drive_gegensteuern = !hwMap.navi.drive_gegensteuern;
+            hwMap.navi.driveGegensteuern = !hwMap.navi.driveGegensteuern;
         }
 
-        double vx = -gamepad1.left_stick_y * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
-        double vy = -gamepad1.left_stick_x * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
-        double vz = -(gamepad1.left_trigger - gamepad1.right_trigger) * hwMap.navi.speed_drehen * (hwMap.navi.drive_sneak ? hwMap.navi.speed_sneak : hwMap.navi.speed_normal);
+        double vx = -gamepad1.left_stick_y * (hwMap.navi.driveSneak ? hwMap.navi.speedSneak : hwMap.navi.speedNormal);
+        double vy = -gamepad1.left_stick_x * (hwMap.navi.driveSneak ? hwMap.navi.speedSneak : hwMap.navi.speedNormal);
+        double vz = -(gamepad1.left_trigger - gamepad1.right_trigger) * hwMap.navi.speedDrehen * (hwMap.navi.driveSneak ? hwMap.navi.speedSneak : hwMap.navi.speedNormal);
 
         hwMap.navi.setSpeed(
-                gegensteuern_X.calculate(hwMap.navi.drive_gegensteuern, alt_vx, vx),
-                gegensteuern_Y.calculate(hwMap.navi.drive_gegensteuern, alt_vy, vy),
+                gegensteuernX.calculate(hwMap.navi.driveGegensteuern, altVx, vx),
+                gegensteuernY.calculate(hwMap.navi.driveGegensteuern, altVy, vy),
                 vz);
 
-        alt_vx = vx;
-        alt_vy = vy;
+        altVx = vx;
+        altVy = vy;
     }
 
     @Override
     public void telemetry() {
-        telemetry.addData("SNEAK", hwMap.navi.drive_sneak);
-        telemetry.addData("GEGENSTEUERN", hwMap.navi.drive_gegensteuern);
-        telemetry.addData("SCHUSS GESCHW", hwMap.gesch_schuss);
+        telemetry.addData("SNEAK", hwMap.navi.driveSneak);
+        telemetry.addData("GEGENSTEUERN", hwMap.navi.driveGegensteuern);
+        telemetry.addData("Schussgeschwindigkeit", hwMap.geschSchuss);
         telemetry.addData("Status Aufsammeln", aufsammelStatus);
         telemetry.addData("Status Loswerden", schussStatus);
         telemetry.addLine();
         telemetry.addLine(hwMap.navi.debug());
         telemetry.addLine(hwMap.chassis.debug());
-        telemetry.addLine(gegensteuern_X.debug());
-        telemetry.addLine(gegensteuern_Y.debug());
+        telemetry.addLine(gegensteuernX.debug());
+        telemetry.addLine(gegensteuernY.debug());
         telemetry.update();
     }
 
@@ -91,16 +91,16 @@ public class FullControl extends BaseTeleOp {
     public void season() {
         // Schussgeschwindigkeit
         if (isButtonPressed("gp2_rb", gamepad2.right_bumper)) {
-            hwMap.gesch_schuss = Math.min(1.0, hwMap.gesch_schuss + 0.05);
+            hwMap.geschSchuss = Math.min(1.0, hwMap.geschSchuss + 0.05);
         }
         if (isButtonPressed("gp2_lb", gamepad2.left_bumper)) {
-            hwMap.gesch_schuss = Math.max(0.4, hwMap.gesch_schuss - 0.05);
+            hwMap.geschSchuss = Math.max(0.4, hwMap.geschSchuss - 0.05);
         }
 
         // motor aufnehmen
         if (isButtonPressed("gp2_b", gamepad2.b)) {
             if (hwMap.m_aufnehmen.getPower() == 0) {
-                hwMap.m_aufnehmen.setPower(hwMap.gesch_aufnehmen);
+                hwMap.m_aufnehmen.setPower(hwMap.geschAufnehmen);
             } else {
                 hwMap.m_aufnehmen.setPower(0);
             }
@@ -109,7 +109,7 @@ public class FullControl extends BaseTeleOp {
         // motor schiessen
         if (isButtonPressed("gp2_a", gamepad2.a)) {
             if (hwMap.m_schiessen.getPower() == 0) {
-                hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
+                hwMap.m_schiessen.setPower(hwMap.geschSchuss);
             } else {
                 hwMap.m_schiessen.setPower(0);
             }
@@ -120,7 +120,7 @@ public class FullControl extends BaseTeleOp {
             switch (aufsammelStatus) {
                 case AUS:
                     aufsammelStatus = AufsammelStatus.VOLL_AN;
-                    hwMap.m_aufnehmen.setPower(hwMap.gesch_aufnehmen);
+                    hwMap.m_aufnehmen.setPower(hwMap.geschAufnehmen);
                     hwMap.m_boden.setPower(-1);
                     hwMap.crs_rad.setPower(1);
                     break;
@@ -145,7 +145,7 @@ public class FullControl extends BaseTeleOp {
                 case AUS:
                 case STOPP: // Falls wir am Ende auf STOPP waren, fangen wir wieder bei AUFWAERMEN an
                     schussStatus = SchussStatus.AUFWAERMEN;
-                    hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
+                    hwMap.m_schiessen.setPower(hwMap.geschSchuss);
                     loop_wait(2000);
                     hwMap.m_hoch.setPower(1);
                     loop_wait(1300);
@@ -153,7 +153,7 @@ public class FullControl extends BaseTeleOp {
                     break;
                 case AUFWAERMEN:
                     schussStatus = SchussStatus.ALLES_AN;
-                    hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
+                    hwMap.m_schiessen.setPower(hwMap.geschSchuss);
                     hwMap.m_hoch.setPower(1);
                     hwMap.m_boden.setPower(-1);
                     hwMap.crs_rad.setPower(1);
@@ -162,7 +162,7 @@ public class FullControl extends BaseTeleOp {
                     break;
                 case ALLES_AN:
                     schussStatus = SchussStatus.STOPP;
-                    hwMap.m_schiessen.setPower(hwMap.gesch_schuss);
+                    hwMap.m_schiessen.setPower(hwMap.geschSchuss);
                     hwMap.m_hoch.setPower(1);
                     loop_wait(2000);
                     hwMap.m_schiessen.setPower(0);

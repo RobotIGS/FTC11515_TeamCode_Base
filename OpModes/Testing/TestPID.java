@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BaseTeleOp;
 import org.firstinspires.ftc.teamcode.Tools.HwMap;
 
-import java.util.List;
-
 @TeleOp(name = "Test PID", group = "TESTING")
 public class TestPID extends BaseTeleOp {
     double[] pid_values = new double[3]; // p, i, d

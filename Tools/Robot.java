@@ -11,9 +11,6 @@ public class Robot {
     public Robot(FieldNavigation navi, Chassis chassis) {
         this.navi = navi;
         this.chassis = chassis;
-
-        // transmit the capabilities of the chassis
-        this.navi.setChassisCapabilities(chassis.getCapabilities());
     }
 
     public void drive_to_pos(Position2D d, boolean rel) {

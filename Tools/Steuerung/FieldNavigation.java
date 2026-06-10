@@ -2,40 +2,38 @@ package org.firstinspires.ftc.teamcode.Tools.Steuerung;
 
 import android.annotation.SuppressLint;
 
-import org.firstinspires.ftc.teamcode.Tools.Chassis.ChassisCapabilities;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Position2D;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Rotation;
 import org.firstinspires.ftc.teamcode.Tools.Datatypes.Velocity;
 
 public class FieldNavigation {
     public final static double PLATTENLAENGE = 365.75 / 6;
-    private final Rotation current_rotation;
-    private final Rotation target_rotation;
+    private final Rotation currentRotation;
+    private final Rotation targetRotation;
     private final Velocity velocity;
-    private final Position2D current_position;
+    private final Position2D currentPosition;
     public PidRegler rotationPidRegler;
     public Position2D distance;
-    public boolean drive_sneak;
-    public boolean drive_gegensteuern;
-    public double speed_normal;
-    public double speed_sneak;
-    public double speed_drehen;
-    public double speed_auto;
-    private boolean is_driving_to_position;
-    private boolean drive_keeprotation;
-    private Position2D target_position;
-    private double driving_accuracy;
+    public boolean driveSneak;
+    public boolean driveGegensteuern;
+    public double speedNormal;
+    public double speedSneak;
+    public double speedDrehen;
+    public double speedAuto;
+    private boolean isDrivingToPosition;
+    private boolean driveKeepRotation;
+    private Position2D targetPosition;
+    private double drivingAccuracy;
     private AccelerationProfile accProfile;
-    private double rotation_accuracy;
-    private ChassisCapabilities chassisCapabilities;
+    private double rotationAccuracy;
 
-    public FieldNavigation(Position2D current_position, PidRegler pidRegler) {
-        this.is_driving_to_position = false;
-        this.current_position = current_position;
-        this.target_position = current_position.copy();
+    public FieldNavigation(Position2D currentPosition, PidRegler pidRegler) {
+        this.isDrivingToPosition = false;
+        this.currentPosition = currentPosition;
+        this.targetPosition = currentPosition.copy();
 
-        this.current_rotation = new Rotation(0.0);
-        this.target_rotation = new Rotation(0.0);
+        this.currentRotation = new Rotation(0.0);
+        this.targetRotation = new Rotation(0.0);
 
         this.distance = new Position2D();
         this.velocity = new Velocity();
@@ -43,12 +41,12 @@ public class FieldNavigation {
         this.rotationPidRegler = pidRegler;
         this.accProfile = null;
 
-        this.drive_sneak = true;
-        this.drive_gegensteuern = true;
+        this.driveSneak = true;
+        this.driveGegensteuern = true;
     }
 
     public boolean isDrivingToPosition() {
-        return this.is_driving_to_position;
+        return this.isDrivingToPosition;
     }
 
     public AccelerationProfile getAccProfile() {
@@ -60,80 +58,76 @@ public class FieldNavigation {
     }
 
     public void setDrivingAccuracy(double accu) {
-        this.driving_accuracy = accu;
+        this.drivingAccuracy = accu;
     }
 
     public void setRotationAccuracy(double accu) {
-        this.rotation_accuracy = accu;
+        this.rotationAccuracy = accu;
     }
 
     public void setAccelerationProfile(AccelerationProfile accProfile) {
         this.accProfile = accProfile;
     }
 
-    public void setChassisCapabilities(ChassisCapabilities capabilities) {
-        this.chassisCapabilities = capabilities;
-    }
-
     public void setTargetPosition(Position2D p, boolean rel) {
         if (rel) {
-            p.rotate(this.current_rotation.get());
-            p.add(this.current_position);
+            p.rotate(this.currentRotation.get());
+            p.add(this.currentPosition);
             setTargetPosition(p, false);
         } else {
-            this.is_driving_to_position = true;
-            this.target_position = p;
+            this.isDrivingToPosition = true;
+            this.targetPosition = p;
             if (this.accProfile != null) {
-                this.accProfile.start(this.current_position, this.target_position); // start the acceleration profile
+                this.accProfile.start(this.currentPosition, this.targetPosition); // start the acceleration profile
             }
         }
     }
 
     public Position2D getTargetPosition() {
-        return target_position;
+        return targetPosition;
     }
 
     public void setCurrentRotation(double rot) {
-        current_rotation.set(rot);
+        currentRotation.set(rot);
     }
 
     public void setTargetRotation(double rotation, boolean relative) {
         rotationPidRegler.reset();
         if (relative) {
-            target_rotation.add(rotation);
+            targetRotation.add(rotation);
         } else {
-            target_rotation.set(rotation);
+            targetRotation.set(rotation);
         }
     }
 
-    public void setSpeedNormal(double speed_normal) {
-        this.speed_normal = Math.max(0, Math.min(1, speed_normal)); // factor [0-1]
+    public void setSpeedNormal(double speedNormal) {
+        this.speedNormal = Math.max(0, Math.min(1, speedNormal)); // factor [0-1]
     }
 
-    public void setSpeedSneak(double speed_sneak) {
-        this.speed_sneak = Math.max(0, Math.min(1, speed_sneak)); // factor [0-1]
+    public void setSpeedSneak(double speedSneak) {
+        this.speedSneak = Math.max(0, Math.min(1, speedSneak)); // factor [0-1]
     }
 
-    public void setSpeedDrehen(double speed_drehen) {
-        this.speed_drehen = Math.max(0, Math.min(1, speed_drehen)); // factor [0-1]
+    public void setSpeedDrehen(double speedDrehen) {
+        this.speedDrehen = Math.max(0, Math.min(1, speedDrehen)); // factor [0-1]
     }
 
-    public void setSpeedAuto(double speed_auto) {
-        this.speed_auto = Math.max(0, Math.min(1, speed_auto)); // factor [0-1]
+    public void setSpeedAuto(double speedAuto) {
+        this.speedAuto = Math.max(0, Math.min(1, speedAuto)); // factor [0-1]
     }
 
-    public void setKeepRotation(boolean keep_rotation) {
-        this.drive_keeprotation = keep_rotation;
+    public void setKeepRotation(boolean keepRotation) {
+        this.driveKeepRotation = keepRotation;
     }
 
     public void addDrivenDistance(Position2D d) {
         Position2D d_rotated = d.copy();
-        d_rotated.rotate(current_rotation.get());
-        current_position.add(d_rotated);
+        d_rotated.rotate(currentRotation.get());
+        currentPosition.add(d_rotated);
     }
 
     public void setSpeed(double vx, double vy, double wz) {
-        is_driving_to_position = false;
+        isDrivingToPosition = false;
         this.velocity.set(vx, vy, wz);
     }
 
@@ -142,36 +136,36 @@ public class FieldNavigation {
     }
 
     public void step() {
-        if (is_driving_to_position) {
+        if (isDrivingToPosition) {
             // calculate the distance to the target position
-            this.distance = target_position.copy();
-            this.distance.subtract(current_position);
+            this.distance = targetPosition.copy();
+            this.distance.subtract(currentPosition);
 
             // calculate the error in the rotation
-            Rotation rotation_error = new Rotation(current_rotation.get());
-            rotation_error.add(-target_rotation.get());
+            Rotation rotation_error = new Rotation(currentRotation.get());
+            rotation_error.add(-targetRotation.get());
 
             // setting the velocity for the chassis
-            double velFactor = this.accProfile != null ? this.accProfile.step(this.current_position) * this.speed_auto : this.speed_auto;
+            double velFactor = this.accProfile != null ? this.accProfile.step(this.currentPosition) * this.speedAuto : this.speedAuto;
 
             // calculate velocity for the chassis
             Position2D distance = this.distance.getNormalization();
-            distance.rotate(-this.current_rotation.get());
+            distance.rotate(-this.currentRotation.get());
 
             // test if in range of the target position (reached)
-            if ((Math.abs(this.distance.getAbsolute()) <= this.driving_accuracy && !drive_keeprotation) ||
-                    (Math.abs(this.distance.getAbsolute()) <= this.driving_accuracy && drive_keeprotation
-                            && Math.abs(rotation_error.get()) <= rotation_accuracy)) {
+            if ((Math.abs(this.distance.getAbsolute()) <= this.drivingAccuracy && !driveKeepRotation) ||
+                    (Math.abs(this.distance.getAbsolute()) <= this.drivingAccuracy && driveKeepRotation
+                            && Math.abs(rotation_error.get()) <= rotationAccuracy)) {
                 stop();
 
-            } else if (chassisCapabilities.getDriveSideways()) { // if sideways is allowed: just drive in the direction and rotate
+            } else if (true) { // if sideways is allowed: just drive in the direction and rotate
                 velocity.set(
                         distance.getX() * velFactor,
                         distance.getY() * velFactor,
-                        drive_keeprotation ? rotationPidRegler.step(rotation_error.get()) : 0.0
+                        driveKeepRotation ? rotationPidRegler.step(rotation_error.get()) : 0.0
                 );
-            } else if (chassisCapabilities.getRotate()) { // just drive forward in the direction and rotate to the target
-                if (this.distance.getAbsolute() > this.driving_accuracy) {
+            } else if (true) { // if rotation is allowed: just drive forward in the direction and rotate to the target
+                if (this.distance.getAbsolute() > this.drivingAccuracy) {
                     rotation_error.set(Math.toDegrees(Math.asin(distance.getY())));
                     if (distance.getX() < 0) {
                         rotation_error.set(180 - rotation_error.get());
@@ -190,11 +184,11 @@ public class FieldNavigation {
     @SuppressLint("DefaultLocale")
     public String debug() {
         String ret = "--- FieldNavigation Debug ---\n";
-        ret += String.format("position: x=%+3.1f y=%+3.1f rot: %+1.2f\n", current_position.getX(), current_position.getY(), current_rotation.get());
+        ret += String.format("position: x=%+3.1f y=%+3.1f rot: %+1.2f\n", currentPosition.getX(), currentPosition.getY(), currentRotation.get());
         ret += String.format("velocity: x=%+1.2f y=%+1.2f wz=%+1.2f\n", velocity.getVX(), velocity.getVY(), velocity.getWZ());
-        if (this.is_driving_to_position) {
+        if (this.isDrivingToPosition) {
             ret += "driving pos: True\n";
-            ret += String.format("   target pos: x=%+3.1f y=%+3.1f rot=%+1.2f\n", target_position.getX(), target_position.getY(), target_rotation.get());
+            ret += String.format("   target pos: x=%+3.1f y=%+3.1f rot=%+1.2f\n", targetPosition.getX(), targetPosition.getY(), targetRotation.get());
             ret += String.format("   distance: x=%+3.1f y=%+3.1f\n", this.distance.getX(), this.distance.getY());
         } else {
             ret += "driving pos: False\n";

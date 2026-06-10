@@ -28,7 +28,7 @@ public class TestMotorServo extends BaseTeleOp {
             servo1 = hardwareMap.get(Servo.class, "servo1");
             servo2 = hardwareMap.get(Servo.class, "servo2");
             crservo1 = hardwareMap.get(CRServo.class, "crservo");
-        } catch (Exception ignored){
+        } catch (Exception ignored) {
         }
     }
 
