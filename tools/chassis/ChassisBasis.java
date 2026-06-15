@@ -132,11 +132,9 @@ public abstract class ChassisBasis implements Chassis {
     public String debug() {
         StringBuilder ret = new StringBuilder("--- Chassis ---\n");
         ret.append(String.format("Gefahrene Distanz: x=%+2.2f y=%+2.2f\n", gefahreneDistanz.getX(), gefahreneDistanz.getY()));
-
         for (int i = 0; i < radMotoren.length; i++) {
             ret.append(String.format("Rad %d: v=%+1.2f  Schritte=%+5d  Delta Schritte=%+3d\n", i, radGeschwindigkeiten[i], radMotoren[i].getCurrentPosition(), deltaRadMotorSchritte[i]));
         }
-
         return ret.toString();
     }
 }

@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.tools.datentypen.Geschwindigkeit;
 import org.firstinspires.ftc.teamcode.tools.datentypen.Position2D;
 import org.firstinspires.ftc.teamcode.tools.datentypen.Rotation;
 
-public class FeldNavigation {
+public class Navigation {
     public final static double PLATTENLAENGE = 365.75 / 6;
     private final Rotation aktuelleRotation;
     private final Rotation zielRotation;
@@ -27,7 +27,7 @@ public class FeldNavigation {
     private BeschleunigungsProfil beschleunigungsProfil;
     private double rotationsGenauigkeit;
 
-    public FeldNavigation(Position2D aktuellePosition, PidRegler pidRegler) {
+    public Navigation(Position2D aktuellePosition, PidRegler pidRegler) {
         this.positionsfahren = false;
         this.aktuellePosition = aktuellePosition;
         this.zielPosition = aktuellePosition.copy();

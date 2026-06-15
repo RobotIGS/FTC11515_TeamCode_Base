@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.testing;
+package org.firstinspires.ftc.teamcode.opModes.teleOp.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -25,7 +25,7 @@ public class TestController extends BasisTeleOp {
                 gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0 ||
                 gamepad1.left_bumper || gamepad1.right_bumper ||
                 gamepad1.left_stick_x != 0 || gamepad1.left_stick_y != 0 ||
-                gamepad1.right_stick_x != 0 || gamepad1.right_stick_y != 0) { // vorwärts
+                gamepad1.right_stick_x != 0 || gamepad1.right_stick_y != 0) {
             hwMap.navi.setGeschwindigkeit(
                     1,
                     0,

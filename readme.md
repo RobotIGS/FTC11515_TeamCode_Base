@@ -1,6 +1,6 @@
 # FTC11515_TeamCode_Base
 
-This is the base repository for the team code of the FTC team 11515 RobotIGS.
+This is the repository for the team code of the FTC-Team 11515 RobotIGS.
 It is made to be used as a submodule for forkes of the FTC FtcRobotController repo.
 
 ## UML

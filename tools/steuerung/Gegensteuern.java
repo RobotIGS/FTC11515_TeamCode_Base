@@ -22,13 +22,13 @@ public class Gegensteuern {
         double FILTER_TAU = 0.10;
         double JOYSTICK_TOLERANZ = 0.02;
 
-        final long now = System.currentTimeMillis();
+        final long now = System.nanoTime();
 
         // 1. Delta-Time (dt) bestimmen
         if (lastTime == 0) {
             lastTime = now;
         }
-        double dt = (now - lastTime) / 1000.0;
+        double dt = (now - lastTime) / 1e9;
         lastTime = now;
 
         // Sicherheits-Check für extremen Lag (z.B. nach dem Init)

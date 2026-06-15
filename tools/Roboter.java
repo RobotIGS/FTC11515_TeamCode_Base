@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode.tools;
 
 import org.firstinspires.ftc.teamcode.tools.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.tools.datentypen.Position2D;
-import org.firstinspires.ftc.teamcode.tools.steuerung.FeldNavigation;
+import org.firstinspires.ftc.teamcode.tools.steuerung.Navigation;
 
 public class Roboter {
-    public final FeldNavigation navi;
+    public final Navigation navi;
     public final Chassis chassis;
 
-    public Roboter(FeldNavigation navi, Chassis chassis) {
+    public Roboter(Navigation navi, Chassis chassis) {
         this.navi = navi;
         this.chassis = chassis;
     }

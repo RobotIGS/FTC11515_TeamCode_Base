@@ -10,76 +10,79 @@ import org.firstinspires.ftc.teamcode.tools.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.tools.chassis.MecanumChassis;
 import org.firstinspires.ftc.teamcode.tools.datentypen.Position2D;
 import org.firstinspires.ftc.teamcode.tools.steuerung.BeschleunigungsProfil;
-import org.firstinspires.ftc.teamcode.tools.steuerung.FeldNavigation;
+import org.firstinspires.ftc.teamcode.tools.steuerung.Navigation;
 import org.firstinspires.ftc.teamcode.tools.steuerung.PidRegler;
 
 public class HwMap {
-    // robot
     public final Roboter robot;
-    public final FeldNavigation navi;
+    public final Navigation navi;
     public final Chassis chassis;
     public final VoltageSensor batterieSpannungsSensor;
 
-    /* PLACE YOUR HARDWARE INTERFACES AND VALUES DOWN BELOW */
-    public double geschSchuss = 0.7;
-    public final double geschAufnehmen = -1.0;
-    public final double sKickBodenKurzposition = 0.9;
-    public final double sKickBodenDauerposition = 0.55;
+    private static class MotorSteps {
+        public static final double M_435RPM = 384.5;
+        public static final double M_223RPM = 751.8;
+    }
 
-    public final double sKickSeiteKurzposition = 0.7;
-    public final double sKickSeiteDauerposition = 0.15;
+    /* PLACE YOUR HARDWARE INTERFACES AND VALUES DOWN BELOW */
+    public double geschwindigkeitSchuss = 0.7;
+    public final double geschwindigkeitAufnehmen = -1.0;
+
+    public final double KOPF_MAX_SPEED = 140.0; // Grad pro Sekunde
 
     public DcMotor mSchiessen;
-    public DcMotor mBoden;
+    public DcMotor mInnen;
     public DcMotor mAufnehmen;
-    public DcMotor mHoch;
-
-    public Servo sKickSeite;
-    public Servo sKickBoden;
-    public CRServo crsRad;
+    public CRServo crsKopfDrehen;
+    public Servo sRampeL;
+    public Servo sRampeR;
 
     public HwMap(com.qualcomm.robotcore.hardware.HardwareMap hardwareMap) {
-        // chassis
-        // Typical FTC robot size: ~45cm x 45cm.
-        // lx: sideways distance from center to wheel
-        // ly: forward distance from center to wheel
+        // Typische FTC-Robotergröße: ~45cm x 45cm.
+        // lx: Seitlicher Abstand von der Mitte zum Rad
+        // ly: Vorwärtsabstand von der Mitte zum Rad
 
-        // vx forward speed (+ => forward)
-        // vy sideways speed (+ => left)
-        // wz rotation speed (+ => turn left => mathematisch positiv)
+        // vx Vorwärtsgeschwindigkeit (+ => vorwärts)
+        // vy Seitwärtsgeschwindigkeit (+ => links)
+        // vz Rotationsgeschwindigkeit (+ => nach links drehen => mathematisch positiv)
 
         chassis = new MecanumChassis(17, 17, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
-        chassis.erstelleMotorArray(hardwareMap); // uses hardwareMap.get(...) to get motor interfaces as defined in the used chassis class
-        chassis.setStartRotation(0.0); // set start rotation
-        chassis.setEncoderSchritteProUmdrehung(384.5); // 435RPM: 384.5 & 223RPM: 751.8
+        chassis.erstelleMotorArray(hardwareMap); // verwendet hardwareMap.get(...), um Motorschnittstellen zu erhalten, wie in der verwendeten Chassis-Klasse definiert
+        chassis.setStartRotation(0.0);
+        chassis.setEncoderSchritteProUmdrehung(MotorSteps.M_435RPM);
 
-        // field navigation
-        navi = new FeldNavigation(new Position2D(0.0, 0.0), new PidRegler(0.8, 0.0, 0.0));
-        navi.setHalteRotation(true);
+        navi = new Navigation(new Position2D(0.0, 0.0), new PidRegler(0.8, 0.0, 0.0));
+        navi.setHalteRotation(false);
         navi.setGeschwindigkeitNormal(0.5);
         navi.setGeschwindigkeitSchleichend(0.3);
         navi.setGeschwindigkeitDrehen(1.0);
         navi.setGeschwindigkeitAuto(0.2);
-        navi.setBeschleunigungsProfil(new BeschleunigungsProfil(20, 1)); // create an acceleration profile for better location resolution
+        navi.setBeschleunigungsProfil(new BeschleunigungsProfil(20, 1)); // Beschleunigungsprofil für eine bessere Positionsbestimmung erstellen
         navi.setRotationsGenauigkeit(0.25); // in Grad
         navi.setFahrGenauigkeit(0.5); // in cm
 
         robot = new Roboter(navi, chassis);
 
-        // Stromspannung
-        batterieSpannungsSensor = hardwareMap.voltageSensor.iterator().hasNext() ? hardwareMap.voltageSensor.iterator().next() : null;
+        batterieSpannungsSensor = hardwareMap.voltageSensor.iterator().next();
 
         try {
             /* INITIALIZE YOUR HARDWARE DOWN BELOW */
-            mSchiessen = hardwareMap.get(DcMotor.class, "schiessen");
-            mAufnehmen = hardwareMap.get(DcMotor.class, "aufnehmen");
-            mBoden = hardwareMap.get(DcMotor.class, "boden");
-            mHoch = hardwareMap.get(DcMotor.class, "hoch");
+            mSchiessen = hardwareMap.get(DcMotor.class, "m_schiessen");
+            mAufnehmen = hardwareMap.get(DcMotor.class, "m_aufnehmen");
+            mInnen = hardwareMap.get(DcMotor.class, "m_innen");
 
-            sKickBoden = hardwareMap.get(Servo.class, "s_boden");
-            sKickSeite = hardwareMap.get(Servo.class, "seite");
-            crsRad = hardwareMap.get(CRServo.class, "rad");
+            crsKopfDrehen = hardwareMap.get(CRServo.class, "crs_kopf");
+
+            sRampeL = hardwareMap.get(Servo.class, "s_rampe_l");
+            sRampeR = hardwareMap.get(Servo.class, "s_rampe_r");
         } catch (Exception ignored) {
         }
+    }
+
+    public double getAnpassteSchussgeschwindigkeit() {
+        double spannung = batterieSpannungsSensor.getVoltage();
+        if (spannung < 1.0)
+            return geschwindigkeitSchuss; // Schutz vor Division durch 0 oder unplausible Werte
+        return Math.min(1.0, geschwindigkeitSchuss * (13.0 / spannung));
     }
 }

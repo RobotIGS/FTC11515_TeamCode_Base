@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.testing;
+package org.firstinspires.ftc.teamcode.opModes.teleOp.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -18,6 +18,7 @@ public class TestMotorServo extends BasisTeleOp {
     public CRServo crservo1;
 
     boolean zweiMotoren = false;
+    boolean zweiServos = false;
 
     @Override
     public void initialisieren() {
@@ -30,6 +31,11 @@ public class TestMotorServo extends BasisTeleOp {
             crservo1 = hardwareMap.get(CRServo.class, "crservo");
         } catch (Exception ignored) {
         }
+
+        motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
@@ -48,34 +54,42 @@ public class TestMotorServo extends BasisTeleOp {
             zweiMotoren = !zweiMotoren;
         }
 
+        if (istTasteGedrueckt("gp1_a", gamepad1.a)) {
+            zweiServos = !zweiServos;
+        }
+
         crservo1.setPower(gamepad1.right_stick_y);
 
         if (gamepad1.dpad_down) {
             servo1.setPosition(servo1.getPosition() - 0.001);
-            servo2.setPosition(servo2.getPosition() - 0.001);
+            if (zweiServos) servo2.setPosition(servo2.getPosition() - 0.001);
         } else if (gamepad1.dpad_up) {
             servo1.setPosition(servo1.getPosition() + 0.001);
-            servo2.setPosition(servo2.getPosition() + 0.001);
+            if (zweiServos) servo2.setPosition(servo2.getPosition() + 0.001);
         }
 
 
         // information
         telemetry.addLine("left stick y: motor power");
+        telemetry.addLine("dpad up/ down: servo position");
         telemetry.addLine("right stick y: crservo power");
+        telemetry.addLine("a: toggle servo 2");
         telemetry.addLine("b: toggle motor 2");
-        telemetry.addLine("dpad up/ down: servo");
+
 
         // motor information
-        telemetry.addLine("motor information:");
+        telemetry.addLine("\nmotors:");
+        telemetry.addData("Motor 2", zweiMotoren);
         telemetry.addData("Speed", Math.abs(gamepad1.left_stick_y));
         telemetry.addData("Steps", motor1.getCurrentPosition());
 
         // servo information
-        telemetry.addLine("servo information:");
+        telemetry.addLine("\nservos:");
+        telemetry.addData("Servo 2", zweiServos);
         telemetry.addData("Value", servo1.getPosition());
 
         // cr-servo information
-        telemetry.addLine("cr-servo information:");
+        telemetry.addLine("\ncr-servo:");
         telemetry.addData("Value", crservo1.getPower());
 
         // update screen

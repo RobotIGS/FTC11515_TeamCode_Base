@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.opModes.autonomous.blau;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.opModes.autonomous.AutoGerade;
+import org.firstinspires.ftc.teamcode.opModes.autonomous.AutoKorb;
 
-@Autonomous(name = "Blau Gerade", group = "BLAU", preselectTeleOp = "FullControl")
-public class AutoBGerade extends AutoGerade {
+@Autonomous(name = "Blau Wand", group = "BLAU", preselectTeleOp = "FullControl")
+public class AutoBWand extends AutoKorb {
     @Override
     public void starten() {
         istRot = false;
