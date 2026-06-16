@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.tools;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.tools.chassis.Chassis;
@@ -34,8 +33,8 @@ public class HwMap {
     public DcMotor mInnen;
     public DcMotor mAufnehmen;
     public CRServo crsKopfDrehen;
-    public Servo sRampeL;
-    public Servo sRampeR;
+    public CRServo crsRampeL;
+    public CRServo crsRampeR;
 
     public HwMap(com.qualcomm.robotcore.hardware.HardwareMap hardwareMap) {
         // Typische FTC-Robotergröße: ~45cm x 45cm.
@@ -65,18 +64,15 @@ public class HwMap {
 
         batterieSpannungsSensor = hardwareMap.voltageSensor.iterator().next();
 
-        try {
-            /* INITIALIZE YOUR HARDWARE DOWN BELOW */
-            mSchiessen = hardwareMap.get(DcMotor.class, "m_schiessen");
-            mAufnehmen = hardwareMap.get(DcMotor.class, "m_aufnehmen");
-            mInnen = hardwareMap.get(DcMotor.class, "m_innen");
+        /* INITIALIZE YOUR HARDWARE DOWN BELOW */
+        mSchiessen = hardwareMap.get(DcMotor.class, "m_schiessen");
+        mAufnehmen = hardwareMap.get(DcMotor.class, "m_aufnehmen");
+        mInnen = hardwareMap.get(DcMotor.class, "m_innen");
 
-            crsKopfDrehen = hardwareMap.get(CRServo.class, "crs_kopf");
+        crsKopfDrehen = hardwareMap.get(CRServo.class, "crs_kopf");
 
-            sRampeL = hardwareMap.get(Servo.class, "s_rampe_l");
-            sRampeR = hardwareMap.get(Servo.class, "s_rampe_r");
-        } catch (Exception ignored) {
-        }
+        crsRampeL = hardwareMap.get(CRServo.class, "crs_rampe_l");
+        crsRampeR = hardwareMap.get(CRServo.class, "crs_rampe_r");
     }
 
     public double getAnpassteSchussgeschwindigkeit() {

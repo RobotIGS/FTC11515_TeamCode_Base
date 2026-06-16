@@ -19,8 +19,9 @@ public class FullControl extends BasisTeleOp {
     private double kopfLokalPosition = 0;
     private long kopfLetzterUpdateZeitstempel = 0;
 
-    private double servoRampeLimitUnten = 0;
-    private double servoRampeLimitOben = 0;
+    private double rampeLokalPosition = 0.3;
+    private long rampeLetzterUpdateZeitstempel = 0;
+
     /* END SECTION */
 
     @Override
@@ -35,8 +36,6 @@ public class FullControl extends BasisTeleOp {
     @Override
     public void runOnce() {
         /* ADD CODE WHICH IS RUN ONCE WHEN PLAY IS PRESSED */
-        servoRampeLimitUnten = hwMap.sRampeL.getPosition();
-        servoRampeLimitOben = hwMap.sRampeL.getPosition() + 0.4;
         targetGlobalRotation = hwMap.chassis.getRotation();
         /* END SECTION */
     }
@@ -46,6 +45,7 @@ public class FullControl extends BasisTeleOp {
         fahren();
         saison();
         aktualisiereKopf();
+        aktualisiereRampe();
         hwMap.robot.schritt();
         telemetrie();
     }
@@ -88,24 +88,14 @@ public class FullControl extends BasisTeleOp {
         telemetry.addLine();
         telemetry.addData("Kopf Target", targetGlobalRotation);
         telemetry.addData("Kopf Position", kopfLokalPosition);
-        telemetry.addData("Servo Rampe L", hwMap.sRampeL.getPosition());
-        telemetry.addData("Servo Rampe R", hwMap.sRampeR.getPosition());
+        telemetry.addLine();
+        telemetry.addData("Rampe Position", rampeLokalPosition);
 
         telemetry.update();
     }
 
     @Override
     public void saison() {
-        // Rampen Winkel
-        if (istTasteGedrueckt("gp2_rt", gamepad2.right_trigger_pressed) && hwMap.sRampeL.getPosition() > servoRampeLimitUnten) {
-            hwMap.sRampeL.setPosition(hwMap.sRampeL.getPosition() - 0.1);
-            hwMap.sRampeR.setPosition(hwMap.sRampeR.getPosition() + 0.1);
-        }
-        if (istTasteGedrueckt("gp2_lt", gamepad2.left_trigger_pressed) && hwMap.sRampeL.getPosition() < servoRampeLimitOben) {
-            hwMap.sRampeL.setPosition(hwMap.sRampeL.getPosition() + 0.1);
-            hwMap.sRampeR.setPosition(hwMap.sRampeR.getPosition() - 0.1);
-        }
-
         // Schussgeschwindigkeit
         if (istTasteGedrueckt("gp2_rb", gamepad2.right_bumper)) {
             hwMap.geschwindigkeitSchuss = Math.min(1.0, hwMap.geschwindigkeitSchuss + 0.05);
@@ -184,5 +174,29 @@ public class FullControl extends BasisTeleOp {
         }
 
         kopfLetzterUpdateZeitstempel = jetzt;
+    }
+
+    private void aktualisiereRampe() {
+        long jetzt = System.nanoTime();
+        double dt = (jetzt - rampeLetzterUpdateZeitstempel) / 1e9;
+
+        if (rampeLetzterUpdateZeitstempel != 0 && dt > 0) {
+            // Position-Tracking basierend auf der Power des letzten Zyklus
+            rampeLokalPosition += hwMap.crsRampeL.getPower() * dt;
+
+            // Limits einhalten (0.0 bis 0.3)
+            rampeLokalPosition = Math.max(0.0, Math.min(0.3, rampeLokalPosition));
+
+            double power = gamepad2.left_trigger - gamepad2.right_trigger;
+
+            // Stop wenn Limit erreicht
+            if (rampeLokalPosition <= 0.0 && power < 0) power = 0;
+            if (rampeLokalPosition >= 0.3 && power > 0) power = 0;
+
+            hwMap.crsRampeL.setPower(power);
+            hwMap.crsRampeR.setPower(-power); // Invertiert für die andere Seite
+        }
+
+        rampeLetzterUpdateZeitstempel = jetzt;
     }
 }
