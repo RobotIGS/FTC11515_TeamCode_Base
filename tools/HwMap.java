@@ -51,14 +51,14 @@ public class HwMap {
         chassis.setStartRotation(0.0);
         chassis.setEncoderSchritteProUmdrehung(MotorSteps.M_435RPM);
 
-        navi = new Navigation(new Position2D(0.0, 0.0), new PidRegler(0.8, 0.0, 0.0));
+        navi = new Navigation(new Position2D(0.0, 0.0), new PidRegler(0.55, 0.01, 0.0));
         navi.setHalteRotation(false);
         navi.setGeschwindigkeitNormal(0.5);
         navi.setGeschwindigkeitSchleichend(0.3);
         navi.setGeschwindigkeitDrehen(1.0);
-        navi.setGeschwindigkeitAuto(0.2);
-        navi.setBeschleunigungsProfil(new BeschleunigungsProfil(20, 1)); // Beschleunigungsprofil für eine bessere Positionsbestimmung erstellen
-        navi.setRotationsGenauigkeit(0.25); // in Grad
+        navi.setGeschwindigkeitAuto(0.4);
+        navi.setBeschleunigungsProfil(new BeschleunigungsProfil(30, 1)); // Beschleunigungsprofil für eine bessere Positionsbestimmung erstellen
+        navi.setRotationsGenauigkeit(1.0); // in Grad
         navi.setFahrGenauigkeit(0.5); // in cm
 
         robot = new Roboter(navi, chassis);

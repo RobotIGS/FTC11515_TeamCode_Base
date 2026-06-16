@@ -157,7 +157,7 @@ public class FullControl extends BasisTeleOp {
 
             if (kopfManuell) {
                 // Manueller Modus: Stick steuert die Power direkt
-                hwMap.crsKopfDrehen.setPower(-gamepad2.right_stick_y);
+                hwMap.crsKopfDrehen.setPower(-gamepad2.right_stick_x);
 
                 // Ziel-Rotation synchronisieren für nahtlosen Übergang zurück zu Auto
                 targetGlobalRotation = aktuelleRotation + kopfLokalPosition;

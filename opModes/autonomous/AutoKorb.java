@@ -14,19 +14,27 @@ public class AutoKorb extends BasisAutonomousFunktionen {
         schiessen();
 
         hwMap.navi.setHalteRotation(true);
-        hwMap.robot.drehen(istRot ? -70 : 70, true);
+        hwMap.robot.drehen(istRot ? -40 : 40, true);
         schleifeFahren();
         hwMap.navi.setHalteRotation(false);
-        hwMap.robot.fahreZuPosition(new Position2D(0, PLATTENLAENGE * (istRot ? 1 : -1)), true);
+
+        hwMap.robot.fahreZuPosition(new Position2D(0, 0.4 * PLATTENLAENGE * (istRot ? -1 : 1)), true);
         schleifeFahren();
         aufnehmen();
-
-        hwMap.robot.fahreZuPosition(new Position2D(-PLATTENLAENGE, PLATTENLAENGE * (istRot ? -1 : 1)), true);
+        hwMap.robot.fahreZuPosition(new Position2D(-PLATTENLAENGE, PLATTENLAENGE * (istRot ? 1 : -1)), true);
         schleifeFahren();
-        hwMap.navi.setHalteRotation(true);
-        hwMap.robot.drehen(istRot ? 70 : -70, true);
-        schleifeFahren();
-        hwMap.navi.setHalteRotation(false);
         schiessen();
+
+        hwMap.robot.fahreZuPosition(new Position2D(0, 2 * PLATTENLAENGE * (istRot ? -1 : 1)), true);
+        schleifeFahren();
+        aufnehmen();
+        hwMap.robot.fahreZuPosition(new Position2D(0.5 * -PLATTENLAENGE, 0), true);
+        schleifeFahren();
+        hwMap.robot.fahreZuPosition(new Position2D(0.5 * -PLATTENLAENGE, 2 * PLATTENLAENGE * (istRot ? 1 : -1)), true);
+        schleifeFahren();
+        schiessen();
+
+        hwMap.robot.fahreZuPosition(new Position2D(0, 2 * PLATTENLAENGE * (istRot ? -1 : 1)), true);
+        schleifeFahren();
     }
 }

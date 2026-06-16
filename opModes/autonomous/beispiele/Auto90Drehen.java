@@ -10,6 +10,7 @@ public class Auto90Drehen extends BasisAutonomous {
     public void starten() {
         super.starten();
 
+        hwMap.navi.setHalteRotation(true);
         hwMap.robot.drehen(90, true);
         schleifeFahren();
     }

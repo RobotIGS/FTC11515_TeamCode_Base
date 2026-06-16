@@ -22,6 +22,7 @@ public class TestPID extends BasisTeleOp {
 
     @Override
     public void runOnce() {
+        hwMap.navi.setHalteRotation(true);
     }
 
     @Override
@@ -38,17 +39,17 @@ public class TestPID extends BasisTeleOp {
             }
         }
 
-        if (istTasteGedrueckt("gp1_lb", gamepad1.left_bumper)) {
-            pid[ausgewaehlt] = Math.min(1.0, pid[ausgewaehlt] + 0.0001);
-        }
-        if (istTasteGedrueckt("gp1_rb", gamepad1.right_bumper)) {
+        if (gamepad1.left_bumper) {
             pid[ausgewaehlt] = Math.max(0, pid[ausgewaehlt] - 0.0001);
         }
-        if (istTasteGedrueckt("gp1_lt", gamepad1.left_trigger_pressed)) {
-            pid[ausgewaehlt] = Math.min(1.0, pid[ausgewaehlt] + 0.001);
+        if (gamepad1.right_bumper) {
+            pid[ausgewaehlt] = pid[ausgewaehlt] + 0.0001;
         }
-        if (istTasteGedrueckt("gp1_rt", gamepad1.right_trigger_pressed)) {
+        if (gamepad1.left_trigger_pressed) {
             pid[ausgewaehlt] = Math.max(0, pid[ausgewaehlt] - 0.001);
+        }
+        if (gamepad1.right_trigger_pressed) {
+            pid[ausgewaehlt] = pid[ausgewaehlt] + 0.001;
         }
 
         hwMap.navi.rotationsPidRegler.changeValues(pid[0], pid[1], pid[2]);
@@ -59,12 +60,15 @@ public class TestPID extends BasisTeleOp {
 
     @Override
     public void telemetrie() {
-        telemetry.addData("selected", new String[]{"p", "i", "d"}[ausgewaehlt]);
+        telemetry.addLine("x: 90° Drehen");
+        telemetry.addLine("y: Parameter auswählen\n");
+        telemetry.addData("ausgewählt", new String[]{"p", "i", "d"}[ausgewaehlt]);
         telemetry.addData("p", pid[0]);
         telemetry.addData("i", pid[1]);
         telemetry.addData("d", pid[2]);
-        telemetry.addData("value:", hwMap.navi.rotationsPidRegler.pidValue);
-        telemetry.addData("last error:", hwMap.navi.rotationsPidRegler.lastError);
+        telemetry.addLine();
+        telemetry.addData("value", hwMap.navi.rotationsPidRegler.pidValue);
+        telemetry.addData("last error", hwMap.navi.rotationsPidRegler.lastError);
         telemetry.addLine("\n" + hwMap.navi.debug());
         telemetry.addLine(hwMap.chassis.debug());
         telemetry.update();

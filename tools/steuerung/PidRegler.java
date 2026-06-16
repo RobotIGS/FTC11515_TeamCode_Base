@@ -34,7 +34,7 @@ public class PidRegler {
     }
 
     public double step(double error) {
-        double MAX_INTEGRAL = 0.2;
+        double MAX_INTEGRAL = 1.0;
 
         error /= 180;
 
