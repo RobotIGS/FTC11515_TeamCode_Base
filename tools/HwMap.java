@@ -45,7 +45,7 @@ public class HwMap {
         // vy Seitwärtsgeschwindigkeit (+ => links)
         // vz Rotationsgeschwindigkeit (+ => nach links drehen => mathematisch positiv)
 
-        chassis = new MecanumChassis(17, 17, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
+        chassis = new MecanumChassis(17, 17, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.UP));
         chassis.erstelleMotorArray(hardwareMap); // verwendet hardwareMap.get(...), um Motorschnittstellen zu erhalten, wie in der verwendeten Chassis-Klasse definiert
         chassis.setStartRotation(0.0);
         chassis.setEncoderSchritteProUmdrehung(MotorSteps.M_435RPM);
