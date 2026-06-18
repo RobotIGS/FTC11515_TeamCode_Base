@@ -15,8 +15,8 @@ public class FullControl extends BasisTeleOp {
     /* ADD VARIABLES ONLY USED IN FULL CONTROL */
     // Kopfdrehen
     private boolean kopfManuell = false;
-    private double targetGlobalRotation;
-    private double kopfLokalPosition = 0;
+    private double kopfZielrotation;
+    private double kopfRotation = 0;
     private long kopfLetzterUpdateZeitstempel = 0;
 
     private double rampeLokalPosition = 0.3;
@@ -36,7 +36,7 @@ public class FullControl extends BasisTeleOp {
     @Override
     public void runOnce() {
         /* ADD CODE WHICH IS RUN ONCE WHEN PLAY IS PRESSED */
-        targetGlobalRotation = hwMap.chassis.getRotation();
+        kopfZielrotation = hwMap.chassis.getRotation();
         /* END SECTION */
     }
 
@@ -60,7 +60,7 @@ public class FullControl extends BasisTeleOp {
         }
 
         double vx = -gamepad1.left_stick_y * (hwMap.navi.sneak ? hwMap.navi.geschwindigkeitSneak : hwMap.navi.geschwindigkeitNormal);
-        double vy = -gamepad1.right_stick_x * (hwMap.navi.sneak ? hwMap.navi.geschwindigkeitSneak : hwMap.navi.geschwindigkeitNormal);
+        double vy = -gamepad1.left_stick_x * (hwMap.navi.sneak ? hwMap.navi.geschwindigkeitSneak : hwMap.navi.geschwindigkeitNormal);
         double vz = (gamepad1.left_trigger - gamepad1.right_trigger) * hwMap.navi.geschwindigkeitDrehen * (hwMap.navi.sneak ? hwMap.navi.geschwindigkeitSneak : hwMap.navi.geschwindigkeitNormal);
 
         hwMap.navi.setGeschwindigkeit(
@@ -74,23 +74,20 @@ public class FullControl extends BasisTeleOp {
 
     @Override
     public void telemetrie() {
-        telemetry.addData("Sneak", hwMap.navi.sneak);
-        telemetry.addData("Gegensteuern", hwMap.navi.fahreGegensteuern);
+        telemetry.addData("Sneak", hwMap.navi.sneak ? "JA" : "NEIN");
+        telemetry.addData("Gegensteuern", hwMap.navi.fahreGegensteuern ? "JA" : "NEIN");
         telemetry.addData("Kopf Modus", kopfManuell ? "MANUELL" : "AUTO");
+        telemetry.addLine();
+        telemetry.addData("Basis Schussgeschwindigkeit", hwMap.geschwindigkeitSchuss);
+        telemetry.addData("Anpasste Schussgeschwindigkeit", hwMap.getAnpassteSchussgeschwindigkeit());
         telemetry.addLine();
         telemetry.addLine(hwMap.navi.debug());
         telemetry.addLine(hwMap.chassis.debug());
         telemetry.addLine(gegensteuernX.debug());
         telemetry.addLine(gegensteuernY.debug());
         telemetry.addLine();
-        telemetry.addData("Basis Schussgeschwindigkeit", hwMap.geschwindigkeitSchuss);
-        telemetry.addData("Anpasste Schussgeschwindigkeit", hwMap.getAnpassteSchussgeschwindigkeit());
-        telemetry.addLine();
-        telemetry.addData("Kopf Target", targetGlobalRotation);
-        telemetry.addData("Kopf Position", kopfLokalPosition);
-        telemetry.addLine();
-        telemetry.addData("Rampe Position", rampeLokalPosition);
-
+        telemetry.addData("Kopf Ziel", kopfZielrotation);
+        telemetry.addData("Kopf Position", kopfRotation);
         telemetry.update();
     }
 
@@ -105,35 +102,44 @@ public class FullControl extends BasisTeleOp {
         }
 
         // motor aufnehmen
-        if (istTasteGedrueckt("gp2_b", gamepad2.b)) {
+        if (istTasteGedrueckt("gp2_a", gamepad2.a)) {
             if (hwMap.mAufnehmen.getPower() == 0) {
-                hwMap.mAufnehmen.setPower(hwMap.geschwindigkeitAufnehmen);
+                hwMap.mAufnehmen.setPower(1);
             } else {
                 hwMap.mAufnehmen.setPower(0);
             }
         }
 
+        // motor innen
+        if (istTasteGedrueckt("gp2_b", gamepad2.b)) {
+            if (hwMap.mInnen.getPower() == 0) {
+                hwMap.mInnen.setPower(1);
+            } else {
+                hwMap.mInnen.setPower(0);
+            }
+        }
+
+        // motor innen mond
+        if (istTasteGedrueckt("gp2_y", gamepad2.y)) {
+            if (hwMap.mInnenMond.getPower() == 0) {
+                hwMap.mInnenMond.setPower(-1);
+            } else {
+                hwMap.mInnenMond.setPower(0);
+            }
+        }
+
         // motor schiessen
-        if (istTasteGedrueckt("gp2_a", gamepad2.a)) {
+        if (istTasteGedrueckt("gp2_x", gamepad2.x)) {
             if (hwMap.mSchiessen.getPower() == 0) {
                 hwMap.mSchiessen.setPower(hwMap.getAnpassteSchussgeschwindigkeit());
             } else {
                 hwMap.mSchiessen.setPower(0);
             }
         }
-
-        // motor innen
-        if (istTasteGedrueckt("gp2_x", gamepad2.x)) {
-            if (hwMap.mInnen.getPower() == 0) {
-                hwMap.mInnen.setPower(1.0);
-            } else {
-                hwMap.mInnen.setPower(0);
-            }
-        }
     }
 
     private void aktualisiereKopf() {
-        if (istTasteGedrueckt("gp2_rsb", gamepad2.right_stick_button)) {
+        if (istTasteGedrueckt("gp2_rsb", gamepad2.left_stick_button)) {
             kopfManuell = !kopfManuell;
         }
 
@@ -143,26 +149,34 @@ public class FullControl extends BasisTeleOp {
         double dt = (jetzt - kopfLetzterUpdateZeitstempel) / 1e9;
         if (kopfLetzterUpdateZeitstempel != 0 && dt > 0) {
             // 1. Position-Tracking (Basiert auf der Power des letzten Zyklus)
-            kopfLokalPosition += hwMap.crsKopfDrehen.getPower() * hwMap.KOPF_MAX_SPEED * dt;
+            kopfRotation += hwMap.crsKopfDrehen.getPower() * hwMap.KOPF_MAX_SPEED * dt;
 
             if (kopfManuell) {
                 // Manueller Modus: Stick steuert die Power direkt
-                hwMap.crsKopfDrehen.setPower(-gamepad2.right_stick_x);
+                hwMap.crsKopfDrehen.setPower(-gamepad2.left_stick_x);
+
+                // Target global normalisieren (-180 bis 180)
+                while (kopfRotation > 180) kopfRotation -= 360;
+                while (kopfRotation < -180) kopfRotation += 360;
 
                 // Ziel-Rotation synchronisieren für nahtlosen Übergang zurück zu Auto
-                targetGlobalRotation = aktuelleRotation + kopfLokalPosition;
+                kopfZielrotation = aktuelleRotation + kopfRotation;
+
+                // Target global normalisieren (-180 bis 180)
+                while (kopfZielrotation > 180) kopfZielrotation -= 360;
+                while (kopfZielrotation < -180) kopfZielrotation += 360;
             } else {
                 // 2. Chassis-Stabilisierung (Ziel-Ansteuerung)
-                double idealLokalPosition = targetGlobalRotation - aktuelleRotation;
+                double idealLokalPosition = kopfZielrotation - aktuelleRotation;
 
                 // Kürzesten Weg finden, der am nächsten an der aktuellen Position liegt
-                while (idealLokalPosition - kopfLokalPosition > 180) idealLokalPosition -= 360;
-                while (idealLokalPosition - kopfLokalPosition < -180) idealLokalPosition += 360;
+                while (idealLokalPosition - kopfRotation > 180) idealLokalPosition -= 360;
+                while (idealLokalPosition - kopfRotation < -180) idealLokalPosition += 360;
 
                 // Soft-Limits (±180°)
                 double clampedLokalPosition = Math.max(-180, Math.min(180, idealLokalPosition));
 
-                double error = clampedLokalPosition - kopfLokalPosition;
+                double error = clampedLokalPosition - kopfRotation;
 
                 // Berechnung der Ausgleichs-Power
                 double stabilizationPower = (Math.abs(error) < 0.1) ? 0 : (error / dt / hwMap.KOPF_MAX_SPEED);
@@ -170,7 +184,7 @@ public class FullControl extends BasisTeleOp {
                 hwMap.crsKopfDrehen.setPower(Math.max(-1.0, Math.min(1.0, stabilizationPower)));
             }
         } else {
-            targetGlobalRotation = aktuelleRotation;
+            kopfZielrotation = aktuelleRotation;
         }
 
         kopfLetzterUpdateZeitstempel = jetzt;

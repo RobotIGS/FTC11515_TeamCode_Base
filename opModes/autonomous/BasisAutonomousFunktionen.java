@@ -24,7 +24,7 @@ public class BasisAutonomousFunktionen extends BasisAutonomous {
     public void aufnehmen() {
         hwMap.navi.setGeschwindigkeit(0.15, 0, 0);
 
-        hwMap.mAufnehmen.setPower(hwMap.geschwindigkeitAufnehmen);
+        hwMap.mAufnehmen.setPower(-1);
         hwMap.mInnen.setPower(0.5);
         schleifeWarten(2500);
         hwMap.mAufnehmen.setPower(0);

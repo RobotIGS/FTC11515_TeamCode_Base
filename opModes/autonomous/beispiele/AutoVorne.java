@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.opModes.autonomous.BasisAutonomous;
 import org.firstinspires.ftc.teamcode.tools.datentypen.Position2D;
 
-@Autonomous(name = "Vorne", group = "Standard")
+@Autonomous(name = "Vorne", group = "Standard", preselectTeleOp = "FullControl")
 public class AutoVorne extends BasisAutonomous {
     @Override
     public void initialisieren() {
@@ -17,7 +17,7 @@ public class AutoVorne extends BasisAutonomous {
     public void starten() {
         super.starten();
 
-        hwMap.robot.fahreZuPosition(new Position2D(50, 0), true);
+        hwMap.robot.fahreZuPosition(new Position2D(35, 0), true);
         schleifeFahren();
     }
 }

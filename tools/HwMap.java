@@ -24,14 +24,14 @@ public class HwMap {
     }
 
     /* PLACE YOUR HARDWARE INTERFACES AND VALUES DOWN BELOW */
-    public double geschwindigkeitSchuss = 0.7;
-    public final double geschwindigkeitAufnehmen = -1.0;
+    public double geschwindigkeitSchuss = 0.6;
 
-    public final double KOPF_MAX_SPEED = 140.0; // Grad pro Sekunde
+    public final double KOPF_MAX_SPEED = 130.0; // Grad pro Sekunde
 
     public DcMotor mSchiessen;
     public DcMotor mInnen;
     public DcMotor mAufnehmen;
+    public DcMotor mInnenMond;
     public CRServo crsKopfDrehen;
     public CRServo crsRampeL;
     public CRServo crsRampeR;
@@ -45,7 +45,7 @@ public class HwMap {
         // vy Seitwärtsgeschwindigkeit (+ => links)
         // vz Rotationsgeschwindigkeit (+ => nach links drehen => mathematisch positiv)
 
-        chassis = new MecanumChassis(17, 17, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.UP));
+        chassis = new MecanumChassis(17, 17, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD, RevHubOrientationOnRobot.UsbFacingDirection.UP));
         chassis.erstelleMotorArray(hardwareMap); // verwendet hardwareMap.get(...), um Motorschnittstellen zu erhalten, wie in der verwendeten Chassis-Klasse definiert
         chassis.setStartRotation(0.0);
         chassis.setEncoderSchritteProUmdrehung(MotorSteps.M_435RPM);
@@ -68,6 +68,7 @@ public class HwMap {
         mSchiessen = hardwareMap.get(DcMotor.class, "m_schiessen");
         mAufnehmen = hardwareMap.get(DcMotor.class, "m_aufnehmen");
         mInnen = hardwareMap.get(DcMotor.class, "m_innen");
+        mInnenMond = hardwareMap.get(DcMotor.class, "m_innen_mond");
 
         crsKopfDrehen = hardwareMap.get(CRServo.class, "crs_kopf");
 
