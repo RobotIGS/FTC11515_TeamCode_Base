@@ -3,23 +3,23 @@ package org.firstinspires.ftc.teamcode.tools.chassis;
 import android.annotation.SuppressLint;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.tools.HwMap;
 import org.firstinspires.ftc.teamcode.tools.datentypen.Geschwindigkeit;
 import org.firstinspires.ftc.teamcode.tools.datentypen.Position2D;
 import org.firstinspires.ftc.teamcode.tools.datentypen.Rotation;
 
 public abstract class ChassisBasis implements Chassis {
-    private final DcMotor[] radMotoren;
+    private final DcMotorEx[] radMotoren;
     private final int[] radMotorSchritte;
     private final Rotation rotation;
     public IMU imu;
-    protected double encoderSchritteProUmdrehung;
-    protected final RevHubOrientationOnRobot hubAusrichtungAmRobot;
+    protected double[] motorWerte;
+    protected final RevHubOrientationOnRobot hubAusrichtung;
     protected Geschwindigkeit geschwindigkeit;
     protected final Position2D gefahreneDistanz;
     protected final double[] radGeschwindigkeiten;
@@ -28,52 +28,52 @@ public abstract class ChassisBasis implements Chassis {
 
     public ChassisBasis(int anzahlRaeder, RevHubOrientationOnRobot hubAusrichtung) {
         // Rotations-Einstellungen
-        this.hubAusrichtungAmRobot = hubAusrichtung;
+        this.hubAusrichtung = hubAusrichtung;
         this.startRotation = 0;
         this.rotation = new Rotation(0.0);
 
         // Fahr-Einstellungen
         this.gefahreneDistanz = new Position2D();
-        this.radMotoren = new DcMotor[anzahlRaeder];
+        this.radMotoren = new DcMotorEx[anzahlRaeder];
         this.radGeschwindigkeiten = new double[anzahlRaeder];
         this.radMotorSchritte = new int[anzahlRaeder];
         this.deltaRadMotorSchritte = new int[anzahlRaeder];
     }
 
     @Override
-    public void setEncoderSchritteProUmdrehung(double encoderSchritteProUmdrehung) {
-        this.encoderSchritteProUmdrehung = encoderSchritteProUmdrehung;
+    public void setMotorWerte(double[] motorWerte) {
+        this.motorWerte = motorWerte;
     }
 
     @Override
     public void erstelleMotorArray(HardwareMap hwMap) {
-        radMotoren[0] = hwMap.get(DcMotor.class, "front_left_motor");
-        radMotoren[1] = hwMap.get(DcMotor.class, "front_right_motor");
-        radMotoren[2] = hwMap.get(DcMotor.class, "back_left_motor");
-        radMotoren[3] = hwMap.get(DcMotor.class, "back_right_motor");
+        radMotoren[0] = hwMap.get(DcMotorEx.class, "front_left_motor");
+        radMotoren[1] = hwMap.get(DcMotorEx.class, "front_right_motor");
+        radMotoren[2] = hwMap.get(DcMotorEx.class, "back_left_motor");
+        radMotoren[3] = hwMap.get(DcMotorEx.class, "back_right_motor");
 
         for (int i = 0; i < this.radMotoren.length; i++) {
             radGeschwindigkeiten[i] = 0.0;
-            radMotoren[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            radMotoren[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            radMotoren[i].setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            radMotoren[i].setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
             radMotorSchritte[i] = 0;
             deltaRadMotorSchritte[i] = 0;
         }
 
         // Motor Richtungen festlegen
-        radMotoren[0].setDirection(DcMotorSimple.Direction.REVERSE); // FL
-        radMotoren[1].setDirection(DcMotorSimple.Direction.FORWARD); // FR
-        radMotoren[2].setDirection(DcMotorSimple.Direction.FORWARD); // BL
-        radMotoren[3].setDirection(DcMotorSimple.Direction.REVERSE); // BR
+        radMotoren[0].setDirection(DcMotorEx.Direction.REVERSE); // FL
+        radMotoren[1].setDirection(DcMotorEx.Direction.FORWARD); // FR
+        radMotoren[2].setDirection(DcMotorEx.Direction.FORWARD); // BL
+        radMotoren[3].setDirection(DcMotorEx.Direction.REVERSE); // BR
 
         imu = hwMap.get(IMU.class, "imu");
-        imu.initialize(new IMU.Parameters(this.hubAusrichtungAmRobot));
+        imu.initialize(new IMU.Parameters(this.hubAusrichtung));
         imu.resetYaw();
     }
 
     private void setzeMotorGeschwindigkeiten() {
         for (int i = 0; i < radMotoren.length; i++) {
-            radMotoren[i].setPower(radGeschwindigkeiten[i]);
+            radMotoren[i].setVelocity(radGeschwindigkeiten[i] * HwMap.MotorWerte.ticksProSekundeErrechnen(motorWerte));
         }
     }
 

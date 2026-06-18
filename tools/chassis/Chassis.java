@@ -65,7 +65,7 @@ public interface Chassis {
     /**
      * Setzt die Encoder-Schritte pro Umdrehung für das Fahren
      *
-     * @param encoderSchritteProUmdrehung Schritte pro Umdrehung
+     * @param motorWerte Schritte pro Umdrehung
      */
-    void setEncoderSchritteProUmdrehung(double encoderSchritteProUmdrehung);
+    void setMotorWerte(double[] motorWerte);
 }

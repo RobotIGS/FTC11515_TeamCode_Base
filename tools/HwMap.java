@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.tools;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.tools.chassis.Chassis;
@@ -13,25 +16,32 @@ import org.firstinspires.ftc.teamcode.tools.steuerung.Navigation;
 import org.firstinspires.ftc.teamcode.tools.steuerung.PidRegler;
 
 public class HwMap {
-    public final Roboter robot;
     public final Navigation navi;
     public final Chassis chassis;
     public final VoltageSensor batterieSpannungsSensor;
 
-    private static class MotorSteps {
-        public static final double M_435RPM = 384.5;
-        public static final double M_223RPM = 751.8;
+    public static class MotorWerte {
+        // jeder Motor mit seinen Rotationen pro Minute (RPM) und seinen Encoder Steps pro Umdrehung
+        public static final double[] M_30_RPM = new double[]{30, 5281.1};
+        public static final double[] M_117_RPM = new double[]{117, 1425.1};
+        public static final double[] M_223_RPM = new double[]{223, 751.8};
+        public static final double[] M_435_RPM = new double[]{435.0, 384.5};
+        public static final double[] M_6000_RPM = new double[]{6000, 28};
+
+        public static double ticksProSekundeErrechnen(double[] werte) {
+            return (werte[0] / 60.0) * werte[1];
+        }
     }
 
     /* PLACE YOUR HARDWARE INTERFACES AND VALUES DOWN BELOW */
-    public double geschwindigkeitSchuss = 0.6;
+    public double geschwindigkeitSchuss = 0.5   ;
 
     public final double KOPF_MAX_SPEED = 130.0; // Grad pro Sekunde
 
-    public DcMotor mSchiessen;
-    public DcMotor mInnen;
-    public DcMotor mAufnehmen;
-    public DcMotor mInnenMond;
+    public DcMotorEx mSchiessen;
+    public DcMotorEx mInnen;
+    public DcMotorEx mAufnehmen;
+    public DcMotorEx mInnenMond;
     public CRServo crsKopfDrehen;
     public CRServo crsRampeL;
     public CRServo crsRampeR;
@@ -46,11 +56,11 @@ public class HwMap {
         // vz Rotationsgeschwindigkeit (+ => nach links drehen => mathematisch positiv)
 
         chassis = new MecanumChassis(17, 17, new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD, RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        chassis.erstelleMotorArray(hardwareMap); // verwendet hardwareMap.get(...), um Motorschnittstellen zu erhalten, wie in der verwendeten Chassis-Klasse definiert
+        chassis.erstelleMotorArray(hardwareMap);
         chassis.setStartRotation(0.0);
-        chassis.setEncoderSchritteProUmdrehung(MotorSteps.M_435RPM);
+        chassis.setMotorWerte(MotorWerte.M_435_RPM);
 
-        navi = new Navigation(new Position2D(0.0, 0.0), new PidRegler(0.55, 0.01, 0.0));
+        navi = new Navigation(chassis, new Position2D(0.0, 0.0), new PidRegler(0.55, 0.01, 0.0));
         navi.setHalteRotation(false);
         navi.setGeschwindigkeitNormal(0.5);
         navi.setGeschwindigkeitSchleichend(0.3);
@@ -60,26 +70,19 @@ public class HwMap {
         navi.setRotationsGenauigkeit(1.0); // in Grad
         navi.setFahrGenauigkeit(0.5); // in cm
 
-        robot = new Roboter(navi, chassis);
-
         batterieSpannungsSensor = hardwareMap.voltageSensor.iterator().next();
 
         /* INITIALIZE YOUR HARDWARE DOWN BELOW */
-        mSchiessen = hardwareMap.get(DcMotor.class, "m_schiessen");
-        mAufnehmen = hardwareMap.get(DcMotor.class, "m_aufnehmen");
-        mInnen = hardwareMap.get(DcMotor.class, "m_innen");
-        mInnenMond = hardwareMap.get(DcMotor.class, "m_innen_mond");
+        mSchiessen = hardwareMap.get(DcMotorEx.class, "m_schiessen");
+        mAufnehmen = hardwareMap.get(DcMotorEx.class, "m_aufnehmen");
+        mInnen = hardwareMap.get(DcMotorEx.class, "m_innen");
+        mInnenMond = hardwareMap.get(DcMotorEx.class, "m_innen_mond");
+
+        mSchiessen.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        mSchiessen.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         crsKopfDrehen = hardwareMap.get(CRServo.class, "crs_kopf");
-
         crsRampeL = hardwareMap.get(CRServo.class, "crs_rampe_l");
         crsRampeR = hardwareMap.get(CRServo.class, "crs_rampe_r");
-    }
-
-    public double getAnpassteSchussgeschwindigkeit() {
-        double spannung = batterieSpannungsSensor.getVoltage();
-        if (spannung < 1.0)
-            return geschwindigkeitSchuss; // Schutz vor Division durch 0 oder unplausible Werte
-        return Math.min(1.0, geschwindigkeitSchuss * (13.0 / spannung));
     }
 }

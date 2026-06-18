@@ -29,7 +29,7 @@ public class TestPID extends BasisTeleOp {
     public void runLoop() {
         if (istTasteGedrueckt("gp1_x", gamepad1.x)) {
             hwMap.navi.rotationsPidRegler.reset();
-            hwMap.robot.drehen(90, true);
+            hwMap.navi.setZielRotation(90, true);
         }
 
         if (istTasteGedrueckt("gp1_y", gamepad1.y)) {
@@ -54,7 +54,7 @@ public class TestPID extends BasisTeleOp {
 
         hwMap.navi.rotationsPidRegler.changeValues(pid[0], pid[1], pid[2]);
 
-        hwMap.robot.schritt();
+        hwMap.navi.schritt();
         telemetrie();
     }
 

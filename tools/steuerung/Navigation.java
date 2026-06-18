@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.tools.steuerung;
 
 import android.annotation.SuppressLint;
 
+import org.firstinspires.ftc.teamcode.tools.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.tools.datentypen.Geschwindigkeit;
 import org.firstinspires.ftc.teamcode.tools.datentypen.Position2D;
 import org.firstinspires.ftc.teamcode.tools.datentypen.Rotation;
 
 public class Navigation {
     public final static double PLATTENLAENGE = 365.75 / 6;
+    private final Chassis chassis;
     private final Rotation aktuelleRotation;
     private final Rotation zielRotation;
     private final Geschwindigkeit geschwindigkeit;
@@ -27,7 +29,8 @@ public class Navigation {
     private BeschleunigungsProfil beschleunigungsProfil;
     private double rotationsGenauigkeit;
 
-    public Navigation(Position2D aktuellePosition, PidRegler pidRegler) {
+    public Navigation(Chassis chassis, Position2D aktuellePosition, PidRegler pidRegler) {
+        this.chassis = chassis;
         this.positionsfahren = false;
         this.aktuellePosition = aktuellePosition;
         this.zielPosition = aktuellePosition.copy();
@@ -98,6 +101,7 @@ public class Navigation {
         } else {
             zielRotation.set(rotation);
         }
+        this.setzeZielPosition(this.getZielPosition().copy(), false);
     }
 
     public void setGeschwindigkeitNormal(double geschwindigkeitNormal) {
@@ -129,6 +133,7 @@ public class Navigation {
     public void setGeschwindigkeit(double vx, double vy, double vz) {
         positionsfahren = false;
         this.geschwindigkeit.set(vx, vy, vz);
+        this.chassis.setGeschwindigkeit(this.geschwindigkeit);
     }
 
     public void stoppen() {
@@ -136,6 +141,9 @@ public class Navigation {
     }
 
     public void schritt() {
+        this.setAktuelleRotation(chassis.getRotation());
+        this.addiereGefahreneDistanz(chassis.getGefahreneDistanz());
+
         if (positionsfahren) {
             // berechne die Distanz zur Zielposition
             this.distanz = zielPosition.copy();
@@ -179,11 +187,13 @@ public class Navigation {
                 );
             }
         }
+        this.chassis.setGeschwindigkeit(this.getGeschwindigkeit());
+        this.chassis.schritt();
     }
 
     @SuppressLint("DefaultLocale")
     public String debug() {
-        String ret = "--- FeldNavigation ---\n";
+        String ret = "--- Navigation ---\n";
         ret += String.format("Position: x=%+3.1f y=%+3.1f rot: %+1.2f\n", aktuellePosition.getX(), aktuellePosition.getY(), aktuelleRotation.get());
         ret += String.format("Geschwindigkeit: x=%+1.2f y=%+1.2f wz=%+1.2f\n", geschwindigkeit.getVX(), geschwindigkeit.getVY(), geschwindigkeit.getVZ());
         if (this.positionsfahren) {

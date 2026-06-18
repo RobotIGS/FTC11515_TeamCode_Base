@@ -17,7 +17,7 @@ public class AutoRechts extends BasisAutonomous {
     public void starten() {
         super.starten();
 
-        hwMap.robot.fahreZuPosition(new Position2D(0, -35), true);
+        hwMap.navi.setzeZielPosition(new Position2D(0, -35), true);
         schleifeFahren();
     }
 }

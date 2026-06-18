@@ -18,7 +18,7 @@ public class AutoVorneNach25 extends BasisAutonomous {
         super.starten();
 
         schleifeWarten(25000);
-        hwMap.robot.fahreZuPosition(new Position2D(35, 0), true);
+        hwMap.navi.setzeZielPosition(new Position2D(35, 0), true);
         schleifeFahren();
     }
 }

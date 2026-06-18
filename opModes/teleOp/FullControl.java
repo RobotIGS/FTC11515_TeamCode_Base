@@ -46,7 +46,7 @@ public class FullControl extends BasisTeleOp {
         saison();
         aktualisiereKopf();
         aktualisiereRampe();
-        hwMap.robot.schritt();
+        hwMap.navi.schritt();
         telemetrie();
     }
 
@@ -78,8 +78,7 @@ public class FullControl extends BasisTeleOp {
         telemetry.addData("Gegensteuern", hwMap.navi.fahreGegensteuern ? "JA" : "NEIN");
         telemetry.addData("Kopf Modus", kopfManuell ? "MANUELL" : "AUTO");
         telemetry.addLine();
-        telemetry.addData("Basis Schussgeschwindigkeit", hwMap.geschwindigkeitSchuss);
-        telemetry.addData("Anpasste Schussgeschwindigkeit", hwMap.getAnpassteSchussgeschwindigkeit());
+        telemetry.addData("Schussgeschwindigkeit", hwMap.geschwindigkeitSchuss);
         telemetry.addLine();
         telemetry.addLine(hwMap.navi.debug());
         telemetry.addLine(hwMap.chassis.debug());
@@ -98,7 +97,7 @@ public class FullControl extends BasisTeleOp {
             hwMap.geschwindigkeitSchuss = Math.min(1.0, hwMap.geschwindigkeitSchuss + 0.05);
         }
         if (istTasteGedrueckt("gp2_lb", gamepad2.left_bumper)) {
-            hwMap.geschwindigkeitSchuss = Math.max(0.4, hwMap.geschwindigkeitSchuss - 0.05);
+            hwMap.geschwindigkeitSchuss = Math.max(0.05, hwMap.geschwindigkeitSchuss - 0.05);
         }
 
         // motor aufnehmen
@@ -131,10 +130,12 @@ public class FullControl extends BasisTeleOp {
         // motor schiessen
         if (istTasteGedrueckt("gp2_x", gamepad2.x)) {
             if (hwMap.mSchiessen.getPower() == 0) {
-                hwMap.mSchiessen.setPower(hwMap.getAnpassteSchussgeschwindigkeit());
+                hwMap.mSchiessen.setVelocity(hwMap.geschwindigkeitSchuss * HwMap.MotorWerte.ticksProSekundeErrechnen(HwMap.MotorWerte.M_6000_RPM));
             } else {
                 hwMap.mSchiessen.setPower(0);
             }
+        } else if (hwMap.geschwindigkeitSchuss * HwMap.MotorWerte.ticksProSekundeErrechnen(HwMap.MotorWerte.M_6000_RPM) != hwMap.mSchiessen.getVelocity() && hwMap.mSchiessen.getPower() != 0) {
+            hwMap.mSchiessen.setVelocity(hwMap.geschwindigkeitSchuss * HwMap.MotorWerte.ticksProSekundeErrechnen(HwMap.MotorWerte.M_6000_RPM));
         }
     }
 

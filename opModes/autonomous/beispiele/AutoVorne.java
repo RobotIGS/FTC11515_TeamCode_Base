@@ -17,7 +17,7 @@ public class AutoVorne extends BasisAutonomous {
     public void starten() {
         super.starten();
 
-        hwMap.robot.fahreZuPosition(new Position2D(35, 0), true);
+        hwMap.navi.setzeZielPosition(new Position2D(35, 0), true);
         schleifeFahren();
     }
 }

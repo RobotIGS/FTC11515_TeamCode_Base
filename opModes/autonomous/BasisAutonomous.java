@@ -29,7 +29,8 @@ public abstract class BasisAutonomous extends LinearOpMode {
     }
 
     public void beenden() {
-        hwMap.robot.stoppen();
+        hwMap.navi.stoppen();
+        hwMap.chassis.stoppeMotoren();
     }
 
     public void runOpMode() {
@@ -52,7 +53,7 @@ public abstract class BasisAutonomous extends LinearOpMode {
             for (LynxModule hub : alleHubs) {
                 hub.clearBulkCache();
             }
-            hwMap.robot.schritt();
+            hwMap.navi.schritt();
             telemetrie();
         }
     }
@@ -62,7 +63,7 @@ public abstract class BasisAutonomous extends LinearOpMode {
             for (LynxModule hub : alleHubs) {
                 hub.clearBulkCache();
             }
-            hwMap.robot.schritt();
+            hwMap.navi.schritt();
             telemetrie();
         }
     }

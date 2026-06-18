@@ -12,12 +12,12 @@ public class AutoQuadrat extends BasisAutonomous {
         super.starten();
 
         for (int i = 0; i < 4; i++) {
-            hwMap.robot.navi.setHalteRotation(false);
-            hwMap.robot.fahreZuPosition(new Position2D(100, 0), true);
+            hwMap.navi.setHalteRotation(false);
+            hwMap.navi.setzeZielPosition(new Position2D(100, 0), true);
             schleifeFahren();
             schleifeWarten(500);
-            hwMap.robot.navi.setHalteRotation(true);
-            hwMap.robot.drehen(90, true);
+            hwMap.navi.setHalteRotation(true);
+            hwMap.navi.setZielRotation(90, true);
             schleifeFahren();
             schleifeWarten(500);
         }

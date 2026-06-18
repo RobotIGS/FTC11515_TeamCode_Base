@@ -19,18 +19,18 @@ public class MecanumChassis extends ChassisBasis {
         super(4, hubAusrichtung);
 
         geschwindigkeitsMatrix = new double[][]{
-                {+1, -1, +(lx + ly)},
-                {+1, +1, -(lx + ly)},
+                {+1, -1, -(lx + ly)},
                 {+1, +1, +(lx + ly)},
-                {+1, -1, -(lx + ly)}
+                {+1, +1, -(lx + ly)},
+                {+1, -1, +(lx + ly)}
         };
         distanzMatrix = new double[][]{
                 {+1, +1, +1, +1},
                 {-1, +1, +1, -1},
-                {(double) +1 / (lx + ly),
-                        (double) -1 / (lx + ly),
+                {(double) -1 / (lx + ly),
                         (double) +1 / (lx + ly),
-                        (double) -1 / (lx + ly)}
+                        (double) -1 / (lx + ly),
+                        (double) +1 / (lx + ly)}
         };
     }
 
@@ -52,10 +52,9 @@ public class MecanumChassis extends ChassisBasis {
         // Normalisierung der Werte [-1.0; 1.0]
         double vm = Math.max(Math.max(Math.abs(radGeschwindigkeiten[0]), Math.abs(radGeschwindigkeiten[1])), Math.max(Math.abs(radGeschwindigkeiten[2]), Math.abs(radGeschwindigkeiten[3])));
 
-        radGeschwindigkeiten[0] *= geschwindigkeit.getBetrag() / vm;
-        radGeschwindigkeiten[1] *= geschwindigkeit.getBetrag() / vm;
-        radGeschwindigkeiten[2] *= geschwindigkeit.getBetrag() / vm;
-        radGeschwindigkeiten[3] *= geschwindigkeit.getBetrag() / vm;
+        for (int i = 0; i < 4; i++) {
+            radGeschwindigkeiten[i] *= geschwindigkeit.getBetrag() / vm;
+        }
     }
 
     @Override
@@ -74,8 +73,8 @@ public class MecanumChassis extends ChassisBasis {
         dy /= 4;
 
         // Berechne Umdrehungen
-        dx /= this.encoderSchritteProUmdrehung;
-        dy /= this.encoderSchritteProUmdrehung;
+        dx /= this.motorWerte[1];
+        dy /= this.motorWerte[1];
 
         // Berechne Distanz
         dx *= 2 * Math.PI * (RAD_DURCHMESSER / 2);

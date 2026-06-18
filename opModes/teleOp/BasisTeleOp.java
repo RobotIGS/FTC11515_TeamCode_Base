@@ -34,7 +34,8 @@ public abstract class BasisTeleOp extends LinearOpMode {
     public abstract void runLoop(); // Dies wird in einer Schleife ausgeführt, wenn der Play-Button auf dem Driver Hub gedrückt wird
 
     public void beenden() { // Dies wird ausgeführt, nachdem die Schleife gestoppt wurde
-        hwMap.robot.stoppen();
+        hwMap.navi.stoppen();
+        hwMap.chassis.stoppeMotoren();
     }
 
     public void runOpMode() { // Diese interne Methode wird verwendet, um zu initialisieren und auszuführen
@@ -54,7 +55,7 @@ public abstract class BasisTeleOp extends LinearOpMode {
         long start = System.currentTimeMillis();
         while ((System.currentTimeMillis() - start) < zeitInMs && opModeIsActive()) {
             fahren();
-            hwMap.robot.schritt();
+            hwMap.navi.schritt();
             telemetrie();
         }
     }
