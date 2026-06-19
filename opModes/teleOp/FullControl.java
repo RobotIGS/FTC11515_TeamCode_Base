@@ -23,8 +23,6 @@ public class FullControl extends BasisTeleOp {
     private double rampeLokalPosition = 0.3;
     private long rampeLetzterUpdateZeitstempel = 0;
 
-    /* END SECTION */
-
     @Override
     public void initialisieren() {
         super.initialisieren();
