@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode.tools;
 
-import static java.lang.Thread.sleep;
-
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -34,7 +31,7 @@ public class HwMap {
     }
 
     /* PLACE YOUR HARDWARE INTERFACES AND VALUES DOWN BELOW */
-    public double geschwindigkeitSchuss = 0.5   ;
+    public double geschwindigkeitSchuss = 0.5;
 
     public final double KOPF_MAX_SPEED = 130.0; // Grad pro Sekunde
 
@@ -65,7 +62,7 @@ public class HwMap {
         navi.setGeschwindigkeitNormal(0.5);
         navi.setGeschwindigkeitSchleichend(0.3);
         navi.setGeschwindigkeitDrehen(1.0);
-        navi.setGeschwindigkeitAuto(0.4);
+        navi.setGeschwindigkeitAuto(0.75);
         navi.setBeschleunigungsProfil(new BeschleunigungsProfil(30, 1)); // Beschleunigungsprofil für eine bessere Positionsbestimmung erstellen
         navi.setRotationsGenauigkeit(1.0); // in Grad
         navi.setFahrGenauigkeit(0.5); // in cm

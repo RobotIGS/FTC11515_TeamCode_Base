@@ -5,28 +5,37 @@ public class BasisAutonomousFunktionen extends BasisAutonomous {
     private double kopfLokalPosition = 0;
     private long kopfLetzterUpdateZeitstempel = 0;
 
-    public void starten() {
-        super.starten();
-        targetGlobalRotation = hwMap.chassis.getRotation();
-        aktualisiereKopf();
+    public void runOnce() {
+        hwMap.geschwindigkeitSchuss = 0.7;
+        hwMap.mSchiessen.setPower(hwMap.geschwindigkeitSchuss);
+        super.runOnce();
     }
 
     public void schiessen() {
-        aktualisiereKopf();
         hwMap.mSchiessen.setPower(hwMap.geschwindigkeitSchuss);
-        schleifeWarten(500);
+        schleifeWarten(3000);
         hwMap.mInnen.setPower(1);
-        schleifeWarten(2000);
+        hwMap.mInnenMond.setPower(-1);
+        hwMap.mAufnehmen.setPower(1);
+        schleifeWarten(1500);
+        hwMap.mSchiessen.setPower(hwMap.geschwindigkeitSchuss - 0.1);
+        schleifeWarten(7000);
         hwMap.mSchiessen.setPower(0);
         hwMap.mInnen.setPower(0);
+        hwMap.mInnenMond.setPower(0);
+        hwMap.mAufnehmen.setPower(0);
     }
 
     public void aufnehmen() {
+        hwMap.mAufnehmen.setPower(1);
+        hwMap.mInnen.setPower(1);
+        hwMap.mInnenMond.setPower(-1);
+
         hwMap.navi.setGeschwindigkeit(0.15, 0, 0);
 
-        hwMap.mAufnehmen.setPower(-1);
-        hwMap.mInnen.setPower(0.5);
-        schleifeWarten(2500);
+        schleifeWarten(4000);
+        hwMap.mInnenMond.setPower(0);
+        schleifeWarten(2000);
         hwMap.mAufnehmen.setPower(0);
         hwMap.mInnen.setPower(0);
 

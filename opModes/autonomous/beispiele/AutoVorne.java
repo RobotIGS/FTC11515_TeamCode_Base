@@ -14,8 +14,8 @@ public class AutoVorne extends BasisAutonomous {
     }
 
     @Override
-    public void starten() {
-        super.starten();
+    public void runOnce() {
+        super.runOnce();
 
         hwMap.navi.setzeZielPosition(new Position2D(35, 0), true);
         schleifeFahren();

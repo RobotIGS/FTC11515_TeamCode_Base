@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.opModes.autonomous.AutoKorb;
 @Autonomous(name = "Blau Korb", group = "BLAU", preselectTeleOp = "FullControl")
 public class AutoBKorb extends AutoKorb {
     @Override
-    public void starten() {
+    public void runOnce() {
         istRot = false;
-        super.starten();
+        super.runOnce();
     }
 }

@@ -11,6 +11,7 @@ public class FullControl extends BasisTeleOp {
     final Gegensteuern gegensteuernY = new Gegensteuern("Y");
     double altVx;
     double altVy;
+    public boolean zweiSticks = false;
 
     /* ADD VARIABLES ONLY USED IN FULL CONTROL */
     // Kopfdrehen
@@ -30,14 +31,12 @@ public class FullControl extends BasisTeleOp {
         hwMap = new HwMap(hardwareMap);
         /* ADD CODE WHICH IS RUN ONCE WHEN INIT IS PRESSED */
 
-        /* END SECTION */
     }
 
     @Override
     public void runOnce() {
         /* ADD CODE WHICH IS RUN ONCE WHEN PLAY IS PRESSED */
         kopfZielrotation = hwMap.chassis.getRotation();
-        /* END SECTION */
     }
 
     @Override
@@ -60,7 +59,7 @@ public class FullControl extends BasisTeleOp {
         }
 
         double vx = -gamepad1.left_stick_y * (hwMap.navi.sneak ? hwMap.navi.geschwindigkeitSneak : hwMap.navi.geschwindigkeitNormal);
-        double vy = -gamepad1.left_stick_x * (hwMap.navi.sneak ? hwMap.navi.geschwindigkeitSneak : hwMap.navi.geschwindigkeitNormal);
+        double vy = (zweiSticks ? -gamepad1.right_stick_x : -gamepad1.left_stick_x) * (hwMap.navi.sneak ? hwMap.navi.geschwindigkeitSneak : hwMap.navi.geschwindigkeitNormal);
         double vz = (gamepad1.left_trigger - gamepad1.right_trigger) * hwMap.navi.geschwindigkeitDrehen * (hwMap.navi.sneak ? hwMap.navi.geschwindigkeitSneak : hwMap.navi.geschwindigkeitNormal);
 
         hwMap.navi.setGeschwindigkeit(

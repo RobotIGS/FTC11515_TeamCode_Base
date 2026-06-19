@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.opModes.autonomous.AutoWand;
 @Autonomous(name = "Blau Wand", group = "BLAU", preselectTeleOp = "FullControl")
 public class AutoBWand extends AutoWand {
     @Override
-    public void starten() {
+    public void runOnce() {
         istRot = false;
-        super.starten();
+        super.runOnce();
     }
 }

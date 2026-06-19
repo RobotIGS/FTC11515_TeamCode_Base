@@ -6,12 +6,14 @@ import org.firstinspires.ftc.teamcode.tools.datentypen.Position2D;
 
 public class AutoKorb extends BasisAutonomousFunktionen {
     @Override
-    public void starten() {
-        super.starten();
+    public void runOnce() {
+        super.runOnce();
 
         hwMap.navi.setzeZielPosition(new Position2D(-2 * PLATTENLAENGE, 0), true);
         schleifeFahren();
         schiessen();
+
+        hwMap.geschwindigkeitSchuss = 0.55;
 
         hwMap.navi.setHalteRotation(true);
         hwMap.navi.setZielRotation(istRot ? -40 : 40, true);
@@ -21,20 +23,31 @@ public class AutoKorb extends BasisAutonomousFunktionen {
         hwMap.navi.setzeZielPosition(new Position2D(0, 0.4 * PLATTENLAENGE * (istRot ? -1 : 1)), true);
         schleifeFahren();
         aufnehmen();
+
         hwMap.navi.setzeZielPosition(new Position2D(-PLATTENLAENGE, PLATTENLAENGE * (istRot ? 1 : -1)), true);
         schleifeFahren();
+        hwMap.navi.setHalteRotation(true);
+        hwMap.navi.setZielRotation(istRot ? 40 : -40, true);
+        schleifeFahren();
+        hwMap.navi.setHalteRotation(false);
         schiessen();
 
-        hwMap.navi.setzeZielPosition(new Position2D(0, 2 * PLATTENLAENGE * (istRot ? -1 : 1)), true);
+        hwMap.navi.setZielRotation(istRot ? -40 : 40, true);
         schleifeFahren();
-        aufnehmen();
-        hwMap.navi.setzeZielPosition(new Position2D(0.5 * -PLATTENLAENGE, 0), true);
-        schleifeFahren();
-        hwMap.navi.setzeZielPosition(new Position2D(0.5 * -PLATTENLAENGE, 2 * PLATTENLAENGE * (istRot ? 1 : -1)), true);
-        schleifeFahren();
-        schiessen();
+        hwMap.navi.setHalteRotation(false);
 
-        hwMap.navi.setzeZielPosition(new Position2D(0, 2 * PLATTENLAENGE * (istRot ? -1 : 1)), true);
-        schleifeFahren();
+        if (false) {
+            hwMap.navi.setzeZielPosition(new Position2D(0, 2 * PLATTENLAENGE * (istRot ? -1 : 1)), true);
+            schleifeFahren();
+            aufnehmen();
+            hwMap.navi.setzeZielPosition(new Position2D(0.5 * -PLATTENLAENGE, 0), true);
+            schleifeFahren();
+            hwMap.navi.setzeZielPosition(new Position2D(0.5 * -PLATTENLAENGE, 2 * PLATTENLAENGE * (istRot ? 1 : -1)), true);
+            schleifeFahren();
+            schiessen();
+
+            hwMap.navi.setzeZielPosition(new Position2D(0, 2 * PLATTENLAENGE * (istRot ? -1 : 1)), true);
+            schleifeFahren();
+        }
     }
 }

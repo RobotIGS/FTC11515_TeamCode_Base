@@ -22,7 +22,7 @@ public abstract class BasisAutonomous extends LinearOpMode {
         hwMap = new HwMap(hardwareMap);
     }
 
-    public void starten() {
+    public void runOnce() {
         for (LynxModule hub : alleHubs) {
             hub.clearBulkCache();
         }
@@ -36,7 +36,7 @@ public abstract class BasisAutonomous extends LinearOpMode {
     public void runOpMode() {
         initialisieren();
         waitForStart();
-        starten();
+        runOnce();
         beenden();
     }
 

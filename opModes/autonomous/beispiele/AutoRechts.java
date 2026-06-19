@@ -14,8 +14,8 @@ public class AutoRechts extends BasisAutonomous {
     }
 
     @Override
-    public void starten() {
-        super.starten();
+    public void runOnce() {
+        super.runOnce();
 
         hwMap.navi.setzeZielPosition(new Position2D(0, -35), true);
         schleifeFahren();

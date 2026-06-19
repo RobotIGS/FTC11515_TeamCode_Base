@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.tools.datentypen.Position2D;
 @Autonomous(name = "Quadrat", group = "Standard", preselectTeleOp = "FullControl")
 public class AutoQuadrat extends BasisAutonomous {
     @Override
-    public void starten() {
-        super.starten();
+    public void runOnce() {
+        super.runOnce();
 
         for (int i = 0; i < 4; i++) {
             hwMap.navi.setHalteRotation(false);
